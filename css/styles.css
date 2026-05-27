@@ -602,18 +602,12 @@ img {
   scroll-behavior: smooth;
   padding: 10px 0 20px 0;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .featured-slider::-webkit-scrollbar {
-  height: 6px;
-}
-.featured-slider::-webkit-scrollbar-thumb {
-  background: var(--color-gold);
-  border-radius: 3px;
-}
-.featured-slider::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 3px;
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .featured-slider .profile-card {
@@ -721,6 +715,7 @@ img {
   align-items: center;
   justify-content: center;
   z-index: 2;
+  cursor: pointer;
 }
 
 .slider-arrow:hover {
