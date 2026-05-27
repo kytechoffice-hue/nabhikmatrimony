@@ -295,20 +295,7 @@ function renderHome(container) {
       </div>
     </section>
 
-    <!-- Community Events & Announcements -->
-    <section class="section-padding container">
-      <div class="featured-header-row">
-        <div class="traditional-header">
-          <h2>Community Events & News</h2>
-          <div class="traditional-divider"><span class="icon">✦</span></div>
-        </div>
-        <a href="#/events" class="btn btn-maroon">View All Events</a>
-      </div>
-      
-      <div class="events-grid">
-        ${eventsHtml}
-      </div>
-    </section>
+
 
     <!-- Call to Action -->
     <section class="cta-section">
