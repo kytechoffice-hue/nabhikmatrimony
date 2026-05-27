@@ -220,11 +220,7 @@ function renderHome(container) {
               <span>Easy Matchmaking</span>
             </div>
           </div>
-          
-          <div class="hero-buttons">
-            <a href="#/register" class="btn btn-primary">Create Profile</a>
-            <a href="#/search" class="btn btn-outline">Find Match</a>
-          </div>
+
         </div>
         <div class="hero-image-container">
           <div class="hero-image-frame">
