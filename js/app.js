@@ -362,7 +362,6 @@ function renderAbout(container) {
     <div class="page-banner">
       <div class="container">
         <h1>About Us</h1>
-        <p>HOME / ABOUT US</p>
       </div>
     </div>
     
@@ -404,7 +403,6 @@ function renderHelp(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Help & Support</h1>
-        <p>HOME / HELP & SUPPORT</p>
       </div>
     </div>
     
@@ -502,7 +500,6 @@ function renderSearch(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Search Profiles</h1>
-        <p>HOME / SEARCH PROFILES</p>
       </div>
     </div>
     
@@ -616,7 +613,6 @@ function renderProfileDetails(container, profileId) {
     <div class="page-banner">
       <div class="container">
         <h1>Profile of ${profile.name}</h1>
-        <p>HOME / PROFILE DETAILS</p>
       </div>
     </div>
     
@@ -704,7 +700,6 @@ function renderRegister(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Register</h1>
-        <p>HOME / REGISTER</p>
       </div>
     </div>
     
@@ -872,7 +867,6 @@ function renderDashboard(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Member Dashboard</h1>
-        <p>HOME / DASHBOARD</p>
       </div>
     </div>
     
@@ -1107,7 +1101,6 @@ function renderMembership(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Membership Plans</h1>
-        <p>HOME / MEMBERSHIP PLANS</p>
       </div>
     </div>
     
@@ -1173,7 +1166,6 @@ function renderStories(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Success Stories</h1>
-        <p>HOME / SUCCESS STORIES</p>
       </div>
     </div>
     
@@ -1197,7 +1189,6 @@ function renderEvents(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Community Events</h1>
-        <p>HOME / EVENTS</p>
       </div>
     </div>
     
@@ -1221,7 +1212,6 @@ function renderBlogs(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Blog Section</h1>
-        <p>HOME / BLOGS</p>
       </div>
     </div>
     
@@ -1244,7 +1234,6 @@ function renderContact(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Contact Us</h1>
-        <p>HOME / CONTACT US</p>
       </div>
     </div>
     
@@ -1295,7 +1284,6 @@ function renderPrivacyPolicy(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Privacy Policy</h1>
-        <p>HOME / PRIVACY POLICY</p>
       </div>
     </div>
     <div class="container section-padding">
@@ -1316,7 +1304,6 @@ function renderTerms(container) {
     <div class="page-banner">
       <div class="container">
         <h1>Terms & Conditions</h1>
-        <p>HOME / TERMS & CONDITIONS</p>
       </div>
     </div>
     <div class="container section-padding">
