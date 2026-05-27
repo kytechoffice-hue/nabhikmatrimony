@@ -796,59 +796,63 @@ function renderRegister(container) {
   `;
 }
 
-// 6. LOGIN VIEW
-function renderLogin(container) {
-  container.innerHTML = `
-    <div class="page-banner">
-      <div class="container">
-        <h1>Login to Account</h1>
-        <p>HOME / LOGIN</p>
+// Open Login Modal popup
+function openLoginModal() {
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 440px;">
+      <button class="modal-close-btn" onclick="closeModal()">×</button>
+      <div class="traditional-header" style="margin-bottom: 24px; text-align: center;">
+        <h2>Welcome Back</h2>
+        <div class="traditional-divider"><span class="icon">✦</span></div>
       </div>
-    </div>
-    
-    <div class="container" style="max-width: 480px; padding: 60px 24px;">
-      <div class="page-container" style="margin-top: 0;">
-        <div class="traditional-header" style="margin-bottom: 24px;">
-          <h2>Welcome Back</h2>
+      
+      <!-- Toggle login options -->
+      <div style="display: flex; justify-content: center; gap: 12px; border-bottom: 1px solid var(--color-border); margin-bottom: 24px; padding-bottom: 8px;">
+        <button id="tab-login-email" onclick="toggleLoginTabs('email')" style="font-weight: 600; color: var(--color-maroon); background: none; border: none; cursor: pointer;" class="text-gold">Email Login</button>
+        <span style="color: var(--color-border);">|</span>
+        <button id="tab-login-otp" onclick="toggleLoginTabs('otp')" style="font-weight: 500; color: var(--color-text-muted); background: none; border: none; cursor: pointer;">Mobile OTP Login</button>
+      </div>
+      
+      <!-- Email Form -->
+      <form id="login-email-form" onsubmit="handleEmailLogin(event)">
+        <div class="form-group">
+          <label>Email ID</label>
+          <input type="email" id="login-email" required placeholder="Enter registered email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="Enter password">
         </div>
         
-        <!-- Toggle login options -->
-        <div style="display: flex; gap: 10px; border-bottom: 1px solid var(--color-border); margin-bottom: 24px; padding-bottom: 8px;">
-          <button id="tab-login-email" onclick="toggleLoginTabs('email')" style="font-weight: 600; color: var(--color-maroon);" class="text-gold">Email Login</button>
-          <span style="color: var(--color-border);">|</span>
-          <button id="tab-login-otp" onclick="toggleLoginTabs('otp')" style="font-weight: 500; color: var(--color-text-muted);">Mobile OTP Login</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
+      </form>
+      
+      <!-- OTP Form (Hidden initially) -->
+      <form id="login-otp-form" onsubmit="handleOtpLoginRequest(event)" style="display: none;">
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="login-mobile" required placeholder="Enter 10-digit mobile number">
         </div>
-        
-        <!-- Email Form -->
-        <form id="login-email-form" onsubmit="handleEmailLogin(event)">
-          <div class="form-group">
-            <label>Email ID</label>
-            <input type="email" id="login-email" required placeholder="Enter registered email">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="login-password" required placeholder="Enter password">
-          </div>
-          
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
-        </form>
-        
-        <!-- OTP Form (Hidden initially) -->
-        <form id="login-otp-form" onsubmit="handleOtpLoginRequest(event)" style="display: none;">
-          <div class="form-group">
-            <label>Mobile Number</label>
-            <input type="tel" id="login-mobile" required placeholder="Enter 10-digit mobile number">
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Send OTP Code</button>
-        </form>
-        
-        <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
-          <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">Forgot Password?</a>
-          <p style="margin-top: 12px;">Don't have an account? <a href="#/register" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
-        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Send OTP Code</button>
+      </form>
+      
+      <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
+        <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">Forgot Password?</a>
+        <p style="margin-top: 12px;">Don't have an account? <a href="#/register" onclick="closeModal()" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
       </div>
     </div>
   `;
+  overlay.classList.add('active');
+}
+
+// 6. LOGIN VIEW
+function renderLogin(container) {
+  openLoginModal();
+  // Redirect back to home so the background page is the home page
+  window.location.hash = '#/';
 }
 
 // 7. MEMBER DASHBOARD VIEW
@@ -1763,6 +1767,7 @@ function handleEmailLogin(e) {
   const user = stateActions.loginUser(email, pass);
   if (user) {
     showToast(`Successfully logged in as ${user.name}`);
+    closeModal();
     window.location.hash = '#/dashboard';
   } else {
     showToast('Error logging in. Try again.');
