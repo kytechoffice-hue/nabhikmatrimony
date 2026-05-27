@@ -270,59 +270,6 @@ function renderHome(container) {
       </div>
     </section>
 
-    <!-- Membership Plans Section -->
-    <section class="section-padding container">
-      <div class="traditional-header">
-        <h2>Membership Plans</h2>
-        <div class="traditional-divider"><span class="icon">✦</span></div>
-      </div>
-      
-      <div class="membership-grid">
-        <!-- Silver Plan -->
-        <div class="membership-card">
-          <div class="plan-badge silver-badge">🥈</div>
-          <h3>Silver Plan</h3>
-          <div class="plan-price">₹999 <span>/ 3 Months</span></div>
-          <ul class="plan-features">
-            <li>View 50 Profiles</li>
-            <li>Send Unlimited Interests</li>
-            <li>Basic Search Filters</li>
-            <li>Email Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Silver', 999)" class="plan-btn">Choose Plan</button>
-        </div>
-        
-        <!-- Gold Plan -->
-        <div class="membership-card featured-plan">
-          <div class="plan-ribbon">Most Popular</div>
-          <div class="plan-badge gold-badge">🥇</div>
-          <h3>Gold Plan</h3>
-          <div class="plan-price">₹1999 <span>/ 6 Months</span></div>
-          <ul class="plan-features">
-            <li>View Unlimited Profiles</li>
-            <li>Direct Contact Access</li>
-            <li>Chat Feature with Members</li>
-            <li>Advanced Search Filters</li>
-            <li>Priority Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Gold', 1999)" class="plan-btn btn-gold">Choose Plan</button>
-        </div>
-        
-        <!-- Platinum Plan -->
-        <div class="membership-card">
-          <div class="plan-badge platinum-badge">💎</div>
-          <h3>Platinum Plan</h3>
-          <div class="plan-price">₹2999 <span>/ 12 Months</span></div>
-          <ul class="plan-features">
-            <li>All Gold Plan Features</li>
-            <li>Priority Profile Highlight</li>
-            <li>Profile Verification Badge</li>
-            <li>Dedicated Kundali/Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Platinum', 2999)" class="plan-btn">Choose Plan</button>
-        </div>
-      </div>
-    </section>
 
     <!-- Success Stories -->
     <section class="section-padding bg-maroon-section">
