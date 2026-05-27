@@ -31,7 +31,7 @@ function updateHeaderAuth() {
   } else {
     authContainer.innerHTML = `
       <a href="#/login" class="btn-login">Login</a>
-      <a href="#/register" class="btn-register">Register Free</a>
+      <a href="#/register" class="btn-register">Register</a>
     `;
   }
   
@@ -79,6 +79,17 @@ function updateNavigation() {
 function handleGlobalClicks(e) {
   if (e.target.classList.contains('modal-overlay')) {
     closeModal();
+  }
+  
+  // Handle slider arrows
+  const arrow = e.target.closest('.slider-arrow');
+  if (arrow) {
+    e.preventDefault();
+    if (arrow.classList.contains('slider-arrow-left')) {
+      scrollFeatured('left');
+    } else if (arrow.classList.contains('slider-arrow-right')) {
+      scrollFeatured('right');
+    }
   }
 }
 
@@ -261,11 +272,11 @@ function renderHome(container) {
         </div>
         
         <div class="featured-slider-container">
-          <button class="slider-arrow slider-arrow-left" onclick="showToast('Slider scrolled left')">◀</button>
+          <button class="slider-arrow slider-arrow-left">◀</button>
           <div class="featured-slider">
             ${featuredHtml}
           </div>
-          <button class="slider-arrow slider-arrow-right" onclick="showToast('Slider scrolled right')">▶</button>
+          <button class="slider-arrow slider-arrow-right">▶</button>
         </div>
       </div>
     </section>
@@ -302,7 +313,7 @@ function renderHome(container) {
       <div class="container">
         <h2>Ready to Find Your Life Partner?</h2>
         <p>Join Nabhik Matrimonial today to connect with matching verified profiles in our community. Registration is free and takes only a few minutes.</p>
-        <a href="#/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Register Free Now</a>
+        <a href="#/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Register Now</a>
       </div>
     </section>
 
@@ -330,6 +341,19 @@ function renderHome(container) {
       </div>
     </section>
   `;
+}
+
+// Slider horizontal scrolling control
+function scrollFeatured(direction) {
+  const slider = document.querySelector('.featured-slider');
+  if (slider) {
+    const scrollAmount = 300; // scroll 300px
+    if (direction === 'left') {
+      slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
 }
 
 // 2. ABOUT US VIEW
@@ -401,7 +425,7 @@ function renderHelp(container) {
                 <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
               </summary>
               <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
-                Click on the "Register Free" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.
+                Click on the "Register" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.
               </p>
             </details>
             
@@ -679,7 +703,7 @@ function renderRegister(container) {
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>Register Free</h1>
+        <h1>Register</h1>
         <p>HOME / REGISTER</p>
       </div>
     </div>
@@ -820,7 +844,7 @@ function renderLogin(container) {
         
         <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
           <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">Forgot Password?</a>
-          <p style="margin-top: 12px;">Don't have an account? <a href="#/register" style="color: var(--color-maroon); font-weight: 600;">Register Free</a></p>
+          <p style="margin-top: 12px;">Don't have an account? <a href="#/register" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
         </div>
       </div>
     </div>
