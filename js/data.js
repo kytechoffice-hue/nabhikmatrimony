@@ -2,6 +2,19 @@
 
 // Dynamic SVG Avatar Generator for high-end vector illustrations
 function getSvgAvatar(gender, seedId, name) {
+  // Check if profile has a custom uploaded photo path
+  if (typeof state !== 'undefined' && state.profiles) {
+    const profile = state.profiles.find(p => p.id === seedId);
+    if (profile && profile.photo) {
+      return profile.photo;
+    }
+  } else if (typeof initialProfiles !== 'undefined') {
+    const profile = initialProfiles.find(p => p.id === seedId);
+    if (profile && profile.photo) {
+      return profile.photo;
+    }
+  }
+
   const hash = seedId * 31;
   const hairColors = ['#1a0f0d', '#2b1b17', '#120a08'];
   const skinColors = ['#e8a87c', '#e09867', '#f4c39f', '#dda07a'];
@@ -125,7 +138,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Reading, Cricket, Coding',
     verified: true,
-    featured: true
+    featured: true,
+    photo: 'images/member1.png'
   },
   {
     id: 2,
@@ -147,7 +161,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Classical Dance, Painting, Cooking',
     verified: true,
-    featured: true
+    featured: true,
+    photo: 'images/member3.png'
   },
   {
     id: 3,
@@ -169,7 +184,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Trekking, Photography, Music',
     verified: true,
-    featured: true
+    featured: true,
+    photo: 'images/member2.png'
   },
   {
     id: 4,
@@ -191,7 +207,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Gardening, Reading, Travel',
     verified: true,
-    featured: true
+    featured: true,
+    photo: 'images/member4.png'
   },
   {
     id: 5,
@@ -419,6 +436,20 @@ const storage = {
     localStorage.setItem('nabhik_matrimonial_' + key, JSON.stringify(value));
   }
 };
+
+// Force update profiles in localStorage if they don't have the photo field (to handle version transitions)
+try {
+  const stored = localStorage.getItem('nabhik_matrimonial_profiles');
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    if (parsed && parsed.length > 0 && !parsed[0].photo) {
+      localStorage.removeItem('nabhik_matrimonial_profiles');
+      localStorage.removeItem('nabhik_matrimonial_currentUser');
+    }
+  }
+} catch (e) {
+  console.error("Failed to check or clear localStorage profiles", e);
+}
 
 // Global App State
 const state = {
