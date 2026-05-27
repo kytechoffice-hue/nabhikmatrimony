@@ -1987,7 +1987,11 @@ function handleEditProfileSubmit(e) {
 function handleLogout() {
   stateActions.logoutUser();
   showToast('Logged out successfully.');
-  window.location.hash = '#/';
+  if (window.location.hash === '#/') {
+    initRouter();
+  } else {
+    window.location.hash = '#/';
+  }
 }
 
 // Admin approves profile verification
