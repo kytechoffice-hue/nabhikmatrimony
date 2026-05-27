@@ -2,32 +2,19 @@
 
 // Generate Profile Card
 function makeProfileCard(profile) {
-  const isShortlisted = state.shortlisted.includes(profile.id);
-  const isInterestSent = state.interestsSent.includes(profile.id);
   const avatar = getSvgAvatar(profile.gender, profile.id, profile.name);
   
   return `
-    <div class="profile-card" data-id="${profile.id}">
-      <div class="profile-card-image">
+    <div class="profile-card only-photo" data-id="${profile.id}" onclick="window.location.hash = '#/profile/${profile.id}'" style="cursor: pointer; height: 320px;">
+      <div class="profile-card-image" style="height: 100%;">
         <img src="${avatar}" alt="${profile.name}">
         ${profile.verified ? `<div class="profile-card-overlay"><span style="margin-right:2px;">✔</span> Verified</div>` : ''}
-      </div>
-      <div class="profile-card-info">
-        <h3>${profile.name}</h3>
-        <p>${profile.age} Years, ${profile.height}</p>
-        <p>${profile.education}</p>
-        <p class="location">${profile.location}</p>
-        
-        <div style="display: flex; justify-content: center; gap: 8px; margin-top: 10px; padding: 0 10px;">
-          <button class="btn-shortlist-icon" onclick="event.stopPropagation(); handleToggleShortlist(${profile.id})" style="color: ${isShortlisted ? '#d4af37' : 'rgba(255,255,255,0.4)'}; font-size: 1.1rem;" title="Shortlist">
-            ★
-          </button>
-          <button class="btn-interest-small" onclick="event.stopPropagation(); handleSendInterest(${profile.id})" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1.5px solid ${isInterestSent ? '#2e7d32' : 'var(--color-gold)'}; background: ${isInterestSent ? 'rgba(46,125,50,0.1)' : 'transparent'}; color: ${isInterestSent ? '#81c784' : 'var(--color-gold)'};">
-            ${isInterestSent ? 'Interest Sent' : 'Send Interest'}
-          </button>
+        <!-- Subtle gradient overlay at bottom with Name and basic details -->
+        <div class="profile-photo-hover-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%); padding: 24px 12px 12px 12px; text-align: center; color: white; transition: var(--transition-fast);">
+          <h3 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--color-gold-light); margin-bottom: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.7);">${profile.name}</h3>
+          <p style="font-size: 0.78rem; color: rgba(255,255,255,0.8); margin: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.7);">${profile.age} Yrs, ${profile.height} • ${profile.location.split(',')[0]}</p>
         </div>
       </div>
-      <a href="#/profile/${profile.id}" class="profile-card-btn">View Profile</a>
     </div>
   `;
 }
