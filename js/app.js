@@ -184,8 +184,8 @@ function initRouter() {
 
 // 1. HOME VIEW
 function renderHome(container) {
-  // Grab featured profiles
-  const featured = state.profiles.filter(p => p.featured && p.verified).slice(0, 5);
+  // Grab 10 registered profiles
+  const featured = state.profiles.slice(0, 10);
   let featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
@@ -258,7 +258,6 @@ function renderHome(container) {
             <h2>Featured Profiles</h2>
             <div class="traditional-divider"><span class="icon">✦</span></div>
           </div>
-          <a href="#/search" class="btn btn-outline">View All</a>
         </div>
         
         <div class="featured-slider-container">
