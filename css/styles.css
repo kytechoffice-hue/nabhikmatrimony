@@ -594,9 +594,31 @@ img {
 }
 
 .featured-slider {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0 20px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.featured-slider::-webkit-scrollbar {
+  height: 6px;
+}
+.featured-slider::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 3px;
+}
+.featured-slider::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+}
+
+.featured-slider .profile-card {
+  flex: 0 0 calc(20% - 16px);
+  min-width: 220px;
 }
 
 .profile-card {
@@ -2237,8 +2259,9 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .featured-slider {
-    grid-template-columns: repeat(3, 1fr);
+  .featured-slider .profile-card {
+    flex: 0 0 calc(33.33% - 14px);
+    min-width: 200px;
   }
   
   .membership-grid {
@@ -2311,8 +2334,8 @@ img {
     grid-template-columns: 1fr;
   }
   
-  .featured-slider {
-    grid-template-columns: 1fr 1fr;
+  .featured-slider .profile-card {
+    flex: 0 0 220px;
   }
   
   .success-slider {
