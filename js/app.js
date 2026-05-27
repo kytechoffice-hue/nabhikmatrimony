@@ -416,43 +416,43 @@ function renderHelp(container) {
             <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
           </div>
           
-          <div class="faq-list" style="display: flex; flex-direction: column; gap: 16px;">
-            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
-              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>
                 How do I register on Nabhik Matrimonial?
-                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+                <span class="faq-arrow">▼</span>
               </summary>
-              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+              <p>
                 Click on the "Register" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.
               </p>
             </details>
             
-            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
-              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+            <details class="faq-item">
+              <summary>
                 How does the profile verification work?
-                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+                <span class="faq-arrow">▼</span>
               </summary>
-              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+              <p>
                 To keep our community safe, every registered profile is reviewed by our administration team. You may be requested to upload an identity document. Approved profiles receive a gold "✔ Verified" badge.
               </p>
             </details>
             
-            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
-              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+            <details class="faq-item">
+              <summary>
                 Is my personal information and contact number secure?
-                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+                <span class="faq-arrow">▼</span>
               </summary>
-              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+              <p>
                 Yes, absolutely. We prioritize your privacy. Your contact details are only shared with premium members if you choose to accept their interest, or you can manage this from your privacy settings in the dashboard.
               </p>
             </details>
             
-            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
-              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+            <details class="faq-item">
+              <summary>
                 What are the benefits of Membership Plans?
-                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+                <span class="faq-arrow">▼</span>
               </summary>
-              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+              <p>
                 Premium members get benefits like viewing direct phone numbers, unlimited chat messages, sending highlighted interests, and getting higher priority in searches. Check out our Membership page for details.
               </p>
             </details>
