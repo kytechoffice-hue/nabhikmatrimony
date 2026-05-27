@@ -2385,3 +2385,75 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+/* Find Us On and App Download Column in Footer */
+.footer-find-us {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-social-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.social-box {
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333333;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.social-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-gold);
+  color: var(--color-maroon);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.social-box svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.footer-app-badges {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.app-store-badge {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+  text-decoration: none;
+}
+
+.app-store-badge:hover {
+  transform: scale(1.03);
+}
+
+.app-store-badge svg {
+  display: block;
+  border-radius: 6px;
+}
+
+.footer-app-disclaimer {
+  margin-top: 12px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.4;
+}
+
