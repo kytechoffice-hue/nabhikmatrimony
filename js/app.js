@@ -62,13 +62,14 @@ function updateNavigation() {
       ${makeLink('#/events', 'Events')}
       ${makeLink('#/blogs', 'Blog')}
       ${makeLink('#/contact', 'Contact')}
+      ${makeLink('#/help', 'Help')}
       <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
     `;
   } else {
     // Show only About Us and Help when not logged in
     navContainer.innerHTML = `
       ${makeLink('#/about', 'About Us')}
-      <li><a href="javascript:showToast('Help Desk: info@nabhikmatrimonial.com | Call: +91 12345 67890')">Help</a></li>
+      ${makeLink('#/help', 'Help')}
     `;
   }
 }
@@ -165,6 +166,9 @@ function initRouter() {
       break;
     case '#/admin':
       renderAdmin(appView);
+      break;
+    case '#/help':
+      renderHelp(appView);
       break;
     default:
       renderHome(appView);
@@ -499,6 +503,103 @@ function renderAbout(container) {
           <h3>Our Mission</h3>
           <p>We aim to build trusted community connections, simplify the partner search process, maintain strict privacy and safety regulations, and support Nabhik families in finding genuine, verified matches.</p>
         </div>
+      </div>
+    </div>
+  `;
+}
+
+// HELP & SUPPORT VIEW
+function renderHelp(container) {
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Help & Support</h1>
+        <p>HOME / HELP & SUPPORT</p>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <div class="help-layout">
+        
+        <!-- FAQs Section -->
+        <div class="faq-section">
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>Frequently Asked Questions</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="faq-list" style="display: flex; flex-direction: column; gap: 16px;">
+            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
+              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                How do I register on Nabhik Matrimonial?
+                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+              </summary>
+              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+                Click on the "Register Free" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.
+              </p>
+            </details>
+            
+            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
+              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                How does the profile verification work?
+                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+              </summary>
+              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+                To keep our community safe, every registered profile is reviewed by our administration team. You may be requested to upload an identity document. Approved profiles receive a gold "✔ Verified" badge.
+              </p>
+            </details>
+            
+            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
+              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                Is my personal information and contact number secure?
+                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+              </summary>
+              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+                Yes, absolutely. We prioritize your privacy. Your contact details are only shared with premium members if you choose to accept their interest, or you can manage this from your privacy settings in the dashboard.
+              </p>
+            </details>
+            
+            <details class="faq-item" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-sm); padding: 16px; background: rgba(255,255,255,0.02); transition: var(--transition-fast);">
+              <summary style="font-weight: 600; cursor: pointer; color: var(--color-gold-light); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                What are the benefits of Membership Plans?
+                <span class="faq-arrow" style="color: var(--color-gold);">▼</span>
+              </summary>
+              <p style="margin-top: 12px; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
+                Premium members get benefits like viewing direct phone numbers, unlimited chat messages, sending highlighted interests, and getting higher priority in searches. Check out our Membership page for details.
+              </p>
+            </details>
+          </div>
+        </div>
+        
+        <!-- Support Ticket / Contact Sidebar -->
+        <div class="support-sidebar">
+          <div class="contact-card" style="border: 1.5px solid var(--color-gold); border-radius: var(--border-radius-md); padding: 24px; background: rgba(86,13,25,0.4); text-align: center; margin-bottom: 24px; position: relative; overflow: hidden;">
+            <h3 style="color: var(--color-gold); font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 8px;">Contact Support</h3>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px;">We are available to help you find your perfect match.</p>
+            <div style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 16px;">
+              <p>📧 <strong>support@nabhikmatrimonial.com</strong></p>
+              <p>📞 <strong>+91 98765 43210</strong></p>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-gold-light);">Nabhik Society Office, Pune, Maharashtra</p>
+          </div>
+          
+          <div class="ticket-card" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-md); padding: 20px; background: rgba(255,255,255,0.02);">
+            <h4 style="margin-bottom: 12px; color: var(--color-gold-light);">Submit a Query</h4>
+            <form onsubmit="event.preventDefault(); showToast('Your query has been submitted! Support team will reach out to you.'); this.reset();" style="display: flex; flex-direction: column; gap: 12px;">
+              <div>
+                <input type="text" placeholder="Full Name" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem;" autocomplete="off">
+              </div>
+              <div>
+                <input type="email" placeholder="Email Address" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem;" autocomplete="off">
+              </div>
+              <div>
+                <textarea placeholder="How can we help you?" rows="4" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem; resize: none;"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="padding: 8px; font-size: 0.85rem; width: 100%;">Send Message</button>
+            </form>
+          </div>
+        </div>
+        
       </div>
     </div>
   `;
