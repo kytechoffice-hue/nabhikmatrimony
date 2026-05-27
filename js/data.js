@@ -230,7 +230,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Gym, Traveling, Driving',
     verified: true,
-    featured: true
+    featured: true,
+    photo: 'images/member5.png'
   },
   {
     id: 6,
@@ -252,7 +253,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Writing, Yoga, Music',
     verified: false, // Pending verification (admin test case)
-    featured: false
+    featured: false,
+    photo: 'images/member8.png'
   },
   {
     id: 7,
@@ -274,7 +276,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'News, Badminton, Public Service',
     verified: true,
-    featured: false
+    featured: false,
+    photo: 'images/member7.png'
   },
   {
     id: 8,
@@ -296,7 +299,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Social Work, Reading, Flute',
     verified: true,
-    featured: false
+    featured: false,
+    photo: 'images/member9.png'
   },
   {
     id: 9,
@@ -318,7 +322,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Designing, Sketching, Traveling',
     verified: false, // Pending verification (admin test case)
-    featured: false
+    featured: false,
+    photo: 'images/member6.png'
   },
   {
     id: 10,
@@ -340,7 +345,8 @@ const initialProfiles = [
     smokingDrinking: 'No Smoking / No Drinking',
     hobbies: 'Cooking, Caring, Cinema',
     verified: true,
-    featured: false
+    featured: false,
+    photo: 'images/member3.png'
   }
 ];
 
@@ -442,7 +448,7 @@ try {
   const stored = localStorage.getItem('nabhik_matrimonial_profiles');
   if (stored) {
     const parsed = JSON.parse(stored);
-    if (parsed && parsed.length > 0 && !parsed[0].photo) {
+    if (parsed && (parsed.length < 10 || !parsed[9].photo)) {
       localStorage.removeItem('nabhik_matrimonial_profiles');
       localStorage.removeItem('nabhik_matrimonial_currentUser');
     }
