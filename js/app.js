@@ -201,25 +201,7 @@ function renderHome(container) {
         <div class="hero-content">
           <h1>Where Tradition<br>Meets <span class="text-gold">Perfect Match</span></h1>
           <p>Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.</p>
-          
-          <div class="hero-badges">
-            <div class="hero-badge-item">
-              <span class="badge-icon">🛡️</span>
-              <span>Verified Profiles</span>
-            </div>
-            <div class="hero-badge-item">
-              <span class="badge-icon">🔒</span>
-              <span>Privacy Protected</span>
-            </div>
-            <div class="hero-badge-item">
-              <span class="badge-icon">👥</span>
-              <span>Trusted Community</span>
-            </div>
-            <div class="hero-badge-item">
-              <span class="badge-icon">⚡</span>
-              <span>Easy Matchmaking</span>
-            </div>
-          </div>
+
 
         </div>
         <div class="hero-image-container">
