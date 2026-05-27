@@ -66,8 +66,9 @@ function updateNavigation() {
       <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
     `;
   } else {
-    // Show only About Us and Help when not logged in
+    // Show Home, About Us, and Help when not logged in
     navContainer.innerHTML = `
+      ${makeLink('#/', 'Home')}
       ${makeLink('#/about', 'About Us')}
       ${makeLink('#/help', 'Help')}
     `;
@@ -217,74 +218,6 @@ function renderHome(container) {
       </div>
     </section>
 
-    <!-- Quick Search Section -->
-    <div class="container quick-search-wrapper">
-      <div class="quick-search-panel">
-        <h3>✦ Find Your Life Partner ✦</h3>
-        <form class="quick-search-form" onsubmit="handleQuickSearch(event)">
-          <div class="search-field">
-            <label>Looking For</label>
-            <select id="qs-gender">
-              <option value="Female">Bride</option>
-              <option value="Male">Groom</option>
-            </select>
-          </div>
-          
-          <div class="search-field">
-            <label>Age</label>
-            <div class="search-field-range">
-              <select id="qs-age-from">
-                <option value="18">18</option>
-                <option value="21">21</option>
-                <option value="25">25</option>
-              </select>
-              <span>to</span>
-              <select id="qs-age-to">
-                <option value="40" selected>40</option>
-                <option value="30">30</option>
-                <option value="35">35</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="search-field">
-            <label>State / City</label>
-            <select id="qs-city">
-              <option value="">Select City</option>
-              <option value="Pune">Pune</option>
-              <option value="Nagpur">Nagpur</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Nashik">Nashik</option>
-              <option value="Aurangabad">Aurangabad</option>
-            </select>
-          </div>
-          
-          <div class="search-field">
-            <label>Education</label>
-            <select id="qs-education">
-              <option value="">Select</option>
-              <option value="B.Tech">B.Tech</option>
-              <option value="MBA">MBA</option>
-              <option value="MCA">MCA</option>
-              <option value="B.Com">B.Com</option>
-            </select>
-          </div>
-          
-          <div class="search-field">
-            <label>Profession</label>
-            <select id="qs-profession">
-              <option value="">Select</option>
-              <option value="Engineer">Engineer / Developer</option>
-              <option value="Manager">Manager</option>
-              <option value="Accountant">Accountant</option>
-              <option value="Business">Business</option>
-            </select>
-          </div>
-          
-          <button type="submit" class="btn-search-match">🔍 Search Match</button>
-        </form>
-      </div>
-    </div>
 
     <!-- Why Choose Us -->
     <section class="section-padding container">
