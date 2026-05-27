@@ -461,29 +461,40 @@ function renderHelp(container) {
         
         <!-- Support Ticket / Contact Sidebar -->
         <div class="support-sidebar">
-          <div class="contact-card" style="border: 1.5px solid var(--color-gold); border-radius: var(--border-radius-md); padding: 24px; background: rgba(86,13,25,0.4); text-align: center; margin-bottom: 24px; position: relative; overflow: hidden;">
-            <h3 style="color: var(--color-gold); font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 8px;">Contact Support</h3>
-            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px;">We are available to help you find your perfect match.</p>
-            <div style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 16px;">
-              <p>📧 <strong>support@nabhikmatrimonial.com</strong></p>
-              <p>📞 <strong>+91 98765 43210</strong></p>
+          <div class="contact-card">
+            <h3>Contact Support</h3>
+            <p class="contact-desc">We are available to help you find your perfect match.</p>
+            <div class="contact-details-row">
+              <div class="contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>support@nabhikmatrimonial.com</span>
+              </div>
+              <div class="contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <span>+91 98765 43210</span>
+              </div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--color-gold-light);">Nabhik Society Office, Pune, Maharashtra</p>
+            <p class="contact-address">Nabhik Society Office, Pune, Maharashtra</p>
           </div>
           
-          <div class="ticket-card" style="border: 1px solid var(--color-gold-trans); border-radius: var(--border-radius-md); padding: 20px; background: rgba(255,255,255,0.02);">
-            <h4 style="margin-bottom: 12px; color: var(--color-gold-light);">Submit a Query</h4>
-            <form onsubmit="event.preventDefault(); showToast('Your query has been submitted! Support team will reach out to you.'); this.reset();" style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="ticket-card">
+            <h4>Submit a Query</h4>
+            <form class="ticket-form" onsubmit="event.preventDefault(); showToast('Your query has been submitted! Support team will reach out to you.'); this.reset();">
               <div>
-                <input type="text" placeholder="Full Name" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem;" autocomplete="off">
+                <input type="text" placeholder="Full Name" required autocomplete="off">
               </div>
               <div>
-                <input type="email" placeholder="Email Address" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem;" autocomplete="off">
+                <input type="email" placeholder="Email Address" required autocomplete="off">
               </div>
               <div>
-                <textarea placeholder="How can we help you?" rows="4" required style="width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-gold-trans); border-radius: 4px; color: white; font-size: 0.85rem; resize: none;"></textarea>
+                <textarea placeholder="How can we help you?" rows="4" required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary" style="padding: 8px; font-size: 0.85rem; width: 100%;">Send Message</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Ticket</button>
             </form>
           </div>
         </div>
