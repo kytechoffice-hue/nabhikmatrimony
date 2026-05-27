@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nabhik Matrimonial - Where Tradition Meets Perfect Match</title>
+  <meta name="description" content="Trusted Matrimonial Platform for the Nabhik Society. Find your perfect life partner matching traditional values and modern aspirations.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION BAR
+       ========================================================================== -->
+  <header class="header-wrapper">
+    <div class="container navbar">
+      <!-- Logo and Brand Name -->
+      <a href="#/" class="logo-container">
+        <!-- SVG Shield and Kalash Logo -->
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fff4d0" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#8a6d1c" />
+            </linearGradient>
+          </defs>
+          <!-- Outer Gold Shield -->
+          <path d="M50,5 L85,15 C85,55 50,92 50,92 C50,92 15,55 15,15 Z" fill="#220306" stroke="url(#goldGrad)" stroke-width="2.5" />
+          <!-- Inner Gold Border -->
+          <path d="M50,11 L79,19 C79,51 50,83 50,83 C50,83 21,51 21,19 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.6" />
+          
+          <!-- Traditional Kalash (Pot) -->
+          <!-- Base -->
+          <ellipse cx="50" cy="65" rx="14" ry="10" fill="url(#goldGrad)" />
+          <!-- Neck -->
+          <path d="M38,56 L62,56 L58,60 L42,60 Z" fill="url(#goldGrad)" />
+          <!-- Rim -->
+          <ellipse cx="50" cy="55" rx="11" ry="2.5" fill="#220306" stroke="url(#goldGrad)" stroke-width="1.5" />
+          
+          <!-- Mango Leaves -->
+          <path d="M42,54 C35,46 38,40 44,52" fill="none" stroke="url(#goldGrad)" stroke-width="2" />
+          <path d="M58,54 C65,46 62,40 56,52" fill="none" stroke="url(#goldGrad)" stroke-width="2" />
+          
+          <!-- Coconut -->
+          <path d="M42,54 C42,40 50,34 50,34 C50,34 58,40 58,54 Z" fill="url(#goldGrad)" />
+          <!-- Decorative Red Tilak/Swastika on Kalash -->
+          <circle cx="50" cy="65" r="3" fill="#c62828" />
+        </svg>
+        <div>
+          <h1 class="brand-name">Nabhik<span class="brand-sub">MATRIMONIAL</span></h1>
+        </div>
+      </a>
+      
+      <!-- Center Navigation Links -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#/" class="active">Home</a></li>
+          <li><a href="#/about">About Us</a></li>
+          <li><a href="#/search">Search Profiles</a></li>
+          <li><a href="#/membership">Membership</a></li>
+          <li><a href="#/stories">Success Stories</a></li>
+          <li><a href="#/events">Events</a></li>
+          <li><a href="#/blogs">Blog</a></li>
+          <li><a href="#/contact">Contact</a></li>
+          <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Right Auth Session buttons (Dynamic) -->
+      <div class="auth-buttons" id="header-auth-container">
+        <!-- Injected dynamically by js/app.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN APP ROUTER ROOT VIEW CONTAINER
+       ========================================================================== -->
+  <main id="app-view">
+    <!-- Component pages will be injected here dynamically by the hash router -->
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER SECTION
+       ========================================================================== -->
+  <footer class="footer-wrapper">
+    <!-- Hanging traditional bells in footer top -->
+    <div class="bell-container bell-left"><svg class="bell-svg" viewBox="0 0 24 24"><path d="M12,2A2,2,0,0,0,10,4V5.09A7,7,0,0,0,5,12v4H3v2H21V16H19V12a7,7,0,0,0,5-6.91V4a2,2,0,0,0-2-2H12m0,20a3,3,0,0,0,3-3H9a3,3,0,0,0,3,3Z"/></svg></div>
+    <div class="bell-container bell-right"><svg class="bell-svg" viewBox="0 0 24 24"><path d="M12,2A2,2,0,0,0,10,4V5.09A7,7,0,0,0,5,12v4H3v2H21V16H19V12a7,7,0,0,0,5-6.91V4a2,2,0,0,0-2-2H12m0,20a3,3,0,0,0,3-3H9a3,3,0,0,0,3,3Z"/></svg></div>
+
+    <div class="container">
+      <div class="footer-top">
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <div class="logo-container" style="margin-bottom: 16px;">
+            <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,5 L85,15 C85,55 50,92 50,92 C50,92 15,55 15,15 Z" fill="#220306" stroke="url(#goldGrad)" stroke-width="2.5" />
+              <path d="M50,11 L79,19 C79,51 50,83 50,83 C50,83 21,51 21,19 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.6" />
+              <ellipse cx="50" cy="65" rx="14" ry="10" fill="url(#goldGrad)" />
+              <path d="M38,56 L62,56 L58,60 L42,60 Z" fill="url(#goldGrad)" />
+              <ellipse cx="50" cy="55" rx="11" ry="2.5" fill="#220306" stroke="url(#goldGrad)" stroke-width="1.5" />
+              <path d="M42,54 C35,46 38,40 44,52" fill="none" stroke="url(#goldGrad)" stroke-width="2" />
+              <path d="M58,54 C65,46 62,40 56,52" fill="none" stroke="url(#goldGrad)" stroke-width="2" />
+              <path d="M42,54 C42,40 50,34 50,34 C50,34 58,40 58,54 Z" fill="url(#goldGrad)" />
+              <circle cx="50" cy="65" r="3" fill="#c62828" />
+            </svg>
+            <h3>Nabhik Matrimonial</h3>
+          </div>
+          <p>Nabhik Matrimonial is a trusted community platform dedicated to helping Nabhik society families find suitable partners with privacy, safety, and respect for traditions.</p>
+          <div class="footer-social-icons">
+            <a href="javascript:showToast('Shared on Facebook')" class="social-icon-btn">FB</a>
+            <a href="javascript:showToast('Shared on Instagram')" class="social-icon-btn">IG</a>
+            <a href="javascript:showToast('Shared on YouTube')" class="social-icon-btn">YT</a>
+            <a href="javascript:showToast('Shared on Twitter')" class="social-icon-btn">TW</a>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#/">Home</a></li>
+            <li><a href="#/about">About Us</a></li>
+            <li><a href="#/search">Search Profiles</a></li>
+            <li><a href="#/membership">Membership Plans</a></li>
+            <li><a href="#/stories">Success Stories</a></li>
+            <li><a href="#/events">Events & News</a></li>
+            <li><a href="#/blogs">Blogs</a></li>
+            <li><a href="#/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <!-- Legal & Support -->
+        <div class="footer-column">
+          <h4>Support & Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#/policy">Privacy Policy</a></li>
+            <li><a href="#/terms">Terms & Conditions</a></li>
+            <li><a href="javascript:showToast('Help Desk: info@nabhikmatrimonial.com')">Help & FAQs</a></li>
+            <li><a href="javascript:showToast('Opening sitemap')">Site Map</a></li>
+          </ul>
+        </div>
+        
+        <!-- Newsletter Signup -->
+        <div class="footer-column footer-newsletter">
+          <h4>Newsletter</h4>
+          <p>Subscribe to our newsletter to receive updates on regional Nabhik samaj sammelans and events.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed to Newsletter successfully!'); this.reset();">
+            <input type="email" placeholder="Enter your email" required autocomplete="off">
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p>© 2026 Nabhik Matrimonial. All Rights Reserved. Crafted for Nabhik Samaj Matchmaking.</p>
+      </div>
+    </div>
+    
+    <!-- Traditional Diya lamp bottom right ornament -->
+    <div class="diya-footer-accent">
+      <svg class="diya-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Diya Pot Base -->
+        <path d="M20,65 Q50,95 80,65 Q80,55 50,55 Q20,55 20,65 Z" fill="#b36200" stroke="#ffb74d" stroke-width="2" />
+        <ellipse cx="50" cy="56" rx="27" ry="4" fill="#663300" />
+        <!-- Oil Ripple -->
+        <ellipse cx="50" cy="56" rx="20" ry="2" fill="#ffd54f" />
+        <!-- Flame wick -->
+        <line x1="50" y1="56" x2="50" y2="44" stroke="#ffb74d" stroke-width="3" />
+        <!-- Glowing Diya Flame -->
+        <path class="diya-flame" d="M50,15 C58,35 62,45 50,45 C38,45 42,35 50,15 Z" />
+      </svg>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       SYSTEM OVERLAYS (MODALS & TOASTS)
+       ========================================================================== -->
+  <!-- Global Modal Mount Root -->
+  <div class="modal-overlay" id="modal-system-overlay">
+    <!-- Injected dynamically by app actions (OTP, Payment, Profile Details) -->
+  </div>
+  
+  <!-- Global Toast Notification Toast -->
+  <div class="toast-notification" id="toast-system">
+    <span class="toast-icon">✦</span>
+    <span id="toast-text"></span>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT MODULES INJECTION
+       ========================================================================== -->
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
