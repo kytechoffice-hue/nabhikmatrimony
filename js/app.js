@@ -34,6 +34,43 @@ function updateHeaderAuth() {
       <a href="#/register" class="btn-register">Register Free</a>
     `;
   }
+  
+  // Update header navigation links dynamically based on session
+  updateNavigation();
+}
+
+// Dynamically render navbar links based on login state
+function updateNavigation() {
+  const navContainer = document.getElementById('nav-links-container');
+  if (!navContainer) return;
+  
+  const hash = window.location.hash || '#/';
+  
+  const makeLink = (href, text) => {
+    const isActive = (hash === href || (hash === '#/' && href === '#/'));
+    return `<li><a href="${href}" class="${isActive ? 'active' : ''}">${text}</a></li>`;
+  };
+  
+  if (state.currentUser) {
+    // Show full menu when logged in
+    navContainer.innerHTML = `
+      ${makeLink('#/', 'Home')}
+      ${makeLink('#/about', 'About Us')}
+      ${makeLink('#/search', 'Search Profiles')}
+      ${makeLink('#/membership', 'Membership')}
+      ${makeLink('#/stories', 'Success Stories')}
+      ${makeLink('#/events', 'Events')}
+      ${makeLink('#/blogs', 'Blog')}
+      ${makeLink('#/contact', 'Contact')}
+      <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
+    `;
+  } else {
+    // Show only About Us and Help when not logged in
+    navContainer.innerHTML = `
+      ${makeLink('#/about', 'About Us')}
+      <li><a href="javascript:showToast('Help Desk: info@nabhikmatrimonial.com | Call: +91 12345 67890')">Help</a></li>
+    `;
+  }
 }
 
 // Global click event dispatcher (e.g. for closing modals)
