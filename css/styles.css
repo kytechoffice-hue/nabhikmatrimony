@@ -2172,6 +2172,34 @@ img {
   100% { transform: scaleY(1.1) skewX(2deg); opacity: 1; }
 }
 
+/* Help & Support Page Styles */
+.help-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.faq-item summary {
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item[open] {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: var(--color-gold) !important;
+}
+
+.faq-item[open] .faq-arrow {
+  transform: rotate(180deg);
+}
+
+.faq-arrow {
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
 /* ==========================================================================
    9. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
@@ -2297,6 +2325,11 @@ img {
   
   .about-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .help-layout {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
   }
   
   .vision-mission-row {
