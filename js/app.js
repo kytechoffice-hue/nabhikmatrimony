@@ -1545,6 +1545,22 @@ function renderBlogs(container) {
 
 // 12. CONTACT US VIEW
 function renderContact(container) {
+  // Update page SEO metadata dynamically
+  document.title = "Contact KY Tech Services | IT & Web Design Company India";
+  
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    metaDesc.setAttribute('content', 'Contact KY Tech Services: Leading Web Design Company in India providing Software Development Services, Digital Marketing, and Business IT solutions. Contact us for technical support.');
+  }
+  
+  let metaKeywords = document.querySelector('meta[name="keywords"]');
+  if (!metaKeywords) {
+    metaKeywords = document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    document.head.appendChild(metaKeywords);
+  }
+  metaKeywords.setAttribute('content', 'Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India');
+
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
@@ -1564,28 +1580,59 @@ function renderContact(container) {
             <li><span class="icon">✉</span> info@nabhikmatrimonial.com</li>
             <li><span class="icon">🌐</span> www.nabhikmatrimonial.com</li>
           </ul>
+
+          <h4 style="margin-top: 24px; color: var(--color-gold); font-family: var(--font-serif); font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 6px;">KY Tech Services IT Divisions</h4>
+          <ul class="contact-info-list" style="margin-top: 12px; font-size: 0.88rem;">
+            <li><span class="icon">💻</span> Website Development & Web Design Company India</li>
+            <li><span class="icon">⚙️</span> Software Development Services</li>
+            <li><span class="icon">🚀</span> Digital Marketing Company Contact</li>
+            <li><span class="icon">🛠️</span> Technical Support Contact & Business IT Solutions</li>
+          </ul>
         </div>
         
         <div>
           <form onsubmit="handleContactSubmit(event)">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" required placeholder="Your Name">
+            <!-- Form metadata reference -->
+            <input type="hidden" name="form_metadata" value="Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India">
+            
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required placeholder="Your Name">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required placeholder="Your Email">
+              </div>
             </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" required placeholder="Your Email">
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" required placeholder="Subject">
+              </div>
+              <div class="form-group">
+                <label>Inquiry Type (Service Area)</label>
+                <select required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff; font-family: inherit; font-size: 0.9rem; color: var(--color-text);">
+                  <option value="" disabled selected>Select service focus...</option>
+                  <option value="KY Tech Services">Contact KY Tech Services</option>
+                  <option value="IT Company Contact">IT Company Contact</option>
+                  <option value="Website Development Contact">Website Development Contact</option>
+                  <option value="Digital Marketing Company Contact">Digital Marketing Company Contact</option>
+                  <option value="Software Development Services">Software Development Services</option>
+                  <option value="Technical Support Contact">Technical Support Contact</option>
+                  <option value="Business IT Solutions">Business IT Solutions</option>
+                  <option value="Web Design Company India">Web Design Company India</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Subject</label>
-              <input type="text" required placeholder="Subject">
-            </div>
+
             <div class="form-group">
               <label>Message</label>
               <textarea rows="4" required placeholder="Type your message here..."></textarea>
             </div>
             
-            <button type="submit" class="btn btn-primary">Send Message</button>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">Send Message</button>
           </form>
         </div>
       </div>
