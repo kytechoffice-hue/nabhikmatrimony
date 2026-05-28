@@ -1235,6 +1235,45 @@ function switchDashboardTab(tabName) {
       panel.innerHTML = `
         <h2>Edit Profile Details</h2>
         <form onsubmit="handleEditProfileSubmit(event)">
+          
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
+            </div>
+            <div class="form-group">
+              <label>Gender</label>
+              <select id="edit-gender">
+                <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male</option>
+                <option value="Female" ${state.currentUser.gender === 'Female' ? 'selected' : ''}>Female</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Date of Birth</label>
+              <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}">
+            </div>
+            <div class="form-group">
+              <label>Height</label>
+              <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
+            </div>
+          </div>
+          
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Email ID</label>
+              <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Education & Profession</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Education</label>
@@ -1252,16 +1291,41 @@ function switchDashboardTab(tabName) {
               <input type="text" id="edit-city" value="${state.currentUser.location ? state.currentUser.location.split(',')[0].trim() : ''}" required>
             </div>
             <div class="form-group">
-              <label>Income</label>
-              <input type="text" id="edit-income" value="${state.currentUser.income || '₹5,000,000 / Year'}" required>
+              <label>Annual Income</label>
+              <input type="text" id="edit-income" value="${state.currentUser.income || ''}" required>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Religion & Family Background</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Religion</label>
+              <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}" required>
+            </div>
+            <div class="form-group">
+              <label>Community / Caste</label>
+              <input type="text" id="edit-community" value="${state.currentUser.community || 'Nabhik'}" required>
             </div>
           </div>
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+              <label>Father's Name</label>
+              <input type="text" id="edit-father" value="${state.currentUser.fatherName || ''}">
             </div>
+            <div class="form-group">
+              <label>Mother's Name</label>
+              <input type="text" id="edit-mother" value="${state.currentUser.motherName || ''}">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Native Place / Ancestral Town</label>
+            <input type="text" id="edit-native" value="${state.currentUser.nativePlace || ''}">
+          </div>
+
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Lifestyle & Habits</h3>
+          <div class="form-row-2">
             <div class="form-group">
               <label>Lifestyle & Food Preference</label>
               <select id="edit-food">
@@ -1269,14 +1333,24 @@ function switchDashboardTab(tabName) {
                 <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
               </select>
             </div>
+            <div class="form-group">
+              <label>Smoking / Drinking Habits</label>
+              <input type="text" id="edit-habits" value="${state.currentUser.smokingDrinking || 'No Smoking / No Drinking'}">
+            </div>
           </div>
           
           <div class="form-group">
-            <label>Profile Photo</label>
+            <label>Hobbies & Interests</label>
+            <input type="text" id="edit-hobbies" value="${state.currentUser.hobbies || ''}" placeholder="e.g. Reading, Traveling, Music">
+          </div>
+
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Profile Photo</h3>
+          <div class="form-group">
+            <label>Upload New Photo</label>
             <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
           </div>
           
-          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
+          <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 220px; font-size: 0.95rem; padding: 10px 20px;">Save Profile Changes</button>
         </form>
       `;
       break;
@@ -2180,24 +2254,63 @@ function handleCreditCardPaySubmit(e, planName, price) {
 function handleEditProfileSubmit(e) {
   e.preventDefault();
   
+  const name = document.getElementById('edit-name').value;
+  const gender = document.getElementById('edit-gender').value;
+  const dob = document.getElementById('edit-dob').value;
+  const height = document.getElementById('edit-height').value;
+  const email = document.getElementById('edit-email').value;
+  const mobile = document.getElementById('edit-mobile').value;
+  
   const edu = document.getElementById('edit-education').value;
   const prof = document.getElementById('edit-profession').value;
   const city = document.getElementById('edit-city').value;
   const inc = document.getElementById('edit-income').value;
-  const mobile = document.getElementById('edit-mobile').value;
+  
+  const religion = document.getElementById('edit-religion').value;
+  const community = document.getElementById('edit-community').value;
+  const father = document.getElementById('edit-father').value;
+  const mother = document.getElementById('edit-mother').value;
+  const native = document.getElementById('edit-native').value;
+  
   const food = document.getElementById('edit-food').value;
+  const habits = document.getElementById('edit-habits').value;
+  const hobbies = document.getElementById('edit-hobbies').value;
+  
   const photoInput = document.getElementById('edit-photo');
   
   function proceed(photoBase64) {
+    state.currentUser.name = name;
+    state.currentUser.gender = gender;
+    state.currentUser.dob = dob;
+    state.currentUser.height = height;
+    state.currentUser.emailId = email;
+    state.currentUser.mobile = mobile;
+    
     state.currentUser.education = edu;
     state.currentUser.profession = prof;
     state.currentUser.location = `${city}, Maharashtra`;
     state.currentUser.income = inc;
-    state.currentUser.mobile = mobile;
+    
+    state.currentUser.religion = religion;
+    state.currentUser.community = community;
+    state.currentUser.fatherName = father;
+    state.currentUser.motherName = mother;
+    state.currentUser.nativePlace = native;
+    
     state.currentUser.foodPreference = food;
+    state.currentUser.smokingDrinking = habits;
+    state.currentUser.hobbies = hobbies;
+    
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
     }
+    
+    // Update the profile in the profiles database list as well
+    const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
+    if (idx !== -1) {
+      state.profiles[idx] = { ...state.profiles[idx], ...state.currentUser };
+    }
+    
     stateActions.saveAll();
     
     showToast('Profile updated successfully!');
