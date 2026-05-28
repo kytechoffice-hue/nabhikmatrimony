@@ -1089,8 +1089,8 @@ function renderDashboard(container) {
       <!-- Dashboard Sidebar -->
       <aside class="dashboard-sidebar">
         <div class="dashboard-user-summary">
-          <img src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
-          <h4>${state.currentUser.name}</h4>
+          <img id="db-sidebar-user-photo" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
+          <h4 id="db-sidebar-user-name">${state.currentUser.name}</h4>
           <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member</p>
         </div>
         <ul class="dashboard-menu">
@@ -2303,6 +2303,16 @@ function handleEditProfileSubmit(e) {
     
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
+    }
+    
+    // Update DOM elements in sidebar immediately
+    const sidebarName = document.getElementById('db-sidebar-user-name');
+    if (sidebarName) sidebarName.textContent = name;
+    
+    const sidebarPhoto = document.getElementById('db-sidebar-user-photo');
+    if (sidebarPhoto) {
+      sidebarPhoto.src = state.currentUser.photo || getSvgAvatar(gender, state.currentUser.id, name);
+      sidebarPhoto.alt = name;
     }
     
     // Update the profile in the profiles database list as well
