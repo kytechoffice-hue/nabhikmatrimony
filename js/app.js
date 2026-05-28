@@ -556,7 +556,25 @@ Sent this email on support@nabhikmatrimonial.com`;
     return response.json();
   })
   .then(data => {
-    showToast('Success! Query sent to support@nabhikmatrimonial.com');
+    const isSuccess = data && (data.success === true || data.success === 'true');
+    const isActivation = data && typeof data.message === 'string' && 
+                         (data.message.toLowerCase().includes('activate') || data.message.toLowerCase().includes('activation'));
+    
+    if (!isSuccess || isActivation) {
+      console.warn('FormSubmit needs activation:', data);
+      showToast('First submit! Check support@nabhikmatrimonial.com for the FormSubmit activation email.');
+      
+      // Fallback: Open mailto link so the message is not lost
+      const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const a = document.createElement('a');
+      a.href = mailtoUrl;
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      showToast('Success! Query sent to support@nabhikmatrimonial.com');
+    }
     e.target.reset();
   })
   .catch(err => {
@@ -571,7 +589,7 @@ Sent this email on support@nabhikmatrimonial.com`;
     a.click();
     document.body.removeChild(a);
     
-    showToast('Email client opened for sending query!');
+    showToast('Opening email app to send your query...');
     e.target.reset();
   });
 }
