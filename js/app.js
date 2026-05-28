@@ -798,7 +798,7 @@ function renderProfileDetails(container, profileId) {
   
   const isShortlisted = state.shortlisted.includes(profile.id);
   const isInterestSent = state.interestsSent.includes(profile.id);
-  const avatar = getSvgAvatar(profile.gender, profile.id, profile.name);
+  const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   container.innerHTML = `
     <div class="page-banner">
@@ -1065,7 +1065,7 @@ function renderDashboard(container) {
       <!-- Dashboard Sidebar -->
       <aside class="dashboard-sidebar">
         <div class="dashboard-user-summary">
-          <img src="${getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
+          <img src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
           <h4>${state.currentUser.name}</h4>
           <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member</p>
         </div>
@@ -1178,7 +1178,7 @@ function switchDashboardTab(tabName) {
         const lastMsg = msgs[msgs.length - 1];
         return `
           <div class="thread-item ${idx === 0 ? 'active' : ''}" onclick="selectChatThread(event, ${p.id})">
-            <img src="${getSvgAvatar(p.gender, p.id, p.name)}" alt="${p.name}">
+            <img src="${p.photo || getSvgAvatar(p.gender, p.id, p.name)}" alt="${p.name}">
             <div class="thread-details">
               <h4>${p.name}</h4>
               <p>${lastMsg ? lastMsg.text : 'Start talking...'}</p>
@@ -1239,6 +1239,11 @@ function switchDashboardTab(tabName) {
               <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
               <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
             </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Profile Photo</label>
+            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
           </div>
           
           <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Save Profile Changes</button>
@@ -1927,13 +1932,29 @@ function handleRegistrationSubmit(e) {
   const education = document.getElementById('reg-education').value;
   const profession = document.getElementById('reg-profession').value;
   
-  // Store form temp data inside window to load after OTP
-  window.tempRegData = {
-    name, gender, dob, mobile, emailId: email, password, location: `${city}, ${stateVal}`, education, profession
-  };
+  const photoInput = document.getElementById('reg-photo');
   
-  // Open OTP device mockup Modal
-  openOtpVerificationModal(mobile);
+  function proceed(photoBase64) {
+    // Store form temp data inside window to load after OTP
+    window.tempRegData = {
+      name, gender, dob, mobile, emailId: email, password, 
+      location: `${city}, ${stateVal}`, education, profession,
+      photo: photoBase64
+    };
+    
+    // Open OTP device mockup Modal
+    openOtpVerificationModal(mobile);
+  }
+  
+  if (photoInput && photoInput.files && photoInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      proceed(evt.target.result);
+    };
+    reader.readAsDataURL(photoInput.files[0]);
+  } else {
+    proceed('');
+  }
 }
 
 // Email Login submit
@@ -2123,16 +2144,32 @@ function handleEditProfileSubmit(e) {
   const city = document.getElementById('edit-city').value;
   const inc = document.getElementById('edit-income').value;
   const food = document.getElementById('edit-food').value;
+  const photoInput = document.getElementById('edit-photo');
   
-  state.currentUser.education = edu;
-  state.currentUser.profession = prof;
-  state.currentUser.location = `${city}, Maharashtra`;
-  state.currentUser.income = inc;
-  state.currentUser.foodPreference = food;
-  stateActions.saveAll();
+  function proceed(photoBase64) {
+    state.currentUser.education = edu;
+    state.currentUser.profession = prof;
+    state.currentUser.location = `${city}, Maharashtra`;
+    state.currentUser.income = inc;
+    state.currentUser.foodPreference = food;
+    if (photoBase64) {
+      state.currentUser.photo = photoBase64;
+    }
+    stateActions.saveAll();
+    
+    showToast('Profile updated successfully!');
+    switchDashboardTab('overview');
+  }
   
-  showToast('Profile updated successfully!');
-  switchDashboardTab('overview');
+  if (photoInput && photoInput.files && photoInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      proceed(evt.target.result);
+    };
+    reader.readAsDataURL(photoInput.files[0]);
+  } else {
+    proceed(null);
+  }
 }
 
 // Logout session
