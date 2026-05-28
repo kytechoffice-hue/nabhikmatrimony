@@ -98,11 +98,12 @@ function closeModal() {
   const modal = document.querySelector('.modal-overlay.active');
   if (modal) {
     modal.classList.remove('active');
-  }
-  // If we closed the login modal route, reset the hash back to home
-  const cleanHash = window.location.hash.split('?')[0];
-  if (cleanHash === '#/login') {
-    window.location.hash = '#/';
+    
+    // If we closed the login modal route manually, reset the hash back to home
+    const cleanHash = window.location.hash.split('?')[0];
+    if (cleanHash === '#/login') {
+      window.location.hash = '#/';
+    }
   }
 }
 
