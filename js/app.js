@@ -504,7 +504,7 @@ function renderHelp(container) {
   `;
 }
 
-// Submit query form handler (opens default email client with mailto pre-filled)
+// Submit query form handler (sends email directly via FormSubmit with mailto fallback)
 function handleTicketSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('ticket-name').value;
@@ -533,14 +533,47 @@ Best Regards,
 
 Sent this email on support@nabhikmatrimonial.com`;
 
-  // Encode the parameters for mailto link
-  const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
-  // Open the mailto link
-  window.location.href = mailtoUrl;
-  
-  showToast('Email client opened with prefilled query details!');
-  e.target.reset();
+  showToast('Sending query to support...');
+
+  // Use FormSubmit AJAX API to send the email directly in the background
+  fetch('https://formsubmit.co/ajax/support@nabhikmatrimonial.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      message: query,
+      _subject: subject,
+      _honey: "", // Honeypot spam prevention
+      _template: "table"
+    })
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('API delivery failed');
+    return response.json();
+  })
+  .then(data => {
+    showToast('Success! Query sent to support@nabhikmatrimonial.com');
+    e.target.reset();
+  })
+  .catch(err => {
+    console.warn('AJAX delivery failed, falling back to mailto client:', err);
+    // Fallback: Open mailto link if AJAX fails (e.g. adblocker or no internet)
+    const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    const a = document.createElement('a');
+    a.href = mailtoUrl;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    showToast('Email client opened for sending query!');
+    e.target.reset();
+  });
 }
 
 // 3. SEARCH VIEW WITH FILTERS
