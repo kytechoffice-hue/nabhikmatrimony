@@ -479,7 +479,7 @@ function renderHelp(container) {
                 <span>+91 98765 43210</span>
               </div>
             </div>
-            <p class="contact-address">Nabhik Society Office, Pune, Maharashtra</p>
+            <p class="contact-address">Nabhik Society Office, Mumbai, Maharashtra</p>
           </div>
           
           <div class="ticket-card">
