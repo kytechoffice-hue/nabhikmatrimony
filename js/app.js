@@ -1999,8 +1999,10 @@ function handleOtpLoginRequest(e) {
   e.preventDefault();
   const mobile = document.getElementById('login-mobile').value;
   window.tempRegData = {
+    mobile: mobile,
     emailId: `${mobile}@nabhik.com`,
-    name: `User-${mobile.slice(-4)}`
+    name: `User-${mobile.slice(-4)}`,
+    gender: 'Male' // Default gender fallback
   };
   openOtpVerificationModal(mobile);
 }
@@ -2074,10 +2076,22 @@ function confirmOtpCodeSubmit() {
   const digits = Array.from(document.querySelectorAll('.otp-digit')).map(i => i.value).join('');
   if (digits == window.otpVerificationCode) {
     closeModal();
-    // Complete registration
-    const user = stateActions.registerUser(window.tempRegData);
+    
+    // Check if user already exists
+    const mobile = window.tempRegData.mobile || '';
+    const existingUser = state.profiles.find(p => p.mobile === mobile || (p.emailId && p.emailId.startsWith(mobile)));
+    
+    let user;
+    if (existingUser) {
+      state.currentUser = existingUser;
+      stateActions.saveAll();
+      user = existingUser;
+    } else {
+      user = stateActions.registerUser(window.tempRegData);
+    }
+    
     showToast(`Verification Successful! Logged in as ${user.name}`);
-    window.location.hash = '#/dashboard';
+    window.location.hash = '#/dashboard?tab=overview';
   } else {
     alert('Invalid verification code. Please check the SMS mockup box and try again.');
   }
