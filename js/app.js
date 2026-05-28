@@ -21,11 +21,12 @@ function updateHeaderAuth() {
   
   if (state.currentUser) {
     const isPremium = state.currentUser.membership && state.currentUser.membership !== 'Free';
+    const isDashboardActive = window.location.hash.split('?')[0] === '#/dashboard';
     authContainer.innerHTML = `
       <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px;">
         👤 ${state.currentUser.name} ${isPremium ? `👑 ${state.currentUser.membership}` : ''}
       </span>
-      <a href="#/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem;">Dashboard</a>
+      <a href="#/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">Dashboard</a>
       <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">Logout</button>
     `;
   } else {
@@ -47,21 +48,23 @@ function updateNavigation() {
   const hash = window.location.hash || '#/';
   
   const makeLink = (href, text) => {
-    const isActive = (hash === href || (hash === '#/' && href === '#/'));
+    const cleanHash = hash.split('?')[0];
+    const isActive = (
+      cleanHash === href || 
+      (cleanHash === '#/' && href === '#/') || 
+      (cleanHash.startsWith('#/profile') && href === '#/search')
+    );
     return `<li><a href="${href}" class="${isActive ? 'active' : ''}">${text}</a></li>`;
   };
   
   if (state.currentUser) {
-    // Show full menu when logged in
+    // Show full menu when logged in (cleaned up to prevent overflow, added Dashboard)
     navContainer.innerHTML = `
       ${makeLink('#/', 'Home')}
-      ${makeLink('#/about', 'About Us')}
+      ${makeLink('#/dashboard', 'Dashboard')}
       ${makeLink('#/search', 'Search Profiles')}
       ${makeLink('#/membership', 'Membership')}
       ${makeLink('#/stories', 'Success Stories')}
-      ${makeLink('#/events', 'Events')}
-      ${makeLink('#/blogs', 'Blog')}
-      ${makeLink('#/contact', 'Contact')}
       ${makeLink('#/help', 'Help')}
       <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
     `;
@@ -1049,6 +1052,27 @@ function renderDashboard(container) {
     return;
   }
   
+  // Extract tab parameter from hash query string
+  const hash = window.location.hash || '#/dashboard';
+  const parts = hash.split('?');
+  let activeTab = 'overview';
+  if (parts[1]) {
+    parts[1].split('&').forEach(param => {
+      const [key, val] = param.split('=');
+      if (key === 'tab') {
+        activeTab = decodeURIComponent(val);
+      }
+    });
+  }
+  
+  // Check if we are already on the dashboard page layout
+  const alreadyRendered = document.getElementById('dashboard-content');
+  if (alreadyRendered) {
+    // Just switch the active tab, avoiding full layout re-renders
+    switchDashboardTab(activeTab);
+    return;
+  }
+  
   // Quick dynamic recommendations (AI Suggestions Simulation)
   const isMale = state.currentUser.gender.toLowerCase() === 'male';
   const matches = state.profiles.filter(p => p.gender.toLowerCase() === (isMale ? 'female' : 'male') && p.verified);
@@ -1070,23 +1094,23 @@ function renderDashboard(container) {
           <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member</p>
         </div>
         <ul class="dashboard-menu">
-          <li><a href="javascript:switchDashboardTab('overview')" id="db-tab-overview" class="active">📊 Overview</a></li>
-          <li><a href="javascript:switchDashboardTab('matches')" id="db-tab-matches">❤️ Matches</a></li>
-          <li><a href="javascript:switchDashboardTab('interests')" id="db-tab-interests">✉ Received Interests</a></li>
-          <li><a href="javascript:switchDashboardTab('shortlisted')" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
-          <li><a href="javascript:switchDashboardTab('messages')" id="db-tab-messages">💬 Chat Messages</a></li>
-          <li><a href="javascript:switchDashboardTab('edit')" id="db-tab-edit">✏ Edit Profile</a></li>
+          <li><a href="#/dashboard?tab=overview" id="db-tab-overview">📊 Overview</a></li>
+          <li><a href="#/dashboard?tab=matches" id="db-tab-matches">❤️ Matches</a></li>
+          <li><a href="#/dashboard?tab=interests" id="db-tab-interests">✉ Received Interests</a></li>
+          <li><a href="#/dashboard?tab=shortlisted" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
+          <li><a href="#/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>
+          <li><a href="#/dashboard?tab=edit" id="db-tab-edit">✏ Edit Profile</a></li>
         </ul>
       </aside>
       
       <!-- Dashboard Content Panel -->
       <main id="dashboard-content" class="dashboard-main">
-        <!-- Render Overview Tab initially -->
+        <!-- Render Active Tab initially -->
       </main>
     </div>
   `;
   
-  switchDashboardTab('overview');
+  switchDashboardTab(activeTab);
 }
 
 // Switch dashboard tabs inside panel
@@ -1843,15 +1867,12 @@ function handleStartChat(id) {
     stateActions.saveAll();
   }
   
-  window.location.hash = '#/dashboard';
+  window.location.hash = '#/dashboard?tab=messages';
   setTimeout(() => {
-    switchDashboardTab('messages');
-    setTimeout(() => {
-      // Find thread and click
-      const threadBtn = document.querySelector(`.thread-item[onclick*="${id}"]`);
-      if (threadBtn) threadBtn.click();
-    }, 100);
-  }, 100);
+    // Find thread and click
+    const threadBtn = document.querySelector(`.thread-item[onclick*="${id}"]`);
+    if (threadBtn) threadBtn.click();
+  }, 200);
 }
 
 // Send chat message and trigger automatic response simulation
@@ -2158,7 +2179,7 @@ function handleEditProfileSubmit(e) {
     stateActions.saveAll();
     
     showToast('Profile updated successfully!');
-    switchDashboardTab('overview');
+    window.location.hash = '#/dashboard?tab=overview';
   }
   
   if (photoInput && photoInput.files && photoInput.files[0]) {
