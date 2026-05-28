@@ -538,7 +538,7 @@ const stateActions = {
   },
   
   loginUser(email, password) {
-    const found = state.profiles.find(p => p.emailId === email);
+    const found = state.profiles.find(p => p.emailId && p.emailId.trim().toLowerCase() === (email || '').trim().toLowerCase());
     if (found) {
       state.currentUser = found;
       this.saveAll();
