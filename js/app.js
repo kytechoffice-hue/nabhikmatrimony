@@ -2319,6 +2319,8 @@ function handleEditProfileSubmit(e) {
     const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
     if (idx !== -1) {
       state.profiles[idx] = { ...state.profiles[idx], ...state.currentUser };
+    } else {
+      state.profiles.push(state.currentUser);
     }
     
     stateActions.saveAll();
