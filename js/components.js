@@ -2,7 +2,7 @@
 
 // Generate Profile Card
 function makeProfileCard(profile) {
-  const avatar = getSvgAvatar(profile.gender, profile.id, profile.name);
+  const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   return `
     <div class="profile-card only-photo" data-id="${profile.id}" onclick="window.location.hash = '#/profile/${profile.id}'" style="cursor: pointer; height: 320px;">
