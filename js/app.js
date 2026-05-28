@@ -504,7 +504,76 @@ function renderHelp(container) {
   `;
 }
 
-// Submit query form handler (sends email directly via FormSubmit with mailto fallback)
+// Helper modal: FormSubmit activation instructions (avoids opening local mail client)
+function openActivationModal(email) {
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 480px; text-align: center; padding: 30px; border-radius: 12px; position: relative;">
+      <button class="modal-close-btn" onclick="closeModal()" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">×</button>
+      <div style="font-size: 50px; margin-bottom: 15px; color: var(--color-gold);">✉</div>
+      <h3 style="color: var(--color-maroon); margin-bottom: 15px; font-family: 'Playfair Display', serif; font-size: 22px;">Activation Required</h3>
+      <p style="font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6;">
+        FormSubmit needs to verify this email address. We have sent an activation link to:<br>
+        <strong style="color: var(--color-maroon); font-size: 15px;">${email}</strong>
+      </p>
+      <div style="background: #fdf5e6; border: 1px dashed var(--color-gold); padding: 15px; border-radius: 8px; font-size: 13px; text-align: left; color: #666; margin-bottom: 25px; line-height: 1.5;">
+        <strong>Next Steps for Admin:</strong><br>
+        1. Log into your email: <strong>${email}</strong><br>
+        2. Click the <strong>"Activate Form"</strong> button in the email from FormSubmit.<br>
+        3. Once activated, future ticket submissions will go through automatically!
+      </div>
+      <button class="btn btn-primary" onclick="closeModal()" style="width: 100%; padding: 12px; font-weight: 600;">Got It</button>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+// Helper modal: Manual email instructions (failsafe copy-paste if AJAX is blocked)
+function openManualMailModal(email, subject, bodyText) {
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+  
+  window.__latestQueryEmail = email;
+  window.__latestQuerySubject = subject;
+  window.__latestQueryBody = bodyText;
+  
+  const bodyHtml = bodyText.replace(/\n/g, '<br>');
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 520px; text-align: center; padding: 30px; border-radius: 12px; position: relative;">
+      <button class="modal-close-btn" onclick="closeModal()" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">×</button>
+      <div style="font-size: 50px; margin-bottom: 15px; color: var(--color-gold);">✉</div>
+      <h3 style="color: var(--color-maroon); margin-bottom: 15px; font-family: 'Playfair Display', serif; font-size: 22px;">Send Email Query</h3>
+      <p style="font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6;">
+        We could not submit your ticket automatically (often due to browser settings or adblockers). Please copy your query and email us directly:
+      </p>
+      
+      <div style="background: #fdf5e6; border: 1px dashed var(--color-gold); padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; text-align: left;">
+        <div>
+          <div style="font-size: 11px; color: #999; text-transform: uppercase;">Support Email</div>
+          <span style="color: var(--color-maroon); font-size: 15px;">${email}</span>
+        </div>
+        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(window.__latestQueryEmail); showToast('Email copied!')" style="padding: 6px 12px; font-size: 12px; font-weight: 600;">Copy Email</button>
+      </div>
+
+      <div style="text-align: left; background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 13px; max-height: 160px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #eee; line-height: 1.5; color: #333;">
+        <strong>Subject:</strong> ${subject}<br><br>
+        <strong>Body:</strong><br>
+        ${bodyHtml}
+      </div>
+      
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(window.__latestQueryBody); showToast('Message body copied!')" style="flex: 1; padding: 10px; font-size: 13px; font-weight: 600;">Copy Message Body</button>
+        <button class="btn btn-primary" onclick="closeModal()" style="flex: 1; padding: 10px; font-size: 13px; font-weight: 600;">Done</button>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+// Submit query form handler (sends email directly via FormSubmit with modal fallbacks)
 function handleTicketSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('ticket-name').value;
@@ -562,34 +631,17 @@ Sent this email on support@nabhikmatrimonial.com`;
     
     if (!isSuccess || isActivation) {
       console.warn('FormSubmit needs activation:', data);
-      showToast('First submit! Check support@nabhikmatrimonial.com for the FormSubmit activation email.');
-      
-      // Fallback: Open mailto link so the message is not lost
-      const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      const a = document.createElement('a');
-      a.href = mailtoUrl;
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      showToast('First submit: Activation required.');
+      openActivationModal('support@nabhikmatrimonial.com');
     } else {
       showToast('Success! Query sent to support@nabhikmatrimonial.com');
     }
     e.target.reset();
   })
   .catch(err => {
-    console.warn('AJAX delivery failed, falling back to mailto client:', err);
-    // Fallback: Open mailto link if AJAX fails (e.g. adblocker or no internet)
-    const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    const a = document.createElement('a');
-    a.href = mailtoUrl;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    showToast('Opening email app to send your query...');
+    console.warn('AJAX delivery failed:', err);
+    showToast('Submitting failed. Please send manually.');
+    openManualMailModal('support@nabhikmatrimonial.com', subject, body);
     e.target.reset();
   });
 }
