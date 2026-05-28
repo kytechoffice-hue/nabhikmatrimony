@@ -1921,6 +1921,30 @@ function handleRegistrationSubmit(e) {
   const education = document.getElementById('reg-education').value;
   const profession = document.getElementById('reg-profession').value;
   
+  // Calculate completed age in years
+  const dobDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - dobDate.getFullYear();
+  const m = today.getMonth() - dobDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
+    age--;
+  }
+  
+  if (isNaN(age)) {
+    showToast('Please enter a valid Date of Birth.');
+    return;
+  }
+  
+  // Age validation: 21 for Groom, 18 for Bride
+  if (gender === 'Male' && age < 21) {
+    showToast('Groom must be at least 21 years old to register.');
+    return;
+  }
+  if (gender === 'Female' && age < 18) {
+    showToast('Bride must be at least 18 years old to register.');
+    return;
+  }
+  
   // Store form temp data inside window to load after OTP
   window.tempRegData = {
     name, gender, dob, mobile, emailId: email, password, location: `${city}, ${stateVal}`, education, profession
