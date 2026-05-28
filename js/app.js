@@ -219,6 +219,9 @@ function initRouter() {
     // Remove query parameter from hash without triggering a routing event
     window.history.replaceState(null, null, window.location.pathname + path);
   }
+
+  // Dynamic SEO Page Tags update
+  updatePageSEO(path, params);
 }
 
 /* ==========================================================================
@@ -1545,22 +1548,6 @@ function renderBlogs(container) {
 
 // 12. CONTACT US VIEW
 function renderContact(container) {
-  // Update page SEO metadata dynamically
-  document.title = "Contact KY Tech Services | IT & Web Design Company India";
-  
-  let metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute('content', 'Contact KY Tech Services: Leading Web Design Company in India providing Software Development Services, Digital Marketing, and Business IT solutions. Contact us for technical support.');
-  }
-  
-  let metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (!metaKeywords) {
-    metaKeywords = document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    document.head.appendChild(metaKeywords);
-  }
-  metaKeywords.setAttribute('content', 'Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India');
-
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
@@ -2427,5 +2414,125 @@ function handleAdminReject(id) {
     showToast('Profile blocked and deleted.');
     const activeTab = document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1];
     switchAdminTab(activeTab);
+  }
+}
+
+// Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
+function updatePageSEO(path, params) {
+  let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
+  let description = "Trusted Matrimonial Platform for the Nabhik Society. Find your perfect life partner matching traditional values and modern aspirations.";
+  let keywords = "Nabhik Matrimonial, Nabhik Matrimony, Nabhik Vivah, Nabhik bride, Nabhik groom, Nabhik community, matrimonial services, trusted matrimony";
+
+  switch (path) {
+    case '#/':
+      title = "Nabhik Matrimonial | Trusted Matrimony Site for Nabhik Community";
+      description = "Find your perfect life partner on Nabhik Matrimonial. The most trusted matrimonial platform for the Nabhik community offering secure, verified profiles.";
+      keywords = "Nabhik Matrimonial, Nabhik Matrimony, Nabhik Vivah, Nabhik bride, Nabhik groom, Nabhik community, matrimonial services, trusted matrimony";
+      break;
+    case '#/about':
+      title = "About Us | Nabhik Matrimonial Services & Values";
+      description = "Learn about Nabhik Matrimonial, our mission, traditional family values, and commitment to bringing Nabhik brides and grooms together securely.";
+      keywords = "About Nabhik Matrimonial, community matrimony, matrimonial platform history, Nabhik marriage mission";
+      break;
+    case '#/search':
+      title = "Search Nabhik Profiles | Find Brides & Grooms Online";
+      description = "Browse and search verified profiles of Nabhik brides and grooms. Filter search results by age, location, education, and profession.";
+      keywords = "search Nabhik profiles, find Nabhik matches, Nabhik brides search, Nabhik grooms search, verified profiles";
+      break;
+    case '#/profile/:id':
+      let profileName = "Member";
+      if (params && typeof state !== 'undefined' && state.profiles) {
+        const p = state.profiles.find(x => x.id == params);
+        if (p) profileName = p.name;
+      }
+      title = `${profileName} Profile | Nabhik Matrimonial Matchmaking`;
+      description = `View full profile details, education, profession, family background, and photos of verified Nabhik member ${profileName}.`;
+      keywords = `${profileName} profile, Nabhik member details, Nabhik bride profile, Nabhik groom profile, matrimonial candidate`;
+      break;
+    case '#/register':
+      title = "Register Account | Join Nabhik Matrimonial Free";
+      description = "Create your matrimonial profile on Nabhik Matrimonial today. Register free to connect with verified matches from the Nabhik community.";
+      keywords = "Nabhik Matrimonial registration, register free matrimony, create matrimonial account, Nabhik matchmaking signup";
+      break;
+    case '#/login':
+      title = "Welcome Back | Member Login | Nabhik Matrimonial";
+      description = "Log in to your Nabhik Matrimonial account to check received interests, chat with matched profiles, and view recommendations.";
+      keywords = "Nabhik matrimonial login, member sign in, access dashboard, matrimonial login portal";
+      break;
+    case '#/dashboard':
+      title = "Member Dashboard | Nabhik Matrimonial Control Panel";
+      description = "Access matches, received interests, shortlists, and chat center from your secure Nabhik Matrimonial member dashboard.";
+      keywords = "Nabhik dashboard, member matches, dashboard overview, matrimonial control panel";
+      break;
+    case '#/membership':
+      title = "Premium Membership Plans | Upgrade Nabhik Matrimonial";
+      description = "Upgrade your profile with Silver, Gold, or Platinum premium membership plans to unlock direct contacts, chats, and featured placements.";
+      keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan";
+      break;
+    case '#/stories':
+      title = "Success Stories | Nabhik Matrimonial Happy Marriages";
+      description = "Read inspiring success stories and matrimonial matches made through Nabhik Matrimonial. Celebrating happy Nabhik couples.";
+      keywords = "matrimonial success stories, Nabhik marriage stories, happy couples, matrimonial matches";
+      break;
+    case '#/events':
+      title = "Community Events & News | Nabhik Matrimonial";
+      description = "Stay updated on Nabhik community events, offline introductions, matrimonial meets, and cultural news.";
+      keywords = "Nabhik events, community matchmaking meets, matrimonial introduction events";
+      break;
+    case '#/blogs':
+      title = "Marriage Tips & Articles | Nabhik Matrimonial Blog";
+      description = "Discover relationship tips, community values, pre-marriage guidance, and matrimonial advice on Nabhik Matrimonial Blog.";
+      keywords = "matrimonial blog, marriage advice, relationship tips, community family values";
+      break;
+    case '#/contact':
+      title = "Contact KY Tech Services | IT & Web Design Company India";
+      description = "Contact KY Tech Services: Leading Web Design Company in India providing Software Development Services, Digital Marketing, and Business IT solutions. Contact us for technical support.";
+      keywords = "Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India";
+      break;
+    case '#/policy':
+      title = "Privacy Policy | Data Protection | Nabhik Matrimonial";
+      description = "Read Nabhik Matrimonial privacy policy to understand how we encrypt user data, safeguard uploaded files, and protect candidate details.";
+      keywords = "privacy policy, matrimonial security, data protection rules, member safety guidelines";
+      break;
+    case '#/terms':
+      title = "Terms of Service & Rules | Nabhik Matrimonial";
+      description = "Review Nabhik Matrimonial terms, platform regulations, verification guidelines, and rules for a safe matchmaking experience.";
+      keywords = "terms and conditions, user agreement, matrimonial portal regulations";
+      break;
+    case '#/admin':
+      title = "Platform Admin Panel | Nabhik Matrimonial Administration";
+      description = "Nabhik Matrimonial platform management control panel for profile verifications, blocking, and revenue analytics reporting.";
+      keywords = "admin dashboard, profile approvals, platform analytics, verification portal";
+      break;
+    case '#/help':
+      title = "Help & Support | Nabhik Matrimonial Service Center";
+      description = "Need help? Search FAQs or submit queries to the Nabhik Matrimonial support team for fast troubleshooting help.";
+      keywords = "customer support, matrimonial FAQs, submit support ticket, help desk";
+      break;
+  }
+
+  // Update Title
+  document.title = title;
+
+  // Update Description Meta Tag
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    metaDesc.setAttribute('content', description);
+  } else {
+    metaDesc = document.createElement('meta');
+    metaDesc.setAttribute('name', 'description');
+    metaDesc.setAttribute('content', description);
+    document.head.appendChild(metaDesc);
+  }
+
+  // Update Keywords Meta Tag
+  let metaKeywords = document.querySelector('meta[name="keywords"]');
+  if (metaKeywords) {
+    metaKeywords.setAttribute('content', keywords);
+  } else {
+    metaKeywords = document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', keywords);
+    document.head.appendChild(metaKeywords);
   }
 }
