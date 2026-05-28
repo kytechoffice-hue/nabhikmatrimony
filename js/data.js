@@ -547,7 +547,7 @@ const stateActions = {
     // Fallback: If no match but valid string, seed mock user
     if (email) {
       const mockUser = {
-        id: 99,
+        id: Math.max(...state.profiles.map(p => p.id), 0) + 1,
         name: email.split('@')[0],
         emailId: email,
         gender: 'Male',
@@ -562,6 +562,7 @@ const stateActions = {
         verified: true,
         membership: 'Free'
       };
+      state.profiles.push(mockUser);
       state.currentUser = mockUser;
       this.saveAll();
       return mockUser;
