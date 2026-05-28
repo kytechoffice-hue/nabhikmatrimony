@@ -58,6 +58,11 @@ function updateNavigation() {
   };
   
   if (state.currentUser) {
+    const isAdmin = (
+      state.currentUser.isAdmin === true || 
+      state.currentUser.role === 'admin' || 
+      (state.currentUser.emailId && state.currentUser.emailId.toLowerCase().includes('admin'))
+    );
     // Show full menu when logged in (cleaned up to prevent overflow, added Dashboard)
     navContainer.innerHTML = `
       ${makeLink('#/', 'Home')}
@@ -66,7 +71,7 @@ function updateNavigation() {
       ${makeLink('#/membership', 'Membership')}
       ${makeLink('#/stories', 'Success Stories')}
       ${makeLink('#/help', 'Help')}
-      <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
+      ${isAdmin ? `<li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>` : ''}
     `;
   } else {
     // Show Home, About Us, and Help when not logged in
@@ -187,7 +192,17 @@ function initRouter() {
       renderTerms(appView);
       break;
     case '#/admin':
-      renderAdmin(appView);
+      const isUserAdmin = state.currentUser && (
+        state.currentUser.isAdmin === true || 
+        state.currentUser.role === 'admin' || 
+        (state.currentUser.emailId && state.currentUser.emailId.toLowerCase().includes('admin'))
+      );
+      if (!isUserAdmin) {
+        showToast('Access Denied. Admin privilege required.');
+        window.location.hash = '#/';
+      } else {
+        renderAdmin(appView);
+      }
       break;
     case '#/help':
       renderHelp(appView);
