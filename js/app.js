@@ -113,19 +113,20 @@ function initRouter() {
   // Close modals
   closeModal();
   
-  // Match path
-  let path = hash;
+  // Clean query string from hash for routing (e.g. #/help?submitted=true)
+  let path = hash.split('?')[0];
   let params = null;
   
-  if (hash.startsWith('#/profile/')) {
+  if (path.startsWith('#/profile/')) {
+    params = path.split('#/profile/')[1];
     path = '#/profile/:id';
-    params = hash.split('#/profile/')[1];
   }
   
   // Active nav highlighting
   document.querySelectorAll('.nav-links a').forEach(a => {
     const aHash = a.getAttribute('href');
-    if (hash === aHash || (hash === '#/' && aHash === '#') || (hash.startsWith('#/profile') && aHash === '#/search')) {
+    const cleanAHash = aHash ? aHash.split('?')[0] : '';
+    if (path === cleanAHash || (path === '#/' && cleanAHash === '#') || (path.startsWith('#/profile') && cleanAHash === '#/search')) {
       a.classList.add('active');
     } else {
       a.classList.remove('active');
@@ -187,6 +188,13 @@ function initRouter() {
   }
   
   updateHeaderAuth();
+
+  // If redirected from FormSubmit after successful submission
+  if (hash.includes('submitted=true')) {
+    showToast('Success! Query sent to support@nabhikmatrimonial.com');
+    // Remove query parameter from hash without triggering a routing event
+    window.history.replaceState(null, null, window.location.pathname + path);
+  }
 }
 
 /* ==========================================================================
@@ -639,10 +647,34 @@ Sent this email on support@nabhikmatrimonial.com`;
     e.target.reset();
   })
   .catch(err => {
-    console.warn('AJAX delivery failed:', err);
-    showToast('Submitting failed. Please send manually.');
-    openManualMailModal('support@nabhikmatrimonial.com', subject, body);
-    e.target.reset();
+    console.warn('AJAX delivery failed, falling back to standard POST redirect:', err);
+    showToast('Redirecting to secure form submission...');
+    
+    // Construct and submit standard form programmatically to bypass CORS/adblockers
+    const form = document.createElement('form');
+    form.action = 'https://formsubmit.co/support@nabhikmatrimonial.com';
+    form.method = 'POST';
+    form.style.display = 'none';
+    
+    const fields = {
+      name: name,
+      email: email,
+      message: query,
+      _subject: subject,
+      _next: window.location.origin + window.location.pathname + '#/help?submitted=true',
+      _captcha: 'false'
+    };
+    
+    for (const key in fields) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = fields[key];
+      form.appendChild(input);
+    }
+    
+    document.body.appendChild(form);
+    form.submit();
   });
 }
 
