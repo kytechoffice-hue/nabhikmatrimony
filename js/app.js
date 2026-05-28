@@ -484,15 +484,15 @@ function renderHelp(container) {
           
           <div class="ticket-card">
             <h4>Submit a Query</h4>
-            <form class="ticket-form" onsubmit="event.preventDefault(); showToast('Your query has been submitted! Support team will reach out to you.'); this.reset();">
+            <form class="ticket-form" onsubmit="handleTicketSubmit(event)">
               <div>
-                <input type="text" placeholder="Full Name" required autocomplete="off">
+                <input type="text" id="ticket-name" placeholder="Full Name" required autocomplete="off">
               </div>
               <div>
-                <input type="email" placeholder="Email Address" required autocomplete="off">
+                <input type="email" id="ticket-email" placeholder="Email Address" required autocomplete="off">
               </div>
               <div>
-                <textarea placeholder="How can we help you?" rows="4" required></textarea>
+                <textarea id="ticket-query" placeholder="How can we help you?" rows="4" required></textarea>
               </div>
               <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Ticket</button>
             </form>
@@ -502,6 +502,45 @@ function renderHelp(container) {
       </div>
     </div>
   `;
+}
+
+// Submit query form handler (opens default email client with mailto pre-filled)
+function handleTicketSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('ticket-name').value;
+  const email = document.getElementById('ticket-email').value;
+  const query = document.getElementById('ticket-query').value;
+  
+  const subject = "Submit a Query";
+  const body = `Dear Team,
+
+I hope you are doing well.
+
+I would like to submit a query regarding your matrimonial services. Please find my details below:
+
+Name:  ${name} 
+Email ID: ${email}
+
+Query Details:
+${query}
+
+Kindly review my request and provide the necessary information or assistance at your earliest convenience.
+
+Thank you.
+
+Best Regards,
+ ${name} 
+
+Sent this email on support@nabhikmatrimonial.com`;
+
+  // Encode the parameters for mailto link
+  const mailtoUrl = `mailto:support@nabhikmatrimonial.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  // Open the mailto link
+  window.location.href = mailtoUrl;
+  
+  showToast('Email client opened with prefilled query details!');
+  e.target.reset();
 }
 
 // 3. SEARCH VIEW WITH FILTERS
