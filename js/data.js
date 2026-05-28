@@ -493,6 +493,19 @@ if (state.currentUser && !state.currentUser.gender) {
   state.currentUser.gender = 'Male';
 }
 
+// Clean up test user "User-2376" if present in state.profiles
+if (state.profiles) {
+  const originalLength = state.profiles.length;
+  state.profiles = state.profiles.filter(p => p.name !== 'User-2376');
+  if (state.profiles.length !== originalLength) {
+    if (state.currentUser && state.currentUser.name === 'User-2376') {
+      state.currentUser = null;
+    }
+    storage.set('profiles', state.profiles);
+    storage.set('currentUser', state.currentUser);
+  }
+}
+
 // State Updates Helpers
 const stateActions = {
   saveAll() {
