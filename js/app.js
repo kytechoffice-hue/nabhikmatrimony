@@ -1257,12 +1257,18 @@ function switchDashboardTab(tabName) {
             </div>
           </div>
           
-          <div class="form-group">
-            <label>Lifestyle & Food Preference</label>
-            <select id="edit-food">
-              <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
-              <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
-            </select>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+            </div>
+            <div class="form-group">
+              <label>Lifestyle & Food Preference</label>
+              <select id="edit-food">
+                <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
+                <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
+              </select>
+            </div>
           </div>
           
           <div class="form-group">
@@ -2178,6 +2184,7 @@ function handleEditProfileSubmit(e) {
   const prof = document.getElementById('edit-profession').value;
   const city = document.getElementById('edit-city').value;
   const inc = document.getElementById('edit-income').value;
+  const mobile = document.getElementById('edit-mobile').value;
   const food = document.getElementById('edit-food').value;
   const photoInput = document.getElementById('edit-photo');
   
@@ -2186,6 +2193,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.profession = prof;
     state.currentUser.location = `${city}, Maharashtra`;
     state.currentUser.income = inc;
+    state.currentUser.mobile = mobile;
     state.currentUser.foodPreference = food;
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
