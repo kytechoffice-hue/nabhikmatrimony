@@ -1269,7 +1269,7 @@ function switchDashboardTab(tabName) {
             </div>
             <div class="form-group">
               <label>Mobile Number</label>
-              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}">
             </div>
           </div>
 
@@ -1277,11 +1277,11 @@ function switchDashboardTab(tabName) {
           <div class="form-row-2">
             <div class="form-group">
               <label>Education</label>
-              <input type="text" id="edit-education" value="${state.currentUser.education || ''}" required>
+              <input type="text" id="edit-education" value="${state.currentUser.education || ''}">
             </div>
             <div class="form-group">
               <label>Profession</label>
-              <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}" required>
+              <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}">
             </div>
           </div>
           
@@ -1292,7 +1292,7 @@ function switchDashboardTab(tabName) {
             </div>
             <div class="form-group">
               <label>Annual Income</label>
-              <input type="text" id="edit-income" value="${state.currentUser.income || ''}" required>
+              <input type="text" id="edit-income" value="${state.currentUser.income || ''}">
             </div>
           </div>
 
@@ -1300,11 +1300,11 @@ function switchDashboardTab(tabName) {
           <div class="form-row-2">
             <div class="form-group">
               <label>Religion</label>
-              <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}" required>
+              <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}">
             </div>
             <div class="form-group">
               <label>Community / Caste</label>
-              <input type="text" id="edit-community" value="${state.currentUser.community || 'Nabhik'}" required>
+              <input type="text" id="edit-community" value="${state.currentUser.community || 'Nabhik'}">
             </div>
           </div>
           
