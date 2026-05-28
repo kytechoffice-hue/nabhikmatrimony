@@ -470,7 +470,7 @@ function renderHelp(container) {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                   <polyline points="22,6 12,13 2,6"/>
                 </svg>
-                <span>support@nabhikmatrimonial.com</span>
+                <span>help@kytechserv.com</span>
               </div>
               <div class="contact-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -600,12 +600,12 @@ Thank you.
 Best Regards,
  ${name} 
 
-Sent this email on support@nabhikmatrimonial.com`;
+Sent this email on help@kytechserv.com`;
 
   showToast('Sending query to support...');
 
   // Use FormSubmit AJAX API to send the email directly in the background
-  fetch('https://formsubmit.co/ajax/support@nabhikmatrimonial.com', {
+  fetch('https://formsubmit.co/ajax/help@kytechserv.com', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -632,16 +632,16 @@ Sent this email on support@nabhikmatrimonial.com`;
     if (!isSuccess || isActivation) {
       console.warn('FormSubmit needs activation:', data);
       showToast('First submit: Activation required.');
-      openActivationModal('support@nabhikmatrimonial.com');
+      openActivationModal('help@kytechserv.com');
     } else {
-      showToast('Success! Query sent to support@nabhikmatrimonial.com');
+      showToast('Success! Query sent to help@kytechserv.com');
     }
     e.target.reset();
   })
   .catch(err => {
     console.warn('AJAX delivery failed:', err);
     showToast('Submitting failed. Please send manually.');
-    openManualMailModal('support@nabhikmatrimonial.com', subject, body);
+    openManualMailModal('help@kytechserv.com', subject, body);
     e.target.reset();
   });
 }
