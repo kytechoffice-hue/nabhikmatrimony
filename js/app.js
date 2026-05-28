@@ -1945,7 +1945,7 @@ function handleEmailLogin(e) {
   if (user) {
     showToast(`Successfully logged in as ${user.name}`);
     closeModal();
-    window.location.hash = '#/dashboard';
+    window.location.hash = '#/';
   } else {
     showToast('Error logging in. Try again.');
   }
@@ -2034,7 +2034,7 @@ function confirmOtpCodeSubmit() {
     // Complete registration
     const user = stateActions.registerUser(window.tempRegData);
     showToast(`Verification Successful! Logged in as ${user.name}`);
-    window.location.hash = '#/dashboard';
+    window.location.hash = '#/';
   } else {
     alert('Invalid verification code. Please check the SMS mockup box and try again.');
   }
