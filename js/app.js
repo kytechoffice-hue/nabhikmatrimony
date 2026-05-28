@@ -99,6 +99,11 @@ function closeModal() {
   if (modal) {
     modal.classList.remove('active');
   }
+  // If we closed the login modal route, reset the hash back to home
+  const cleanHash = window.location.hash.split('?')[0];
+  if (cleanHash === '#/login') {
+    window.location.hash = '#/';
+  }
 }
 
 // Hash Router
@@ -1030,9 +1035,9 @@ function openLoginModal() {
 
 // 6. LOGIN VIEW
 function renderLogin(container) {
+  // Render home page as backdrop first
+  renderHome(container);
   openLoginModal();
-  // Redirect back to home so the background page is the home page
-  window.location.hash = '#/';
 }
 
 // 7. MEMBER DASHBOARD VIEW
@@ -1920,30 +1925,6 @@ function handleRegistrationSubmit(e) {
   const stateVal = document.getElementById('reg-state').value;
   const education = document.getElementById('reg-education').value;
   const profession = document.getElementById('reg-profession').value;
-  
-  // Calculate completed age in years
-  const dobDate = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - dobDate.getFullYear();
-  const m = today.getMonth() - dobDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
-    age--;
-  }
-  
-  if (isNaN(age)) {
-    showToast('Please enter a valid Date of Birth.');
-    return;
-  }
-  
-  // Age validation: 21 for Groom, 18 for Bride
-  if (gender === 'Male' && age < 21) {
-    showToast('Groom must be at least 21 years old to register.');
-    return;
-  }
-  if (gender === 'Female' && age < 18) {
-    showToast('Bride must be at least 18 years old to register.');
-    return;
-  }
   
   // Store form temp data inside window to load after OTP
   window.tempRegData = {
