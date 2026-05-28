@@ -483,6 +483,16 @@ const state = {
   })
 };
 
+// Sanitization: Ensure all profiles and currentUser have a gender defined to avoid runtime crashes
+if (state.profiles) {
+  state.profiles.forEach(p => {
+    if (!p.gender) p.gender = 'Male';
+  });
+}
+if (state.currentUser && !state.currentUser.gender) {
+  state.currentUser.gender = 'Male';
+}
+
 // State Updates Helpers
 const stateActions = {
   saveAll() {
