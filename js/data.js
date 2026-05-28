@@ -457,9 +457,8 @@ try {
   console.error("Failed to check or clear localStorage profiles", e);
 }
 
-// Global App State
 const state = {
-  profiles: storage.get('profiles', initialProfiles),
+  profiles: (storage.get('profiles', initialProfiles) || []).filter(p => p && typeof p === 'object'),
   stories: storage.get('stories', initialStories),
   events: storage.get('events', initialEvents),
   blogs: storage.get('blogs', initialBlogs),
@@ -538,7 +537,7 @@ const stateActions = {
   },
   
   loginUser(email, password) {
-    const found = state.profiles.find(p => p.emailId && p.emailId.trim().toLowerCase() === (email || '').trim().toLowerCase());
+    const found = state.profiles.find(p => p && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === (email || '').trim().toLowerCase());
     if (found) {
       state.currentUser = found;
       this.saveAll();
@@ -547,7 +546,7 @@ const stateActions = {
     // Fallback: If no match but valid string, seed mock user
     if (email) {
       const mockUser = {
-        id: Math.max(...state.profiles.map(p => p.id), 0) + 1,
+        id: Math.max(...state.profiles.filter(p => p && typeof p.id === 'number').map(p => p.id), 0) + 1,
         name: email.split('@')[0],
         emailId: email,
         gender: 'Male',
