@@ -749,11 +749,56 @@ function renderSearch(container) {
           <label>Location (City)</label>
           <select id="filter-city" onchange="runProfileSearch()">
             <option value="">All Cities</option>
-            <option value="Pune">Pune</option>
-            <option value="Nagpur">Nagpur</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Nashik">Nashik</option>
+            <option value="Ahmednagar">Ahmednagar</option>
+            <option value="Akola">Akola</option>
+            <option value="Alibaug">Alibaug</option>
+            <option value="Amalner">Amalner</option>
+            <option value="Amravati">Amravati</option>
             <option value="Aurangabad">Aurangabad</option>
+            <option value="Baramati">Baramati</option>
+            <option value="Beed">Beed</option>
+            <option value="Bhandara">Bhandara</option>
+            <option value="Bhiwandi">Bhiwandi</option>
+            <option value="Bhusawal">Bhusawal</option>
+            <option value="Chandrapur">Chandrapur</option>
+            <option value="Dhule">Dhule</option>
+            <option value="Gondia">Gondia</option>
+            <option value="Hingoli">Hingoli</option>
+            <option value="Ichalkaranji">Ichalkaranji</option>
+            <option value="Jalgaon">Jalgaon</option>
+            <option value="Jalna">Jalna</option>
+            <option value="Kalyan-Dombivli">Kalyan-Dombivli</option>
+            <option value="Karad">Karad</option>
+            <option value="Karjat">Karjat</option>
+            <option value="Kolhapur">Kolhapur</option>
+            <option value="Latur">Latur</option>
+            <option value="Lonavala">Lonavala</option>
+            <option value="Mahabaleshwar">Mahabaleshwar</option>
+            <option value="Malegaon">Malegaon</option>
+            <option value="Matheran">Matheran</option>
+            <option value="Mira-Bhayandar">Mira-Bhayandar</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Nagpur">Nagpur</option>
+            <option value="Nanded">Nanded</option>
+            <option value="Nashik">Nashik</option>
+            <option value="Navi Mumbai">Navi Mumbai</option>
+            <option value="Osmanabad">Osmanabad</option>
+            <option value="Palghar">Palghar</option>
+            <option value="Pandharpur">Pandharpur</option>
+            <option value="Panvel">Panvel</option>
+            <option value="Parbhani">Parbhani</option>
+            <option value="Pune">Pune</option>
+            <option value="Ratnagiri">Ratnagiri</option>
+            <option value="Sangli">Sangli</option>
+            <option value="Satara">Satara</option>
+            <option value="Shirdi">Shirdi</option>
+            <option value="Shrirampur">Shrirampur</option>
+            <option value="Solapur">Solapur</option>
+            <option value="Thane">Thane</option>
+            <option value="Ulhasnagar">Ulhasnagar</option>
+            <option value="Wardha">Wardha</option>
+            <option value="Washim">Washim</option>
+            <option value="Yavatmal">Yavatmal</option>
           </select>
         </div>
         
@@ -968,7 +1013,59 @@ function renderRegister(container) {
             </div>
             <div class="form-group">
               <label>City</label>
-              <input type="text" id="reg-city" required placeholder="e.g. Pune">
+              <input type="text" id="reg-city" list="reg-cities-list" required placeholder="e.g. Pune">
+              <datalist id="reg-cities-list">
+                <option value="Ahmednagar">
+                <option value="Akola">
+                <option value="Alibaug">
+                <option value="Amalner">
+                <option value="Amravati">
+                <option value="Aurangabad">
+                <option value="Baramati">
+                <option value="Beed">
+                <option value="Bhandara">
+                <option value="Bhiwandi">
+                <option value="Bhusawal">
+                <option value="Chandrapur">
+                <option value="Dhule">
+                <option value="Gondia">
+                <option value="Hingoli">
+                <option value="Ichalkaranji">
+                <option value="Jalgaon">
+                <option value="Jalna">
+                <option value="Kalyan-Dombivli">
+                <option value="Karad">
+                <option value="Karjat">
+                <option value="Kolhapur">
+                <option value="Latur">
+                <option value="Lonavala">
+                <option value="Mahabaleshwar">
+                <option value="Malegaon">
+                <option value="Matheran">
+                <option value="Mira-Bhayandar">
+                <option value="Mumbai">
+                <option value="Nagpur">
+                <option value="Nanded">
+                <option value="Nashik">
+                <option value="Navi Mumbai">
+                <option value="Osmanabad">
+                <option value="Palghar">
+                <option value="Pandharpur">
+                <option value="Panvel">
+                <option value="Parbhani">
+                <option value="Pune">
+                <option value="Ratnagiri">
+                <option value="Sangli">
+                <option value="Satara">
+                <option value="Shirdi">
+                <option value="Shrirampur">
+                <option value="Solapur">
+                <option value="Thane">
+                <option value="Ulhasnagar">
+                <option value="Wardha">
+                <option value="Washim">
+                <option value="Yavatmal">
+              </datalist>
             </div>
           </div>
           
@@ -1306,7 +1403,59 @@ function switchDashboardTab(tabName) {
           <div class="form-row-2">
             <div class="form-group">
               <label>City</label>
-              <input type="text" id="edit-city" value="${state.currentUser.location ? state.currentUser.location.split(',')[0].trim() : ''}" required>
+              <input type="text" id="edit-city" list="edit-cities-list" value="${state.currentUser.location ? state.currentUser.location.split(',')[0].trim() : ''}" required>
+              <datalist id="edit-cities-list">
+                <option value="Ahmednagar">
+                <option value="Akola">
+                <option value="Alibaug">
+                <option value="Amalner">
+                <option value="Amravati">
+                <option value="Aurangabad">
+                <option value="Baramati">
+                <option value="Beed">
+                <option value="Bhandara">
+                <option value="Bhiwandi">
+                <option value="Bhusawal">
+                <option value="Chandrapur">
+                <option value="Dhule">
+                <option value="Gondia">
+                <option value="Hingoli">
+                <option value="Ichalkaranji">
+                <option value="Jalgaon">
+                <option value="Jalna">
+                <option value="Kalyan-Dombivli">
+                <option value="Karad">
+                <option value="Karjat">
+                <option value="Kolhapur">
+                <option value="Latur">
+                <option value="Lonavala">
+                <option value="Mahabaleshwar">
+                <option value="Malegaon">
+                <option value="Matheran">
+                <option value="Mira-Bhayandar">
+                <option value="Mumbai">
+                <option value="Nagpur">
+                <option value="Nanded">
+                <option value="Nashik">
+                <option value="Navi Mumbai">
+                <option value="Osmanabad">
+                <option value="Palghar">
+                <option value="Pandharpur">
+                <option value="Panvel">
+                <option value="Parbhani">
+                <option value="Pune">
+                <option value="Ratnagiri">
+                <option value="Sangli">
+                <option value="Satara">
+                <option value="Shirdi">
+                <option value="Shrirampur">
+                <option value="Solapur">
+                <option value="Thane">
+                <option value="Ulhasnagar">
+                <option value="Wardha">
+                <option value="Washim">
+                <option value="Yavatmal">
+              </datalist>
             </div>
             <div class="form-group">
               <label>Annual Income</label>
