@@ -435,11 +435,20 @@ const initialBlogs = [
 // LocalStorage Helper to ensure state persistence
 const storage = {
   get(key, defaultValue) {
-    const data = localStorage.getItem('nabhik_matrimonial_' + key);
-    return data ? JSON.parse(data) : defaultValue;
+    try {
+      const data = localStorage.getItem('nabhik_matrimonial_' + key);
+      return data ? JSON.parse(data) : defaultValue;
+    } catch (e) {
+      console.warn("localStorage.getItem failed, using default value.", e);
+      return defaultValue;
+    }
   },
   set(key, value) {
-    localStorage.setItem('nabhik_matrimonial_' + key, JSON.stringify(value));
+    try {
+      localStorage.setItem('nabhik_matrimonial_' + key, JSON.stringify(value));
+    } catch (e) {
+      console.warn("localStorage.setItem failed, state will persist in-memory only.", e);
+    }
   }
 };
 
