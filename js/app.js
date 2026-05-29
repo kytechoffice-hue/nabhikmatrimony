@@ -102,11 +102,14 @@ function handleGlobalClicks(e) {
 }
 
 // Close active modal
-function closeModal() {
-  const modal = document.querySelector('.modal-overlay.active');
+function closeModal(isProgrammatic = false) {
+  const modal = document.getElementById('modal-system-overlay');
   if (modal) {
     modal.classList.remove('active');
-    
+    modal.innerHTML = '';
+  }
+  
+  if (!isProgrammatic) {
     // If we closed the login modal route manually, reset the hash back to home
     const cleanHash = window.location.hash.split('?')[0];
     if (cleanHash === '#/login') {
@@ -2265,7 +2268,7 @@ function handleEmailLogin(e) {
   const user = stateActions.loginUser(email, pass);
   if (user) {
     showToast(`Successfully logged in as ${user.name}`);
-    closeModal();
+    closeModal(true);
     window.location.hash = '#/dashboard';
   } else {
     showToast('Error logging in. Try again.');
@@ -2353,7 +2356,7 @@ function moveOtpFocus(input, index) {
 function confirmOtpCodeSubmit() {
   const digits = Array.from(document.querySelectorAll('.otp-digit')).map(i => i.value).join('');
   if (digits == window.otpVerificationCode) {
-    closeModal();
+    closeModal(true);
     
     // Check if user already exists
     const mobile = window.tempRegData.mobile || '';
@@ -2440,7 +2443,7 @@ function updateCardVisualNum(val) {
 // Complete payment gateway mockup
 function handleCreditCardPaySubmit(e, planName, price) {
   e.preventDefault();
-  closeModal();
+  closeModal(true);
   stateActions.purchaseMembership(planName, price);
   showToast(`Congratulations! You are now a ${planName} member.`);
   
