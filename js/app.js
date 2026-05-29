@@ -105,15 +105,16 @@ function handleGlobalClicks(e) {
 function closeModal(isProgrammatic = false) {
   const modal = document.getElementById('modal-system-overlay');
   if (modal) {
+    const wasActive = modal.classList.contains('active');
     modal.classList.remove('active');
     modal.innerHTML = '';
-  }
-  
-  if (!isProgrammatic) {
-    // If we closed the login modal route manually, reset the hash back to home
-    const cleanHash = window.location.hash.split('?')[0];
-    if (cleanHash === '#/login') {
-      window.location.hash = '#/';
+    
+    if (wasActive && !isProgrammatic) {
+      // If we closed the login modal route manually, reset the hash back to home
+      const cleanHash = window.location.hash.split('?')[0];
+      if (cleanHash === '#/login') {
+        window.location.hash = '#/';
+      }
     }
   }
 }
