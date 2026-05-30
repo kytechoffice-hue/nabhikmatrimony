@@ -469,12 +469,17 @@ try {
   console.error("Failed to check or clear localStorage profiles", e);
 }
 
-// Force update stories in localStorage if they don't have the photo field (to handle version transitions)
+// Force update stories in localStorage if they don't match initialStories photos (to handle version transitions)
 try {
   const storedStories = localStorage.getItem('nabhik_matrimonial_stories');
   if (storedStories) {
     const parsedStories = JSON.parse(storedStories);
-    const needsReset = parsedStories.some(s => !s.photo);
+    const needsReset = !Array.isArray(parsedStories) || 
+                       parsedStories.length !== initialStories.length || 
+                       parsedStories.some((s, idx) => {
+                         const expected = initialStories[idx];
+                         return !expected || s.photo !== expected.photo;
+                       });
     if (needsReset) {
       localStorage.removeItem('nabhik_matrimonial_stories');
     }
