@@ -187,6 +187,9 @@ function initRouter() {
     case '#/membership/gold':
       renderGoldPlanDetails(appView);
       break;
+    case '#/membership/platinum':
+      renderPlatinumPlanDetails(appView);
+      break;
     case '#/stories':
       renderStories(appView);
       break;
@@ -1749,6 +1752,19 @@ function renderMembership(container) {
       btnHtml = `
         ${mainBtn}
         <a href="#/membership/gold" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+      `;
+    } else if (p.name === 'Platinum') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Platinum', 1999)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+      }
+      btnHtml = `
+        ${mainBtn}
+        <a href="#/membership/platinum" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
@@ -3368,6 +3384,139 @@ function renderGoldPlanDetails(container) {
   `;
 }
 
+// 20. PLATINUM MEMBERSHIP DETAILS VIEW
+function renderPlatinumPlanDetails(container) {
+  const isUserLoggedIn = !!state.currentUser;
+  const isCurrentPlanPlatinum = state.currentUser && state.currentUser.membership === 'Platinum';
+  
+  let priceCTA = '';
+  if (!isUserLoggedIn) {
+    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+  } else if (isCurrentPlanPlatinum) {
+    priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
+  } else {
+    priceCTA = `<button onclick="handleSelectPlan('Platinum', 1999)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Platinum Membership Package</h1>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      
+      <div class="free-plan-layout">
+        <!-- Main Column: Platinum Package Benefits -->
+        <div>
+          <div class="free-plan-intro" style="border-color: var(--color-gold);">
+            <h2 style="font-family: var(--font-serif); color: var(--color-maroon); font-size: 1.6rem; margin-bottom: 8px;">Platinum Membership Package</h2>
+            <h3 style="font-size: 1.1rem; color: var(--color-gold); font-weight: 600; margin-bottom: 16px;">Discover Superior Matchmaking Services</h3>
+            <p>Welcome to the Platinum Membership Package — our most sophisticated and top-tier matchmaking service, crafted for individuals serious about discovering their ideal life partner swiftly, safely, and effectively.</p>
+            <p>The Platinum Package provides distinguished premium features, peak profile exposure, elevated support, and advanced interaction tools, enabling you to connect with authentic and confirmed matches within the respected Nabhik community.</p>
+          </div>
+          
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>Platinum Package Benefits</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="benefit-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">👁️‍🗨️</div>
+              <div>
+                <h3>Unrestricted Premium Profile Viewing</h3>
+                <p>Browse an unlimited number of verified bride and groom profiles without limitations, and connect with the most fitting matches based on your specific criteria.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🤝</div>
+              <div>
+                <h3>Direct Connection & Unlimited Interaction</h3>
+                <p>Gain full access to contact information and utilize unlimited secure chat features to communicate directly with families and prospective partners.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">👑</div>
+              <div>
+                <h3>Prominent Profile Placement</h3>
+                <p>Your profile will be showcased as a featured premium profile across key areas of the website, significantly boosting profile visibility and the number of match responses.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🛡️</div>
+              <div>
+                <h3>Verified Premium Emblem</h3>
+                <p>Receive a Platinum Verification Emblem on your profile to foster trust and improve response rates from other members.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card" style="grid-column: span 2;">
+              <div class="benefit-icon-wrapper">🧠</div>
+              <div>
+                <h3>Advanced Search & Intelligent Matching</h3>
+                <p>Utilize robust premium search filters, including Educational Background, Profession, Income Level, Lifestyle Habits, Geographical Location, Marital History, Community Preferences, Age & Stature. Obtain highly customized matchmaking suggestions based on compatibility and your stated preferences.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="free-sidebar-section">
+          <!-- Pricing Summary Card -->
+          <div class="sidebar-info-card dark-theme" style="text-align: center;">
+            <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">PLATINUM PACKAGE</h3>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹1999<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 12 Months</span></div>
+            <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Comprehensive Premium Matchmaking Experience</p>
+            <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
+              <li style="color: #fff;">✔ Unlimited Profile Access</li>
+              <li style="color: #fff;">✔ Direct Contact Information</li>
+              <li style="color: #fff;">✔ Unlimited Chat Features</li>
+              <li style="color: #fff;">✔ Featured Premium Profile</li>
+              <li style="color: #fff;">✔ Platinum Verification Emblem</li>
+              <li style="color: #fff;">✔ Priority Match Suggestions</li>
+              <li style="color: #fff;">✔ WhatsApp Priority Support</li>
+              <li style="color: #fff;">✔ Improved Search Visibility</li>
+            </ul>
+            <p style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-bottom: 15px; font-weight: 500;">Ideal Package for Serious Marriage Prospects</p>
+            ${priceCTA}
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 15px; line-height: 1.4;">Upgrade to Platinum Membership today and immerse yourself in a premium matchmaking journey designed to help you find your perfect life partner with assurance, confidence, and ease.</p>
+          </div>
+          
+          <!-- Exclusive Platinum Offerings -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Exclusive Platinum Offerings</h3>
+            <ul>
+              <li><strong>Top-Priority Match Suggestions:</strong> Receive carefully selected and prioritized match recommendations to help you discover compatible profiles more rapidly.</li>
+              <li><strong>Enhanced Search Ranking:</strong> Your profile will appear at the forefront of search results and recommended profile sections.</li>
+              <li><strong>WhatsApp & Priority Assistance:</strong> Benefit from dedicated customer assistance via priority support channels for swifter query resolution and help with profile management.</li>
+              <li><strong>Greater Profile Engagement:</strong> Platinum members experience enhanced profile visibility, superior response rates, and more opportunities for interaction compared to other packages.</li>
+              <li><strong>Premium Dashboard Interface:</strong> Access sophisticated dashboard tools to manage conversations, expressed interests, alerts, shortlisted profiles, viewed profiles, and match recommendations.</li>
+            </ul>
+          </div>
+          
+          <!-- Secure & Trusted Matchmaking -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Dependable & Secure Matchmaking</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 12px; color: var(--color-text-muted);">We are dedicated to fostering a secure and genuine matrimonial environment. Platinum members benefit from:</p>
+            <ul>
+              <li>Heightened Privacy Safeguards</li>
+              <li>Assistance with Verified Profiles</li>
+              <li>Secure Communication System</li>
+              <li>Safe Matchmaking Experience</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
 function updatePageSEO(path, params) {
   let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
@@ -3434,6 +3583,11 @@ function updatePageSEO(path, params) {
       title = "Gold Membership Plan | Nabhik Matrimonial";
       description = "Unlock a premium matchmaking experience with our Gold Membership Plan. Connect directly with verified profiles, get unlimited views, and premium support.";
       keywords = "Gold membership plan, premium matchmaking, unlock contact details, unlimited profile views, premium matrimonial highlight";
+      break;
+    case '#/membership/platinum':
+      title = "Platinum Membership Package | Nabhik Matrimonial";
+      description = "Discover superior matchmaking services with our top-tier Platinum Membership Package. Get peak profile visibility, priority WhatsApp support, and advanced filters.";
+      keywords = "Platinum membership package, superior matchmaking, featured profile, WhatsApp support, verified premium emblem, top priority matches";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
