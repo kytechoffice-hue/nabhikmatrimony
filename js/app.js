@@ -184,6 +184,9 @@ function initRouter() {
     case '#/membership/silver':
       renderSilverPlanDetails(appView);
       break;
+    case '#/membership/gold':
+      renderGoldPlanDetails(appView);
+      break;
     case '#/stories':
       renderStories(appView);
       break;
@@ -1734,6 +1737,19 @@ function renderMembership(container) {
         ${mainBtn}
         <a href="#/membership/silver" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
+    } else if (p.name === 'Gold') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+      }
+      btnHtml = `
+        ${mainBtn}
+        <a href="#/membership/gold" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+      `;
     } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
     } else if (isCurrent) {
@@ -3216,6 +3232,142 @@ function renderSilverPlanDetails(container) {
   `;
 }
 
+// 19. GOLD MEMBERSHIP DETAILS VIEW
+function renderGoldPlanDetails(container) {
+  const isUserLoggedIn = !!state.currentUser;
+  const isCurrentPlanGold = state.currentUser && state.currentUser.membership === 'Gold';
+  
+  let priceCTA = '';
+  if (!isUserLoggedIn) {
+    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+  } else if (isCurrentPlanGold) {
+    priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
+  } else {
+    priceCTA = `<button onclick="handleSelectPlan('Gold', 999)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Gold Membership Plan</h1>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      
+      <div class="free-plan-layout">
+        <!-- Main Column: Gold Plan Benefits -->
+        <div>
+          <div class="free-plan-intro" style="border-color: var(--color-gold);">
+            <h2 style="font-family: var(--font-serif); color: var(--color-maroon); font-size: 1.6rem; margin-bottom: 8px;">Gold Membership Plan</h2>
+            <h3 style="font-size: 1.1rem; color: var(--color-gold); font-weight: 600; margin-bottom: 16px;">Unlock Premium Matchmaking Experience</h3>
+            <p>Take your partner search to the next level with our Gold Membership Plan. Designed for serious members who want better communication, unlimited profile access, and premium visibility, the Gold Plan offers the perfect combination of advanced features and affordability.</p>
+            <p>With the Gold Plan, you can connect directly with genuine bride and groom profiles, explore unlimited matches, and enjoy a faster and more effective matchmaking experience within the trusted Nabhik community.</p>
+          </div>
+          
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>Gold Plan Benefits</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="benefit-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🖼️</div>
+              <div>
+                <h3>Unlimited Profile Views</h3>
+                <p>Browse and explore unlimited verified profiles without any restrictions. Find suitable matches based on your preferences and compatibility.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">📞</div>
+              <div>
+                <h3>Direct Contact Access</h3>
+                <p>View contact details of interested profiles and connect directly with potential matches and families.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">💬</div>
+              <div>
+                <h3>Unlimited Chat Access</h3>
+                <p>Enjoy uninterrupted communication with members through secure chat features and build meaningful conversations easily.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🌟</div>
+              <div>
+                <h3>Premium Profile Highlight</h3>
+                <p>Your profile will appear with higher visibility in search results, increasing profile visits and match responses.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card" style="grid-column: span 2;">
+              <div class="benefit-icon-wrapper">🔍</div>
+              <div>
+                <h3>Advanced Search Filters</h3>
+                <p>Use detailed search filters to find the perfect partner based on Education, Profession, Location, Lifestyle, Marital Status, Community Preferences, Age, and Height.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="free-sidebar-section">
+          <!-- Pricing Summary Card -->
+          <div class="sidebar-info-card dark-theme" style="text-align: center;">
+            <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">GOLD PLAN</h3>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹999<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 6 Months</span></div>
+            <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Most Popular Membership Plan</p>
+            <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
+              <li style="color: #fff;">Unlimited Profile Views</li>
+              <li style="color: #fff;">Direct Contact Access</li>
+              <li style="color: #fff;">Unlimited Chat Features</li>
+              <li style="color: #fff;">Premium Profile Visibility</li>
+              <li style="color: #fff;">Advanced Search Filters</li>
+              <li style="color: #fff;">Personalized Match Suggestions</li>
+            </ul>
+            <p style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-bottom: 15px; font-weight: 500;">Best Value for Serious Matchmaking</p>
+            ${priceCTA}
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 15px; line-height: 1.4;">Upgrade to Gold Membership today and connect with genuine matches to find your perfect life partner with confidence and trust.</p>
+          </div>
+          
+          <!-- Personalized Match Suggestions -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Personalized Match Suggestions</h3>
+            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--color-text-dark);">Receive smart and personalized matchmaking recommendations based on your profile details and partner preferences. Our system helps you discover more compatible matches quickly and efficiently.</p>
+          </div>
+          
+          <!-- Exclusive Premium Features -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Exclusive Premium Features</h3>
+            <ul>
+              <li><strong>Profile Activity Insights:</strong> See who viewed your profile and who showed interest in your profile.</li>
+              <li><strong>Faster Match Responses:</strong> Premium members receive better engagement and improved response rates compared to free users.</li>
+              <li><strong>Priority Customer Support:</strong> Get quicker assistance and support for profile management and membership-related queries.</li>
+              <li><strong>Mobile Friendly Premium Dashboard:</strong> Manage chats, interests, shortlisted profiles, and notifications anytime from your mobile device.</li>
+            </ul>
+          </div>
+          
+          <!-- Secure & Trusted Matchmaking -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Secure & Trusted Matchmaking</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 12px; color: var(--color-text-muted);">Your privacy and security remain our highest priority. Gold members receive:</p>
+            <ul>
+              <li>Verified Profile Support</li>
+              <li>Secure Communication</li>
+              <li>Privacy Protection</li>
+              <li>Safe Matchmaking Environment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
 function updatePageSEO(path, params) {
   let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
@@ -3277,6 +3429,11 @@ function updatePageSEO(path, params) {
       title = "Silver Membership Plan | Nabhik Matrimonial";
       description = "Elevate your partner-finding journey with our Silver Membership Tier. Get unlimited connection requests, basic chat, and advanced search filters.";
       keywords = "Silver membership plan, budget matrimony plan, connection invitations, basic chat, matrimonial match suggestions";
+      break;
+    case '#/membership/gold':
+      title = "Gold Membership Plan | Nabhik Matrimonial";
+      description = "Unlock a premium matchmaking experience with our Gold Membership Plan. Connect directly with verified profiles, get unlimited views, and premium support.";
+      keywords = "Gold membership plan, premium matchmaking, unlock contact details, unlimited profile views, premium matrimonial highlight";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
