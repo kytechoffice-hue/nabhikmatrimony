@@ -356,18 +356,21 @@ const initialStories = [
     id: 1,
     couple: 'Rohit & Pooja',
     date: '12 May 2023',
+    photo: 'images/story1.jpg',
     quote: 'We found the perfect match through Nabhik Metromonial. Thank you for connecting our families. The platform made searching secure and simple.'
   },
   {
     id: 2,
     couple: 'Amit & Sneha',
     date: '18 Feb 2023',
+    photo: 'images/story2.jpg',
     quote: 'The platform is genuine and extremely easy to use. We are thankful to Nabhik Metromonial. Finding someone with similar family values was very easy.'
   },
   {
     id: 3,
     couple: 'Nilesh & Komal',
     date: '22 Nov 2022',
+    photo: 'images/story3.jpg',
     quote: 'We got good responses and found a life partner who understands our traditional values and supports modern aspirations.'
   }
 ];
@@ -464,6 +467,20 @@ try {
   }
 } catch (e) {
   console.error("Failed to check or clear localStorage profiles", e);
+}
+
+// Force update stories in localStorage if they don't have the photo field (to handle version transitions)
+try {
+  const storedStories = localStorage.getItem('nabhik_matrimonial_stories');
+  if (storedStories) {
+    const parsedStories = JSON.parse(storedStories);
+    const needsReset = parsedStories.some(s => !s.photo);
+    if (needsReset) {
+      localStorage.removeItem('nabhik_matrimonial_stories');
+    }
+  }
+} catch (e) {
+  console.error("Failed to check or clear localStorage stories", e);
 }
 
 const state = {
