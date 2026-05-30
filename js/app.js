@@ -190,6 +190,9 @@ function initRouter() {
     case '#/membership/platinum':
       renderPlatinumPlanDetails(appView);
       break;
+    case '#/membership/assisted':
+      renderPremiumAssistedPlanDetails(appView);
+      break;
     case '#/stories':
       renderStories(appView);
       break;
@@ -1765,6 +1768,19 @@ function renderMembership(container) {
       btnHtml = `
         ${mainBtn}
         <a href="#/membership/platinum" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+      `;
+    } else if (p.name === 'Premium Assisted') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Premium Assisted', 4999)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+      }
+      btnHtml = `
+        ${mainBtn}
+        <a href="#/membership/assisted" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
@@ -3517,6 +3533,141 @@ function renderPlatinumPlanDetails(container) {
   `;
 }
 
+// 21. PREMIER ASSISTED MEMBERSHIP DETAILS VIEW
+function renderPremiumAssistedPlanDetails(container) {
+  const isUserLoggedIn = !!state.currentUser;
+  const isCurrentPlanAssisted = state.currentUser && state.currentUser.membership === 'Premium Assisted';
+  
+  let priceCTA = '';
+  if (!isUserLoggedIn) {
+    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+  } else if (isCurrentPlanAssisted) {
+    priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
+  } else {
+    priceCTA = `<button onclick="handleSelectPlan('Premium Assisted', 4999)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Premier Assisted Membership Program</h1>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      
+      <div class="free-plan-layout">
+        <!-- Main Column: Premier Assisted Benefits -->
+        <div>
+          <div class="free-plan-intro" style="border-color: var(--color-gold);">
+            <h2 style="font-family: var(--font-serif); color: var(--color-maroon); font-size: 1.6rem; margin-bottom: 8px;">Premier Assisted Membership Program</h2>
+            <h3 style="font-size: 1.1rem; color: var(--color-gold); font-weight: 600; margin-bottom: 16px;">Tailored Matchmaking with Dedicated Guidance</h3>
+            <p>Our Premier Assisted Membership Program is thoughtfully crafted for individuals and families desiring a more customized, supported, and streamlined matchmaking adventure.</p>
+            <p>Through this select program, our devoted relationship support staff proactively assists you in discovering suitable connections, aligning with your chosen criteria, familial expectations, educational background, career, way of life, and communal principles.</p>
+            <p>The Premier Assisted Program harmoniously blends sophisticated matrimonial capabilities with human guidance to expedite and enhance the success of your search for a companion.</p>
+          </div>
+          
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>Premier Assisted Program Advantages</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="benefit-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🧑‍💼</div>
+              <div>
+                <h3>Dedicated Relationship Facilitator</h3>
+                <p>Your personal relationship facilitator will accompany you on your matchmaking quest, proposing compatible profiles and organizing correspondence.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🎯</div>
+              <div>
+                <h3>Select Match Recommendations</h3>
+                <p>Receive carefully chosen and authenticated bride or groom profiles based on Scholastic Achievement, Professional Role, Familial Lineage, Lifestyle Preferences, Geographic Location, and Community Values.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🚀</div>
+              <div>
+                <h3>Enhanced Profile Visibility</h3>
+                <p>Your profile gains premier exposure across the entire platform, leading to superior responses and more authentic interest.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🗣️</div>
+              <div>
+                <h3>Direct Communication Facilitation</h3>
+                <p>Our support staff aids in initiating introductions and fostering communication between families for a smoother interaction.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card" style="grid-column: span 2;">
+              <div class="benefit-icon-wrapper">🔑</div>
+              <div>
+                <h3>Unrestricted Premier Access</h3>
+                <p>Benefit from all premier platform features, including: Unlimited Profile Browsing, Unlimited Chatting Privileges, Direct Contact Information, Advanced Search Capabilities, and Top Ranking in Searches.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="free-sidebar-section">
+          <!-- Pricing Summary Card -->
+          <div class="sidebar-info-card dark-theme" style="text-align: center;">
+            <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">PREMIER ASSISTED PROGRAM</h3>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹4999<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 12 Months</span></div>
+            <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Comprehensive Personalized Matchmaking Solution</p>
+            <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
+              <li style="color: #fff;">✔ Dedicated Relationship Facilitator</li>
+              <li style="color: #fff;">✔ Curated Match Suggestions</li>
+              <li style="color: #fff;">✔ Unlimited Premier Access</li>
+              <li style="color: #fff;">✔ Enhanced Profile Visibility</li>
+              <li style="color: #fff;">✔ Family Support Facilitation</li>
+              <li style="color: #fff;">✔ Direct Communication Aid</li>
+              <li style="color: #fff;">✔ WhatsApp & Telephone Assistance</li>
+              <li style="color: #fff;">✔ Expedited Matchmaking Journey</li>
+            </ul>
+            <p style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-bottom: 15px; font-weight: 500;">Ideal for Families Seeking Tailored Guidance</p>
+            ${priceCTA}
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 15px; line-height: 1.4;">Elevate to the Premier Assisted Membership Program and discover a premium matchmaking service designed to empower your confident, trusting, and fully supported search for the ideal life partner.</p>
+          </div>
+          
+          <!-- Exclusive Assisted Services -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Exclusive Assisted Services</h3>
+            <ul>
+              <li><strong>Customized Matchmaking Assistance:</strong> Our seasoned support staff understands your specific requirements and diligently works to pinpoint the most fitting profiles for marriage.</li>
+              <li><strong>Family-Centric Support:</strong> We offer respectful and professional communication support for both members and their families throughout the matchmaking undertaking.</li>
+              <li><strong>Accelerated Match Responses:</strong> Premier Assisted members experience heightened engagement, elevated visibility, and priority matchmaking prospects.</li>
+              <li><strong>Profile Validation Support:</strong> Benefit from reinforced profile verification to bolster confidence and refine match caliber.</li>
+              <li><strong>WhatsApp & Telephone Assistance:</strong> Access direct customer assistance via WhatsApp and phone for prompt communication and direction.</li>
+            </ul>
+          </div>
+          
+          <!-- Secure & Trusted Matchmaking -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Secure & Reliable Matchmaking Experience</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 12px; color: var(--color-text-muted);">Your confidentiality, security, and trust are paramount. Premier Assisted members are assured of:</p>
+            <ul>
+              <li>Secure Communication Channels</li>
+              <li>Verified Profiles</li>
+              <li>Privacy Safeguards</li>
+              <li>Dependable Matchmaking Support</li>
+              <li>Authentic Community Connections</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
 function updatePageSEO(path, params) {
   let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
@@ -3588,6 +3739,11 @@ function updatePageSEO(path, params) {
       title = "Platinum Membership Package | Nabhik Matrimonial";
       description = "Discover superior matchmaking services with our top-tier Platinum Membership Package. Get peak profile visibility, priority WhatsApp support, and advanced filters.";
       keywords = "Platinum membership package, superior matchmaking, featured profile, WhatsApp support, verified premium emblem, top priority matches";
+      break;
+    case '#/membership/assisted':
+      title = "Premier Assisted Membership Program | Nabhik Matrimonial";
+      description = "Experience tailored matchmaking with dedicated guidance in our Premier Assisted Membership Program. Hand-picked curated matches with priority WhatsApp and telephone support.";
+      keywords = "Premier Assisted Program, tailored matchmaking, dedicated guidance, relationship facilitator, curated match suggestions, family matchmaking support";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
