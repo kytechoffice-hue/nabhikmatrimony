@@ -1610,11 +1610,11 @@ function renderMembership(container) {
       badgeIcon: '🌱',
       tagline: 'Best for new users.',
       features: [
-        'Create Profile',
-        'Upload Photos',
-        'Browse Limited Profiles',
-        'Send 5 Interests Per Day',
-        'Basic Search Filters'
+        'Set Up a Free Account',
+        'Add Pictures',
+        'View Listings',
+        'Send a Few "Likes"',
+        'Simple Compatibility Tips'
       ],
       note: '',
       featured: false
