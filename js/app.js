@@ -181,6 +181,9 @@ function initRouter() {
     case '#/membership/free':
       renderFreePlanDetails(appView);
       break;
+    case '#/membership/silver':
+      renderSilverPlanDetails(appView);
+      break;
     case '#/stories':
       renderStories(appView);
       break;
@@ -1718,6 +1721,19 @@ function renderMembership(container) {
           <a href="#/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
         `;
       }
+    } else if (p.name === 'Silver') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Silver', 499)" class="plan-btn" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+      }
+      btnHtml = `
+        ${mainBtn}
+        <a href="#/membership/silver" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+      `;
     } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
     } else if (isCurrent) {
@@ -3047,6 +3063,159 @@ function renderFreePlanDetails(container) {
   `;
 }
 
+// 18. SILVER MEMBERSHIP DETAILS VIEW
+function renderSilverPlanDetails(container) {
+  const isUserLoggedIn = !!state.currentUser;
+  const isCurrentPlanSilver = state.currentUser && state.currentUser.membership === 'Silver';
+  
+  let priceCTA = '';
+  if (!isUserLoggedIn) {
+    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+  } else if (isCurrentPlanSilver) {
+    priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
+  } else {
+    priceCTA = `<button onclick="handleSelectPlan('Silver', 499)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Silver Membership Plan</h1>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      
+      <div class="free-plan-layout">
+        <!-- Main Column: Silver Tier Advantages -->
+        <div>
+          <div class="free-plan-intro" style="border-color: var(--color-gold);">
+            <h2 style="font-family: var(--font-serif); color: var(--color-maroon); font-size: 1.6rem; margin-bottom: 8px;">Silver Membership Tier</h2>
+            <h3 style="font-size: 1.1rem; color: var(--color-gold); font-weight: 600; margin-bottom: 16px;">Intelligent Matching, Budget-Friendly Cost</h3>
+            <p>Elevate your partner-finding journey with our Silver Membership Tier and gain expanded possibilities to connect with authentic bride and groom profiles within the dependable Nabhik community.</p>
+            <p>The Silver Tier is ideal for individuals who are dedicated to locating a suitable life companion and desire access to supplementary functionalities, elevated visibility, and enhanced communication methods at a sensible expenditure.</p>
+          </div>
+          
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>Silver Tier Advantages</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="benefit-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">📨</div>
+              <div>
+                <h3>Infinite Connection Invitations</h3>
+                <p>Dispatch countless connection invitations to profiles that appeal to you, thereby boosting your prospects of swiftly discovering your ideal match.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">📂</div>
+              <div>
+                <h3>Access More Profiles</h3>
+                <p>Obtain entry to a greater volume of authenticated matrimonial profiles and examine appropriate matches aligned with your criteria.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">💬</div>
+              <div>
+                <h3>Fundamental Chat Entry</h3>
+                <p>Initiate discussions with engaged members via our safeguarded communication framework.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🚀</div>
+              <div>
+                <h3>Elevated Profile Prominence</h3>
+                <p>Your profile benefits from improved prominence in search outcomes, assisting you in attracting a higher number of authentic connection requests.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🧠</div>
+              <div>
+                <h3>Sophisticated Match Recommendations</h3>
+                <p>Be presented with tailored match suggestions based on factors like academic background, occupation, geographical area, way of life, and desired partner attributes.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">⭐</div>
+              <div>
+                <h3>Curate & Preserve Profiles</h3>
+                <p>Secure profiles you favor and organize your partner-search endeavor more effectively.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="free-sidebar-section">
+          <!-- Pricing Summary Card -->
+          <div class="sidebar-info-card dark-theme" style="text-align: center;">
+            <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">SILVER TIER</h3>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹499<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 3 Months</span></div>
+            <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Economical Enhanced Experience</p>
+            <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
+              <li style="color: #fff;">Unlimited Connection Requests</li>
+              <li style="color: #fff;">Expanded Profile Access</li>
+              <li style="color: #fff;">Basic Chat Functionality</li>
+              <li style="color: #fff;">Prominent Profile Visibility</li>
+              <li style="color: #fff;">Sophisticated Match Suggestions</li>
+            </ul>
+            <p style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-bottom: 15px; font-weight: 500;">Optimal for Diligent Match Seekers</p>
+            ${priceCTA}
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 15px; line-height: 1.4;">Advance your membership now and engage with genuine profiles to locate your perfect life partner with assurance.</p>
+          </div>
+          
+          <!-- Refined Search Capabilities -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Refined Search Capabilities</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 12px; color: var(--color-text-muted);">The Silver Tier empowers you to utilize enhanced search parameters, including:</p>
+            <ul>
+              <li>Age Range</li>
+              <li>Educational Background</li>
+              <li>Occupation Type</li>
+              <li>Geographic Location</li>
+              <li>Marital Status</li>
+              <li>Community Likings</li>
+            </ul>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: var(--color-maroon); font-weight: 500;">This facilitates the discovery of more harmonious and pertinent matches at a quicker pace.</p>
+          </div>
+          
+          <!-- Secure & Reliable Environment -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Secure & Reliable Environment</h3>
+            <ul>
+              <li>Authenticated Account Assistance</li>
+              <li>Protected Profile Entry</li>
+              <li>Confidentiality Safeguards</li>
+              <li>Secure Communication Tools</li>
+            </ul>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: var(--color-text-muted); font-style: italic;">Our dedication lies in delivering an authentic and secure matrimonial encounter for all participants.</p>
+          </div>
+          
+          <!-- Added Perks -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Added Perks</h3>
+            <ul>
+              <li>Expedited Profile Identification</li>
+              <li>Enhanced Match Reception</li>
+              <li>Superior Search Positioning</li>
+              <li>Access to Exclusive Features</li>
+              <li>User-Friendly Mobile Interface</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
 function updatePageSEO(path, params) {
   let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
@@ -3103,6 +3272,11 @@ function updatePageSEO(path, params) {
       title = "Free Membership Plan | Nabhik Matrimonial";
       description = "Establish your matrimonial profile, upload images, explore pairings, and connect with authentic matches with our free membership plan.";
       keywords = "Free matrimony plan, complementary matrimonial membership, register free Nabhik matrimony, profile creation";
+      break;
+    case '#/membership/silver':
+      title = "Silver Membership Plan | Nabhik Matrimonial";
+      description = "Elevate your partner-finding journey with our Silver Membership Tier. Get unlimited connection requests, basic chat, and advanced search filters.";
+      keywords = "Silver membership plan, budget matrimony plan, connection invitations, basic chat, matrimonial match suggestions";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
