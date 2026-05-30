@@ -16,12 +16,12 @@ function makeProfileCard(profile) {
 
 // Generate Success Story Card
 function makeSuccessCard(story) {
-  // Use dynamically generated couple avatar as placeholder
-  const avatar = getSvgAvatar('female', story.id * 10, story.couple);
+  // Use story.photo if defined, otherwise fall back to dynamic getSvgAvatar
+  const avatar = story.photo || getSvgAvatar('female', story.id * 10, story.couple);
   return `
     <div class="success-card">
       <div class="success-card-image">
-        <img src="${avatar}" alt="${story.couple}">
+        <img src="${avatar}" alt="${story.couple}" style="object-fit: cover;">
       </div>
       <div class="success-card-content">
         <p class="success-quote">“${story.quote}”</p>
