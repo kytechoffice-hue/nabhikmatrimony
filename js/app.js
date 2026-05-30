@@ -1702,13 +1702,12 @@ function renderMembership(container) {
     
     // Determine button text and action
     let btnHtml = '';
-    if (!state.currentUser) {
+    if (p.name === 'Free') {
+      btnHtml = `<button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn">View Details</button>`;
+    } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
     } else if (isCurrent) {
       btnHtml = `<button class="plan-btn plan-btn-active" disabled>Active Plan</button>`;
-    } else if (p.name === 'Free') {
-      // Free plan downgrade disabled or just simple info
-      btnHtml = `<button class="plan-btn plan-btn-active" disabled>Default Plan</button>`;
     } else {
       btnHtml = `<button onclick="handleSelectPlan('${p.name}', ${p.price})" class="plan-btn ${p.featured ? 'btn-gold' : ''}">Upgrade Now</button>`;
     }
