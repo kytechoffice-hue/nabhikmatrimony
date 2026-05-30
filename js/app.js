@@ -1650,7 +1650,7 @@ function renderMembership(container) {
     {
       name: 'Gold',
       displayName: 'Gold Plan',
-      price: 999,
+      price: 599,
       period: ' / 6 Months',
       badgeClass: 'gold-badge',
       badgeIcon: '🥇',
@@ -1744,7 +1744,7 @@ function renderMembership(container) {
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Gold', 599)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
       }
       btnHtml = `
         ${mainBtn}
@@ -1883,7 +1883,7 @@ function renderMembership(container) {
               <td>Price</td>
               <td><strong>₹0</strong></td>
               <td><strong>₹299</strong></td>
-              <td><strong>₹999</strong></td>
+              <td><strong>₹599</strong></td>
               <td><strong>₹1999</strong></td>
             </tr>
           </tbody>
@@ -2264,7 +2264,7 @@ function switchAdminTab(tabName) {
           </thead>
           <tbody>
             <tr><td>Silver (₹299)</td><td>${state.revenueReport.activePlans.Silver || 0}</td></tr>
-            <tr><td>Gold (₹999)</td><td>${state.revenueReport.activePlans.Gold || 0}</td></tr>
+            <tr><td>Gold (₹599)</td><td>${state.revenueReport.activePlans.Gold || 0}</td></tr>
             <tr><td>Platinum (₹1999)</td><td>${state.revenueReport.activePlans.Platinum || 0}</td></tr>
             <tr><td>Premium Assisted (₹4999)</td><td>${state.revenueReport.activePlans['Premium Assisted'] || 0}</td></tr>
           </tbody>
@@ -3243,7 +3243,7 @@ function renderGoldPlanDetails(container) {
   } else if (isCurrentPlanGold) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
-    priceCTA = `<button onclick="handleSelectPlan('Gold', 999)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+    priceCTA = `<button onclick="handleSelectPlan('Gold', 599)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
   }
 
   container.innerHTML = `
@@ -3319,7 +3319,7 @@ function renderGoldPlanDetails(container) {
           <!-- Pricing Summary Card -->
           <div class="sidebar-info-card dark-theme" style="text-align: center;">
             <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">GOLD PLAN</h3>
-            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹999<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 6 Months</span></div>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹599<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 6 Months</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Most Popular Membership Plan</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
               <li style="color: #fff;">Unlimited Profile Views</li>
