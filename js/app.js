@@ -178,6 +178,9 @@ function initRouter() {
     case '#/membership':
       renderMembership(appView);
       break;
+    case '#/membership/free':
+      renderFreePlanDetails(appView);
+      break;
     case '#/stories':
       renderStories(appView);
       break;
@@ -1707,12 +1710,12 @@ function renderMembership(container) {
       if (!state.currentUser) {
         btnHtml = `
           <a href="#/register" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Register Free</a>
-          <button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn" style="display: block; width: 100%;">View Details</button>
+          <a href="#/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
         `;
       } else {
         btnHtml = `
           <button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>
-          <button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn" style="display: block; width: 100%;">View Details</button>
+          <a href="#/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
         `;
       }
     } else if (!state.currentUser) {
@@ -2901,6 +2904,149 @@ function handleAdminReject(id) {
   }
 }
 
+// 17. FREE MEMBERSHIP DETAILS VIEW
+function renderFreePlanDetails(container) {
+  const isUserLoggedIn = !!state.currentUser;
+  
+  container.innerHTML = `
+    <div class="page-banner">
+      <div class="container">
+        <h1>Free Membership Plan</h1>
+      </div>
+    </div>
+    
+    <div class="container section-padding">
+      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      
+      <div class="free-plan-layout">
+        <!-- Main Column: What You'll Gain -->
+        <div>
+          <div class="free-plan-intro">
+            <p>Join Nabhik Matrimony and embark on your quest for the ideal life partner with our entirely complimentary registration tier. Our Complimentary Membership Plan is thoughtfully crafted for newcomers eager to explore the platform, establish their profile, and connect with authentic matches within the dependable Nabhik community.</p>
+            <p>Regardless of whether you're seeking a bride or groom, our intuitive interface assists you in discovering suitable profiles tailored to your criteria, including education, occupation, and geographical area.</p>
+          </div>
+          
+          <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
+            <h2>What You'll Gain with Complementary Membership</h2>
+            <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
+          </div>
+          
+          <div class="benefit-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">📝</div>
+              <div>
+                <h3>Establish Your Matrimonial Profile</h3>
+                <p>Develop your personalized matrimonial profile in mere moments. Incorporate your personal details, academic background, professional role, and preferences to enhance your prospects of finding the right partner.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">📷</div>
+              <div>
+                <h3>Upload Your Profile Image</h3>
+                <p>Upload your profile picture to make your profile more appealing and noticeable to other members on the network.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🔍</div>
+              <div>
+                <h3>Explore Suitable Pairings</h3>
+                <p>Peruse and search profiles utilizing our fundamental search parameters, encompassing age, location, education, and career, to identify compatible matches.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">💡</div>
+              <div>
+                <h3>Daily Partner Recommendations</h3>
+                <p>Receive periodic partner suggestions based on your profile preferences and interests.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🤝</div>
+              <div>
+                <h3>Convey & Receive Interest Signals</h3>
+                <p>Signal your interest in fitting profiles and get signals from other members interested in genuine relationships.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card">
+              <div class="benefit-icon-wrapper">🔖</div>
+              <div>
+                <h3>Bookmark Preferred Profiles</h3>
+                <p>Save profiles that catch your eye and access them again anytime from your saved section.</p>
+              </div>
+            </div>
+            
+            <div class="benefit-card" style="grid-column: span 2;">
+              <div class="benefit-icon-wrapper">💬</div>
+              <div>
+                <h3>Essential Communication Tools</h3>
+                <p>Benefit from restricted chat access and foundational communication utilities to commence significant discussions.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="free-sidebar-section">
+          <!-- Secure & Trustworthy Environment -->
+          <div class="sidebar-info-card dark-theme">
+            <h3>Secure & Trustworthy Environment</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px; color: rgba(255,255,255,0.85);">Your confidentiality and safety are paramount to us. Every complimentary member receives:</p>
+            <ul>
+              <li>Mobile Number Confirmation</li>
+              <li>Email Confirmation</li>
+              <li>Fundamental Privacy Safeguards</li>
+            </ul>
+            <p style="font-size: 0.8rem; margin-top: 15px; color: var(--color-gold-light); font-style: italic;">We consistently oversee profiles to uphold a trustworthy and authentic marital environment.</p>
+          </div>
+          
+          <!-- Extra Advantages -->
+          <div class="sidebar-info-card light-theme">
+            <h3>Extra Advantages</h3>
+            <ul>
+              <li>Community Event Announcements</li>
+              <li>Relationship Advice & Lifestyle Articles</li>
+              <li>Mobile-Optimized Access</li>
+              <li>Effortless Dashboard Navigation</li>
+              <li>Profile Visibility in Search Outcomes</li>
+            </ul>
+          </div>
+          
+          <!-- Upgrade Alert Card -->
+          <div class="upgrade-highlight-card">
+            <h3>Elevate Anytime for Enhanced Benefits</h3>
+            <p>Our Complimentary Plan is ideal for an initial step, while our premium tiers unlock advanced functionalities such as:</p>
+            <ul style="text-align: left; margin: 10px 0 20px 20px; font-size: 0.82rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 4px;">
+              <li>Unlimited Profile Views</li>
+              <li>Direct Contact Information</li>
+              <li>Unlimited Chatting</li>
+              <li>Premier Profile Placement</li>
+              <li>Verification Emblem</li>
+              <li>Dedicated Assistance</li>
+            </ul>
+            <a href="#/membership" class="btn btn-primary" style="display: block; width: 100%; text-align: center; font-size: 0.88rem;">See Premium Plans</a>
+          </div>
+        </div>
+        
+        <!-- Bottom Quote Frame -->
+        <div class="free-quote-container">
+          <h3>“Most Members Commence Here”</h3>
+          <p>Begin your odyssey today and uncover meaningful connections within the trusted Nabhik community.</p>
+          ${!isUserLoggedIn ? `
+            <div style="margin-top: 16px;">
+              <a href="#/register" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">Register For Free</a>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Centralized SEO Manager for dynamic Title, Meta Description, and Meta Keywords
 function updatePageSEO(path, params) {
   let title = "Nabhik Matrimonial | Where Tradition Meets Perfect Match";
@@ -2952,6 +3098,11 @@ function updatePageSEO(path, params) {
       title = "Premium Membership Plans | Upgrade Nabhik Matrimonial";
       description = "Upgrade your profile with Free, Silver, Gold, Platinum, or Premium Assisted membership plans to unlock direct contacts, chats, and family assistance.";
       keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan, assisted matchmaking plan";
+      break;
+    case '#/membership/free':
+      title = "Free Membership Plan | Nabhik Matrimonial";
+      description = "Establish your matrimonial profile, upload images, explore pairings, and connect with authentic matches with our free membership plan.";
+      keywords = "Free matrimony plan, complementary matrimonial membership, register free Nabhik matrimony, profile creation";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
