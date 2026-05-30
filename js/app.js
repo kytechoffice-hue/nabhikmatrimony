@@ -1629,7 +1629,7 @@ function renderMembership(container) {
     {
       name: 'Silver',
       displayName: 'Silver Plan',
-      price: 499,
+      price: 299,
       period: ' / 3 Months',
       badgeClass: 'silver-badge',
       badgeIcon: '🥈',
@@ -1728,7 +1728,7 @@ function renderMembership(container) {
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Silver', 499)" class="plan-btn" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Silver', 299)" class="plan-btn" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
       }
       btnHtml = `
         ${mainBtn}
@@ -1866,7 +1866,7 @@ function renderMembership(container) {
             <tr>
               <td>Price</td>
               <td><strong>₹0</strong></td>
-              <td><strong>₹499</strong></td>
+              <td><strong>₹299</strong></td>
               <td><strong>₹999</strong></td>
               <td><strong>₹1999</strong></td>
             </tr>
@@ -2247,7 +2247,7 @@ function switchAdminTab(tabName) {
             <tr><th>Plan Type</th><th>Active Subscriptions</th></tr>
           </thead>
           <tbody>
-            <tr><td>Silver (₹499)</td><td>${state.revenueReport.activePlans.Silver || 0}</td></tr>
+            <tr><td>Silver (₹299)</td><td>${state.revenueReport.activePlans.Silver || 0}</td></tr>
             <tr><td>Gold (₹999)</td><td>${state.revenueReport.activePlans.Gold || 0}</td></tr>
             <tr><td>Platinum (₹1999)</td><td>${state.revenueReport.activePlans.Platinum || 0}</td></tr>
             <tr><td>Premium Assisted (₹4999)</td><td>${state.revenueReport.activePlans['Premium Assisted'] || 0}</td></tr>
@@ -3074,7 +3074,7 @@ function renderSilverPlanDetails(container) {
   } else if (isCurrentPlanSilver) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
-    priceCTA = `<button onclick="handleSelectPlan('Silver', 499)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+    priceCTA = `<button onclick="handleSelectPlan('Silver', 299)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
   }
 
   container.innerHTML = `
@@ -3158,7 +3158,7 @@ function renderSilverPlanDetails(container) {
           <!-- Pricing Summary Card -->
           <div class="sidebar-info-card dark-theme" style="text-align: center;">
             <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">SILVER TIER</h3>
-            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹499<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 3 Months</span></div>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹299<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 3 Months</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Economical Enhanced Experience</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
               <li style="color: #fff;">Unlimited Connection Requests</li>
