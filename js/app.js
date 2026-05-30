@@ -74,10 +74,11 @@ function updateNavigation() {
       ${isAdmin ? `<li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>` : ''}
     `;
   } else {
-    // Show Home, About Us, and Help when not logged in
+    // Show Home, About Us, Membership, and Help when not logged in
     navContainer.innerHTML = `
       ${makeLink('#/', 'Home')}
       ${makeLink('#/about', 'About Us')}
+      ${makeLink('#/membership', 'Membership')}
       ${makeLink('#/help', 'Help')}
     `;
   }
