@@ -1703,7 +1703,17 @@ function renderMembership(container) {
     // Determine button text and action
     let btnHtml = '';
     if (p.name === 'Free') {
-      btnHtml = `<button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn">View Details</button>`;
+      if (!state.currentUser) {
+        btnHtml = `
+          <a href="#/register" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Register Free</a>
+          <button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn" style="display: block; width: 100%;">View Details</button>
+        `;
+      } else {
+        btnHtml = `
+          <button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>
+          <button onclick="document.querySelector('.pricing-table-container').scrollIntoView({ behavior: 'smooth' })" class="plan-btn" style="display: block; width: 100%;">View Details</button>
+        `;
+      }
     } else if (!state.currentUser) {
       btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
     } else if (isCurrent) {
