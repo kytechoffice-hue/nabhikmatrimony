@@ -1845,10 +1845,10 @@ function renderMembership(container) {
         </table>
       </div>
       
-      <!-- Extra Revenue Features -->
+      <!-- Extra Features -->
       <div style="margin-top: 60px;">
         <div class="traditional-header" style="margin-bottom: 32px;">
-          <h2>Extra Revenue Features</h2>
+          <h2>Extra Features</h2>
           <div class="traditional-divider"><span class="icon">✦</span></div>
           <p style="color: var(--color-text-muted); font-size: 0.9rem; max-width: 500px; margin: 12px auto 0 auto;">
             You can additionally purchase individual add-ons to boost your profile's performance and matching accuracy.
