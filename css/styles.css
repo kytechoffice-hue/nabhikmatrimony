@@ -727,7 +727,7 @@ img {
 /* Membership Plans Section */
 .membership-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 32px;
   align-items: stretch;
   margin-top: 24px;
@@ -796,6 +796,23 @@ img {
   color: #00796b;
 }
 
+.free-badge {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.assisted-badge {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.plan-btn-active {
+  background-color: #eaeaea !important;
+  color: #888888 !important;
+  border-color: #cccccc !important;
+  cursor: not-allowed !important;
+}
+
 .membership-card h3 {
   font-size: 1.4rem;
   text-align: center;
@@ -858,9 +875,61 @@ img {
   background-color: var(--color-gold-hover);
 }
 
-.plan-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Pricing Comparison Table */
+.pricing-table-container {
+  margin-top: 60px;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+}
+
+.pricing-table-container h3 {
+  font-size: 1.8rem;
+  color: var(--color-maroon);
+  margin-bottom: 24px;
+  text-align: center;
+  font-family: var(--font-serif);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.comparison-table th, .comparison-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(74, 10, 16, 0.08);
+}
+
+.comparison-table th {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--color-maroon);
+  background-color: var(--color-cream-dark);
+}
+
+.comparison-table tr:hover td {
+  background-color: var(--color-cream);
+}
+
+.comparison-table td:first-child {
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+
+.comparison-table td:not(:first-child) {
+  text-align: center;
+}
+
+.comparison-table th:not(:first-child) {
+  text-align: center;
 }
 
 /* Success Stories Section */
