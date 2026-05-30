@@ -487,7 +487,8 @@ const state = {
   // Simulated admin analytics
   revenueReport: storage.get('revenueReport', {
     totalRevenue: 24988,
-    activePlans: { Silver: 12, Gold: 8, Platinum: 4 }
+    activePlans: { Silver: 12, Gold: 8, Platinum: 4, 'Premium Assisted': 2 },
+    extraFeatures: { 'Profile Boost': 15, 'Horoscope Match': 24, 'Profile Verification': 8, 'Homepage Featured Profile': 5 }
   })
 };
 
@@ -626,9 +627,31 @@ const stateActions = {
   
   purchaseMembership(planName, price) {
     if (state.currentUser) {
-      state.currentUser.membership = planName;
       state.revenueReport.totalRevenue += price;
-      state.revenueReport.activePlans[planName] = (state.revenueReport.activePlans[planName] || 0) + 1;
+      
+      const extraTiers = ['Profile Boost', 'Horoscope Match', 'Profile Verification', 'Homepage Featured Profile'];
+      if (extraTiers.includes(planName)) {
+        if (!state.revenueReport.extraFeatures) {
+          state.revenueReport.extraFeatures = {};
+        }
+        state.revenueReport.extraFeatures[planName] = (state.revenueReport.extraFeatures[planName] || 0) + 1;
+        
+        // Custom feature actions
+        if (planName === 'Profile Verification') {
+          state.currentUser.verified = true;
+          const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
+          if (idx !== -1) state.profiles[idx].verified = true;
+        }
+        if (planName === 'Homepage Featured Profile') {
+          state.currentUser.featured = true;
+          const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
+          if (idx !== -1) state.profiles[idx].featured = true;
+        }
+      } else {
+        state.currentUser.membership = planName;
+        state.revenueReport.activePlans[planName] = (state.revenueReport.activePlans[planName] || 0) + 1;
+      }
+      
       this.saveAll();
     }
   }
