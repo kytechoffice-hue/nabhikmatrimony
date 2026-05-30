@@ -945,11 +945,40 @@ function renderProfileDetails(container, profileId) {
         </div>
         
         <!-- Partner Preferences Lock (Premium Visual Lock) -->
-        <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
-          <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Partner Preferences & Contacts Locked</h4>
-          <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">Contact numbers, biodata PDF download, and matching kundali options are exclusive for Gold & Platinum members.</p>
-          <a href="#/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to View Contact</a>
-        </div>
+        ${(() => {
+          const userMem = state.currentUser ? (state.currentUser.membership || 'Free') : 'Free';
+          if (userMem === 'Gold' || userMem === 'Platinum' || userMem === 'Premium Assisted') {
+            return `
+              <div class="profile-info-section" style="background-color: #f1f8e9; border: 1.5px solid #81c784; border-radius: var(--border-radius-sm); padding: 24px;">
+                <h4 style="color: #2e7d32; font-family: var(--font-serif); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">💚 Premium Unlocked: Contact Details</h4>
+                <div class="profile-info-grid" style="margin-top: 16px;">
+                  <div class="info-item"><span class="info-label">Mobile Number</span><span class="info-value">+91 98234 ${50000 + profile.id}</span></div>
+                  <div class="info-item"><span class="info-label">Email Address</span><span class="info-value">${profile.name.toLowerCase().replace(/\s+/g, '')}@gmail.com</span></div>
+                </div>
+                <div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                  <button onclick="showToast('Downloading Biodata PDF...')" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.8rem; height: auto;">📥 Download Biodata PDF</button>
+                  <button onclick="showToast('Initiating Kundali Matching...')" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem; border-color: #2e7d32; color: #2e7d32; height: auto;">🕉 Check Kundali Match</button>
+                </div>
+              </div>
+            `;
+          } else if (userMem === 'Silver') {
+            return `
+              <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
+                <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Direct Contact Details Locked (Gold & Above)</h4>
+                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">You are currently on the Silver Plan. Direct contact details and Kundali matching options are exclusive for Gold, Platinum & Premium Assisted members.</p>
+                <a href="#/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to Gold Plan</a>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
+                <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Partner Preferences & Contacts Locked</h4>
+                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">Contact numbers, biodata PDF download, and matching kundali options are exclusive for Gold & Platinum members.</p>
+                <a href="#/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to View Contact</a>
+              </div>
+            `;
+          }
+        })()}
       </div>
     </div>
   `;
@@ -1568,67 +1597,331 @@ function selectChatThread(event, id) {
 
 // 8. MEMBERSHIP PLANS VIEW
 function renderMembership(container) {
+  const currentPlan = state.currentUser ? (state.currentUser.membership || 'Free') : null;
+  
+  // Define membership plans data
+  const plans = [
+    {
+      name: 'Free',
+      displayName: 'Free Plan',
+      price: 0,
+      period: '',
+      badgeClass: 'free-badge',
+      badgeIcon: '🌱',
+      tagline: 'Best for new users.',
+      features: [
+        'Create Profile',
+        'Upload Photos',
+        'Browse Limited Profiles',
+        'Send 5 Interests Per Day',
+        'Basic Search Filters'
+      ],
+      note: '',
+      featured: false
+    },
+    {
+      name: 'Silver',
+      displayName: 'Silver Plan',
+      price: 499,
+      period: ' / 3 Months',
+      badgeClass: 'silver-badge',
+      badgeIcon: '🥈',
+      tagline: 'Best low-cost starter plan.',
+      features: [
+        'View 50 Profiles',
+        'Send Unlimited Interests',
+        'Basic Chat Access',
+        'Priority Profile Visibility',
+        'Mobile Notifications'
+      ],
+      note: 'Recommended because many Indian users prefer plans below ₹500 initially.',
+      featured: false
+    },
+    {
+      name: 'Gold',
+      displayName: 'Gold Plan',
+      price: 999,
+      period: ' / 6 Months',
+      badgeClass: 'gold-badge',
+      badgeIcon: '🥇',
+      tagline: 'Best balance of affordability and value.',
+      features: [
+        'Unlimited Profile Views',
+        'Direct Contact Access',
+        'Unlimited Chat',
+        'Advanced Search Filters',
+        'See Who Viewed Your Profile',
+        'Profile Highlight Badge'
+      ],
+      note: 'This pricing is competitive compared to many Indian matrimony services charging ₹1999–₹6000 for similar features.',
+      featured: true
+    },
+    {
+      name: 'Platinum',
+      displayName: 'Platinum Plan',
+      price: 1999,
+      period: ' / 12 Months',
+      badgeClass: 'platinum-badge',
+      badgeIcon: '💎',
+      tagline: 'Best for serious users.',
+      features: [
+        'All Gold Features',
+        'Featured Profile on Homepage',
+        'Profile Verification Badge',
+        'WhatsApp Support',
+        'Dedicated Relationship Assistance',
+        'Priority Match Suggestions'
+      ],
+      note: '',
+      featured: false
+    },
+    {
+      name: 'Premium Assisted',
+      displayName: 'Premium Assisted Plan',
+      price: 4999,
+      period: ' / 12 Months',
+      badgeClass: 'assisted-badge',
+      badgeIcon: '🤝',
+      tagline: 'Optional high-end service.',
+      features: [
+        'Dedicated Matchmaking Support',
+        'Manual Match Recommendations',
+        'Family Assistance',
+        'Phone Support',
+        'Profile Promotion',
+        'Premium Badge'
+      ],
+      note: '',
+      featured: false
+    }
+  ];
+
+  let cardsHtml = plans.map(p => {
+    const isCurrent = currentPlan === p.name;
+    const priceText = p.price === 0 ? '₹0' : `₹${p.price}`;
+    
+    // Determine button text and action
+    let btnHtml = '';
+    if (!state.currentUser) {
+      btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
+    } else if (isCurrent) {
+      btnHtml = `<button class="plan-btn plan-btn-active" disabled>Active Plan</button>`;
+    } else if (p.name === 'Free') {
+      // Free plan downgrade disabled or just simple info
+      btnHtml = `<button class="plan-btn plan-btn-active" disabled>Default Plan</button>`;
+    } else {
+      btnHtml = `<button onclick="handleSelectPlan('${p.name}', ${p.price})" class="plan-btn ${p.featured ? 'btn-gold' : ''}">Upgrade Now</button>`;
+    }
+
+    return `
+      <div class="membership-card ${p.featured ? 'featured-plan' : ''}">
+        ${p.featured ? `<div class="plan-ribbon">Most Popular</div>` : ''}
+        
+        <div class="plan-badge ${p.badgeClass}">
+          <span style="font-size: 1.5rem;">${p.badgeIcon}</span>
+        </div>
+        
+        <h3>${p.displayName}</h3>
+        <p style="font-size: 0.85rem; color: var(--color-text-muted); text-align: center; margin-bottom: 16px; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+          ${p.tagline}
+        </p>
+        
+        <div class="plan-price">${priceText}<span>${p.period}</span></div>
+        
+        <ul class="plan-features">
+          ${p.features.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+        
+        ${p.note ? `
+          <div style="background-color: var(--color-cream-dark); border-left: 3px solid var(--color-gold); padding: 8px 12px; margin-bottom: 20px; font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.3; font-style: italic; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;">
+            💡 ${p.note}
+          </div>
+        ` : ''}
+        
+        <div style="margin-top: auto;">
+          ${btnHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>Membership Plans</h1>
+        <h1>Premium Membership Plans</h1>
       </div>
     </div>
     
     <div class="container section-padding">
       <div class="traditional-header">
-        <h2>Premium Plans for Faster Connect</h2>
-        <p style="font-size: 0.95rem; color: var(--color-text-muted);">Choose a plan that fits your search preference and starts direct chats.</p>
+        <h2>Choose Your Matchmaking Journey</h2>
+        <div class="traditional-divider"><span class="icon">✦</span></div>
+        <p style="max-width: 600px; margin: 16px auto 0 auto; color: var(--color-text-muted); font-size: 0.95rem;">
+          Upgrade your Nabhik Matrimonial membership to connect faster, access verified phone numbers, and unlock direct chats with compatible life partners.
+        </p>
+      </div>
+      <div class="membership-grid">
+        ${cardsHtml}
       </div>
       
-      <div class="membership-grid" style="margin-top: 0;">
-        <!-- Silver Plan -->
-        <div class="membership-card">
-          <div class="plan-badge silver-badge">🥈</div>
-          <h3>Silver Plan</h3>
-          <div class="plan-price">₹999 <span>/ 3 Months</span></div>
-          <ul class="plan-features">
-            <li>View 50 Profiles</li>
-            <li>Send Unlimited Interests</li>
-            <li>Basic Search Filters</li>
-            <li>Email Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Silver', 999)" class="plan-btn">Choose Plan</button>
+      <!-- Recommended Pricing Table -->
+      <div class="pricing-table-container">
+        <h3>Recommended Pricing Table</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Features</th>
+              <th>Free</th>
+              <th>Silver</th>
+              <th>Gold</th>
+              <th>Platinum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Create Profile</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>View Profiles</td>
+              <td>Limited</td>
+              <td>50</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td>Send Interests</td>
+              <td>5/Day</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td>Chat Access</td>
+              <td>No</td>
+              <td>Basic</td>
+              <td>Full</td>
+              <td>Full</td>
+            </tr>
+            <tr>
+              <td>Contact Details</td>
+              <td>No</td>
+              <td>Limited</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Profile Highlight</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Priority</td>
+            </tr>
+            <tr>
+              <td>Verification Badge</td>
+              <td>No</td>
+              <td>No</td>
+              <td>No</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Support</td>
+              <td>Email</td>
+              <td>Email</td>
+              <td>Priority</td>
+              <td>WhatsApp + Call</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td><strong>₹0</strong></td>
+              <td><strong>₹499</strong></td>
+              <td><strong>₹999</strong></td>
+              <td><strong>₹1999</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Extra Revenue Features -->
+      <div style="margin-top: 60px;">
+        <div class="traditional-header" style="margin-bottom: 32px;">
+          <h2>Extra Revenue Features</h2>
+          <div class="traditional-divider"><span class="icon">✦</span></div>
+          <p style="color: var(--color-text-muted); font-size: 0.9rem; max-width: 500px; margin: 12px auto 0 auto;">
+            You can additionally purchase individual add-ons to boost your profile's performance and matching accuracy.
+          </p>
         </div>
         
-        <!-- Gold Plan -->
-        <div class="membership-card featured-plan">
-          <div class="plan-ribbon">Most Popular</div>
-          <div class="plan-badge gold-badge">🥇</div>
-          <h3>Gold Plan</h3>
-          <div class="plan-price">₹1999 <span>/ 6 Months</span></div>
-          <ul class="plan-features">
-            <li>View Unlimited Profiles</li>
-            <li>Direct Contact Access</li>
-            <li>Chat Feature with Members</li>
-            <li>Advanced Search Filters</li>
-            <li>Priority Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Gold', 1999)" class="plan-btn btn-gold">Choose Plan</button>
+        <div class="membership-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+          <!-- Feature 1 -->
+          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 12px;">🚀</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Profile Boost</h4>
+              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Get 5x more profile visibility and match recommendations for 30 days.</p>
+            </div>
+            <div>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹99</div>
+              <button onclick="handleSelectPlan('Profile Boost', 99)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Buy Boost</button>
+            </div>
+          </div>
+          
+          <!-- Feature 2 -->
+          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 12px;">🪐</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Horoscope Match</h4>
+              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Detailed Gun Milan report analysis with native astrology charts.</p>
+            </div>
+            <div>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹49</div>
+              <button onclick="handleSelectPlan('Horoscope Match', 49)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Get Match</button>
+            </div>
+          </div>
+          
+          <!-- Feature 3 -->
+          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 12px;">🛡️</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Profile Verification</h4>
+              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Get the green verification checkmark badge indicating verified IDs.</p>
+            </div>
+            <div>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹199</div>
+              <button onclick="handleSelectPlan('Profile Verification', 199)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Verify Now</button>
+            </div>
+          </div>
+          
+          <!-- Feature 4 -->
+          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 12px;">⭐</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Homepage Featured</h4>
+              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Display your profile in the prominent slider right on the homepage.</p>
+            </div>
+            <div>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹299</div>
+              <button onclick="handleSelectPlan('Homepage Featured Profile', 299)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Feature Profile</button>
+            </div>
+          </div>
         </div>
-        
-        <!-- Platinum Plan -->
-        <div class="membership-card">
-          <div class="plan-badge platinum-badge">💎</div>
-          <h3>Platinum Plan</h3>
-          <div class="plan-price">₹2999 <span>/ 12 Months</span></div>
-          <ul class="plan-features">
-            <li>All Gold Plan Features</li>
-            <li>Priority Profile Highlight</li>
-            <li>Profile Verification Badge</li>
-            <li>Dedicated Kundali/Support</li>
-          </ul>
-          <button onclick="handleSelectPlan('Platinum', 2999)" class="plan-btn">Choose Plan</button>
-        </div>
+      </div>
+      
+      <!-- FAQ / Help Prompt -->
+      <div style="margin-top: 60px; text-align: center; background-color: #fff; border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: 32px;">
+        <h3 style="font-size: 1.25rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">Need Assisted Matchmaking Assistance?</h3>
+        <p style="font-size: 0.9rem; color: var(--color-text-muted); max-width: 620px; margin: 0 auto 16px auto;">
+          Our Premium Assisted Plan offers custom matchmaking search managed directly by Nabhik Matrimonial coordinators. We help schedule introductions and work closely with your family.
+        </p>
+        <a href="#/contact" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 20px;">Contact Relationship Advisor</a>
       </div>
     </div>
   `;
 }
+
 
 // 9. SUCCESS STORIES VIEW
 function renderStories(container) {
@@ -1925,9 +2218,23 @@ function switchAdminTab(tabName) {
             <tr><th>Plan Type</th><th>Active Subscriptions</th></tr>
           </thead>
           <tbody>
-            <tr><td>Silver (₹999)</td><td>${state.revenueReport.activePlans.Silver}</td></tr>
-            <tr><td>Gold (₹1999)</td><td>${state.revenueReport.activePlans.Gold}</td></tr>
-            <tr><td>Platinum (₹2999)</td><td>${state.revenueReport.activePlans.Platinum}</td></tr>
+            <tr><td>Silver (₹499)</td><td>${state.revenueReport.activePlans.Silver || 0}</td></tr>
+            <tr><td>Gold (₹999)</td><td>${state.revenueReport.activePlans.Gold || 0}</td></tr>
+            <tr><td>Platinum (₹1999)</td><td>${state.revenueReport.activePlans.Platinum || 0}</td></tr>
+            <tr><td>Premium Assisted (₹4999)</td><td>${state.revenueReport.activePlans['Premium Assisted'] || 0}</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.2rem; margin: 32px 0 16px 0;">Extra Features Sales</h3>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Feature Type</th><th>Units Sold</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Profile Boost (₹99)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Profile Boost']) || 0}</td></tr>
+            <tr><td>Horoscope Match (₹49)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Horoscope Match']) || 0}</td></tr>
+            <tr><td>Profile Verification (₹199)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Profile Verification']) || 0}</td></tr>
+            <tr><td>Homepage Featured Profile (₹299)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Homepage Featured Profile']) || 0}</td></tr>
           </tbody>
         </table>
       `;
@@ -2118,6 +2425,14 @@ function handleToggleShortlist(id, updateDetailsPage = false) {
 
 // Interest send simulation
 function handleSendInterest(id, updateDetailsPage = false) {
+  if (state.currentUser && (!state.currentUser.membership || state.currentUser.membership === 'Free')) {
+    if (state.interestsSent.length >= 5 && !state.interestsSent.includes(id)) {
+      showToast('⚠️ Daily limit reached! Free accounts can only send 5 interests. Upgrade to Silver or above for unlimited interests.');
+      window.location.hash = '#/membership';
+      return;
+    }
+  }
+  
   stateActions.sendInterest(id);
   showToast('Interest Request sent successfully!');
   
@@ -2138,6 +2453,12 @@ function handleSendInterest(id, updateDetailsPage = false) {
 function handleStartChat(id) {
   if (!state.currentUser) {
     window.location.hash = '#/login';
+    return;
+  }
+  
+  if (!state.currentUser.membership || state.currentUser.membership === 'Free') {
+    showToast('💬 Chatting is exclusive to premium members. Upgrade your plan to start chatting!');
+    window.location.hash = '#/membership';
     return;
   }
   
@@ -2619,8 +2940,8 @@ function updatePageSEO(path, params) {
       break;
     case '#/membership':
       title = "Premium Membership Plans | Upgrade Nabhik Matrimonial";
-      description = "Upgrade your profile with Silver, Gold, or Platinum premium membership plans to unlock direct contacts, chats, and featured placements.";
-      keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan";
+      description = "Upgrade your profile with Free, Silver, Gold, Platinum, or Premium Assisted membership plans to unlock direct contacts, chats, and family assistance.";
+      keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan, assisted matchmaking plan";
       break;
     case '#/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
