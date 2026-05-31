@@ -669,6 +669,16 @@ const stateActions = {
           const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
           if (idx !== -1) state.profiles[idx].featured = true;
         }
+        if (planName === 'Profile Boost') {
+          state.currentUser.boosted = true;
+          const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
+          if (idx !== -1) state.profiles[idx].boosted = true;
+        }
+        if (planName === 'Horoscope Match') {
+          state.currentUser.horoscopeMatch = true;
+          const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
+          if (idx !== -1) state.profiles[idx].horoscopeMatch = true;
+        }
       } else {
         state.currentUser.membership = planName;
         state.revenueReport.activePlans[planName] = (state.revenueReport.activePlans[planName] || 0) + 1;
