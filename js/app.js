@@ -250,8 +250,8 @@ function initRouter() {
 
 // 1. HOME VIEW
 function renderHome(container) {
-  // Grab 10 registered profiles
-  const featured = state.profiles.slice(0, 10);
+  // Grab featured profiles for homepage slider
+  const featured = state.profiles.filter(p => p.featured);
   let featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
@@ -911,6 +911,10 @@ function renderProfileDetails(container, profileId) {
             💬 Chat Now
           </button>
           
+          <button onclick="handleCheckKundaliMatch(${profile.id})" class="btn btn-outline" style="width: 100%; border-color: #2e7d32; color: #2e7d32; margin-top: 8px; font-weight: 600;">
+            🕉 Check Kundali Match
+          </button>
+          
           <button onclick="handleReportProfile(${profile.id})" style="font-size: 0.8rem; color: #c62828; margin-top: 8px;">
             ⚠️ Report Profile
           </button>
@@ -920,7 +924,7 @@ function renderProfileDetails(container, profileId) {
       <!-- Right main info -->
       <div class="profile-detail-main">
         <div class="profile-detail-header">
-          <h2>${profile.name} ${profile.verified ? '<span class="text-gold" style="font-size: 1.4rem;" title="Verified Profile">✔</span>' : ''}</h2>
+          <h2>${profile.name} ${profile.verified ? '<span style="display: inline-flex; align-items: center; justify-content: center; background-color: #2e7d32; color: #fff; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; gap: 4px;" title="Verified Profile"><span style="font-size: 0.7rem;">✔</span> Verified</span>' : ''}</h2>
           <p>${profile.profession} | ${profile.location}</p>
         </div>
         
@@ -973,7 +977,7 @@ function renderProfileDetails(container, profileId) {
                 </div>
                 <div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                   <button onclick="showToast('Downloading Biodata PDF...')" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.8rem; height: auto;">📥 Download Biodata PDF</button>
-                  <button onclick="showToast('Initiating Kundali Matching...')" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem; border-color: #2e7d32; color: #2e7d32; height: auto;">🕉 Check Kundali Match</button>
+                  <button onclick="handleCheckKundaliMatch(${profile.id})" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem; border-color: #2e7d32; color: #2e7d32; height: auto;">🕉 Check Kundali Match</button>
                 </div>
               </div>
             `;
@@ -1254,8 +1258,8 @@ function renderDashboard(container) {
       <aside class="dashboard-sidebar">
         <div class="dashboard-user-summary">
           <img id="db-sidebar-user-photo" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
-          <h4 id="db-sidebar-user-name">${state.currentUser.name}</h4>
-          <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member</p>
+          <h4 id="db-sidebar-user-name" style="display: flex; align-items: center; justify-content: center; gap: 6px;">${state.currentUser.name} ${state.currentUser.verified ? '<span style="background-color: #2e7d32; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; display: inline-flex; align-items: center; gap: 2px;" title="Verified Profile">✔ Verified</span>' : ''}</h4>
+          <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member${state.currentUser.boosted ? ' | 🚀 Boosted' : ''}</p>
         </div>
         <ul class="dashboard-menu">
           <li><a href="#/dashboard?tab=overview" id="db-tab-overview">📊 Overview</a></li>
@@ -1293,12 +1297,52 @@ function switchDashboardTab(tabName) {
   
   switch (tabName) {
     case 'overview':
+      let activeFeaturesHtml = '';
+      if (state.currentUser.boosted) {
+        activeFeaturesHtml += `
+          <div class="profile-info-section" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 1.5px solid #ffb74d; border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 2.2rem;">🚀</div>
+            <div>
+              <h4 style="color: #e65100; font-family: var(--font-serif); margin-bottom: 4px; font-size: 1.05rem; font-weight: 600;">Profile Boost Active</h4>
+              <p style="font-size: 0.8rem; color: #5d4037; margin: 0; line-height: 1.4;">Your profile has 5x more visibility. It is currently pinned at the top of search results and recommend lists for matching members.</p>
+            </div>
+          </div>
+        `;
+      }
+      if (state.currentUser.featured) {
+        activeFeaturesHtml += `
+          <div class="profile-info-section" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 1.5px solid #81c784; border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 2.2rem;">⭐</div>
+            <div>
+              <h4 style="color: #2e7d32; font-family: var(--font-serif); margin-bottom: 4px; font-size: 1.05rem; font-weight: 600;">Homepage Featured Active</h4>
+              <p style="font-size: 0.8rem; color: #1b5e20; margin: 0; line-height: 1.4;">Your profile is displayed in the prominent slider right on the homepage, visible to all visitors.</p>
+            </div>
+          </div>
+        `;
+      }
+      if (state.currentUser.horoscopeMatch) {
+        activeFeaturesHtml += `
+          <div class="profile-info-section" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 1.5px solid #64b5f6; border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 2.2rem;">🪐</div>
+            <div>
+              <h4 style="color: #0d47a1; font-family: var(--font-serif); margin-bottom: 4px; font-size: 1.05rem; font-weight: 600;">Horoscope Match Unlocked</h4>
+              <p style="font-size: 0.8rem; color: #0d3c9b; margin: 0; line-height: 1.4;">Vedic compatibility checks are active. You can now run 36-point Gun Milan reports on any profile contact card.</p>
+            </div>
+          </div>
+        `;
+      }
+      
+      const recMatches = state.profiles
+        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified)
+        .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
+        
       panel.innerHTML = `
         <h2>Account Overview</h2>
+        ${activeFeaturesHtml}
         
         <div class="stat-tiles">
           <div class="stat-tile">
-            <h3>${state.profiles.filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified).length}</h3>
+            <h3>${recMatches.length}</h3>
             <p>New Matches</p>
           </div>
           <div class="stat-tile">
@@ -1317,13 +1361,15 @@ function switchDashboardTab(tabName) {
         
         <h3 style="font-size: 1.25rem; margin: 32px 0 16px 0;">🎯 Recommended Matches (AI Suggestions)</h3>
         <div class="search-results-grid">
-          ${state.profiles.filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified).slice(0, 3).map(p => makeProfileCard(p)).join('')}
+          ${recMatches.slice(0, 3).map(p => makeProfileCard(p)).join('')}
         </div>
       `;
       break;
       
     case 'matches':
-      const matchesList = state.profiles.filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified);
+      const matchesList = state.profiles
+        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified)
+        .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
       panel.innerHTML = `
         <h2>AI Suggestions & Compatible Matches</h2>
         <div class="search-results-grid">
@@ -2428,6 +2474,9 @@ function runProfileSearch() {
     results.sort((a,b) => b.age - a.age);
   }
   
+  // Prioritize boosted profiles so they appear first in the search results
+  results.sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
+  
   // Inject HTML
   const grid = document.getElementById('search-results-grid');
   const countTitle = document.getElementById('search-count-title');
@@ -2844,10 +2893,173 @@ function handleCreditCardPaySubmit(e, planName, price) {
   e.preventDefault();
   closeModal(true);
   stateActions.purchaseMembership(planName, price);
-  showToast(`Congratulations! You are now a ${planName} member.`);
+  
+  const extraTiers = ['Profile Boost', 'Horoscope Match', 'Profile Verification', 'Homepage Featured Profile'];
+  if (extraTiers.includes(planName)) {
+    showToast(`Success! You have activated the ${planName} add-on.`);
+  } else {
+    showToast(`Congratulations! You are now a ${planName} member.`);
+  }
   
   // Router reset to show upgraded states
   initRouter();
+}
+
+// Function to handle Check Kundali Match compatibility report
+function handleCheckKundaliMatch(profileId) {
+  if (!state.currentUser) {
+    window.location.hash = '#/login';
+    return;
+  }
+  
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+  
+  const targetProfile = state.profiles.find(p => p.id === profileId);
+  if (!targetProfile) {
+    showToast("Profile not found.");
+    return;
+  }
+  
+  if (!state.currentUser.horoscopeMatch) {
+    // Show unlock promo modal
+    overlay.innerHTML = `
+      <div class="modal-content" style="max-width: 460px; text-align: center; padding: 32px 24px;">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div style="font-size: 3rem; margin-bottom: 12px;">🪐</div>
+        <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">Unlock Horoscope Match</h3>
+        <p style="font-size: 0.88rem; color: var(--color-text-muted); line-height: 1.5; margin-bottom: 20px;">
+          Compare Kundali and Gun Milan compatibility reports instantly! Vedic matching details, Nakshatra alignments, and Manglik Dosha status are locked.
+        </p>
+        <div style="background-color: var(--color-cream); border-radius: var(--border-radius-sm); padding: 16px; margin-bottom: 24px; text-align: left; border: 1px solid var(--color-border);">
+          <h5 style="margin-bottom: 6px; color: var(--color-maroon); font-size: 0.85rem;">Horoscope Match Add-on Includes:</h5>
+          <ul style="font-size: 0.8rem; line-height: 1.4; color: var(--color-text-dark); margin: 0; padding-left: 16px;">
+            <li>36-Point Gun Milan compatibility score calculation.</li>
+            <li>Rashi (Moon Sign) and Nakshatra compatibility analysis.</li>
+            <li>Detailed 8-Koota category-wise points breakdown.</li>
+            <li>Varna, Vashya, Tara, Yoni, Maitri, Gana, Bhakoot, and Nadi status.</li>
+          </ul>
+        </div>
+        <button onclick="closeModal(true); handleSelectPlan('Horoscope Match', 49)" class="btn btn-primary" style="width: 100%; font-weight: 700; margin-bottom: 12px;">Unlock Now for ₹49</button>
+        <button onclick="closeModal()" class="btn btn-outline" style="width: 100%; border-color: var(--color-border); color: var(--color-text-muted);">Maybe Later</button>
+      </div>
+    `;
+    overlay.classList.add('active');
+    return;
+  }
+  
+  // Horoscope Match is purchased - calculate deterministic points compatibility score
+  const uId = state.currentUser.id;
+  const tId = targetProfile.id;
+  // Deterministic Gun Milan points (out of 36) - range 18 to 34
+  const points = 18 + ((uId * tId * 7 + 13) % 17);
+  
+  // Nakshatra and Rashi determinations
+  const rashis = ['Mesh (Aries)', 'Vrishabha (Taurus)', 'Mithun (Gemini)', 'Kark (Cancer)', 'Simha (Leo)', 'Kanya (Virgo)', 'Tula (Libra)', 'Vrishchik (Scorpio)', 'Dhanu (Sagittarius)', 'Makar (Capricorn)', 'Kumbh (Aquarius)', 'Meen (Pisces)'];
+  const nakshatras = ['Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra', 'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Poorva Phalguni', 'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Visakha', 'Anuradha', 'Jyeshtha', 'Moola', 'Poorvashadha', 'Uttarashadha', 'Shravana', 'Dhanishta', 'Shatabhisha', 'Poorvabhadrapada', 'Uttarabhadrapada', 'Revati'];
+  
+  const userRashi = rashis[(uId * 5) % rashis.length];
+  const targetRashi = rashis[(tId * 7) % rashis.length];
+  const userNakshatra = nakshatras[(uId * 3) % nakshatras.length];
+  const targetNakshatra = nakshatras[(tId * 4) % nakshatras.length];
+  
+  let verdict = "Good Compatibility";
+  let verdictColor = "#d4af37"; // gold
+  let verdictBg = "#fffde7";
+  if (points >= 28) {
+    verdict = "Excellent Compatibility (Highly Recommended)";
+    verdictColor = "#2e7d32"; // green
+    verdictBg = "#e8f5e9";
+  } else if (points >= 24) {
+    verdict = "Very Good Compatibility";
+    verdictColor = "#1b5e20";
+    verdictBg = "#f1f8e9";
+  } else if (points < 21) {
+    verdict = "Moderate Compatibility (Pooja/Remedies Advised)";
+    verdictColor = "#c62828"; // red
+    verdictBg = "#ffebee";
+  }
+  
+  // Calculate breakdown points
+  const breakdown = [
+    { name: "Varna", label: "Work Profile", max: 1, got: (points > 20) ? 1 : 0 },
+    { name: "Vashya", label: "Control/Influence", max: 2, got: ((uId + tId) % 2 === 0) ? 2 : 1 },
+    { name: "Tara", label: "Destiny/Stars", max: 3, got: ((uId + tId + 1) % 3 === 0) ? 3 : 1.5 },
+    { name: "Yoni", label: "Mutual Attraction", max: 4, got: (points >= 26) ? 3 : 2 },
+    { name: "Graha Maitri", label: "Friendship", max: 5, got: (points >= 28) ? 5 : ((points >= 22) ? 4 : 3) },
+    { name: "Gana", label: "Temperament", max: 6, got: (points >= 30) ? 6 : ((points >= 24) ? 5 : 1) },
+    { name: "Bhakoot", label: "Family / Love", max: 7, got: (points % 2 === 0) ? 7 : 0 },
+    { name: "Nadi", label: "Health / Genetics", max: 8, got: (points >= 25 || points % 3 === 0) ? 8 : 0 }
+  ];
+  
+  // Sum up to match points exactly
+  let currentSum = breakdown.reduce((sum, item) => sum + item.got, 0);
+  let diff = points - currentSum;
+  // Distribute difference to Bhakoot or Nadi or Maitri to make it perfectly consistent
+  if (diff !== 0) {
+    breakdown[6].got = breakdown[6].got + diff; // adjust Bhakoot
+    if (breakdown[6].got < 0) {
+      breakdown[7].got += breakdown[6].got;
+      breakdown[6].got = 0;
+    }
+  }
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 550px; text-align: left; padding: 24px;">
+      <button class="modal-close-btn" onclick="closeModal()">×</button>
+      
+      <div style="text-align: center; border-bottom: 2px solid var(--color-border); padding-bottom: 16px; margin-bottom: 16px;">
+        <span style="font-size: 2.2rem;">🪐</span>
+        <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif); margin-top: 6px; margin-bottom: 2px;">Kundali Matching Report</h3>
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0;">Vedic Compatibility analysis between you and ${targetProfile.name}</p>
+      </div>
+      
+      <!-- Gun Milan Score Circle -->
+      <div style="display: flex; align-items: center; justify-content: space-around; background-color: var(--color-cream); border-radius: var(--border-radius-sm); padding: 16px; border: 1.5px solid var(--color-gold); margin-bottom: 20px;">
+        <div style="text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: var(--color-maroon);">${points} <span style="font-size: 1rem; color: var(--color-text-muted);">/ 36</span></div>
+          <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-muted);">Gun Milan Score</div>
+        </div>
+        <div style="height: 40px; width: 1px; background-color: var(--color-border);"></div>
+        <div style="max-width: 280px;">
+          <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; font-family: var(--font-serif); color: var(--color-maroon);">Matching Rashi & Nakshatra</h4>
+          <p style="font-size: 0.78rem; margin: 0; line-height: 1.3; color: var(--color-text-dark);">
+            Your Rashi: <strong>${userRashi}</strong> | Nakshatra: <strong>${userNakshatra}</strong><br>
+            Their Rashi: <strong>${targetRashi}</strong> | Nakshatra: <strong>${targetNakshatra}</strong>
+          </p>
+        </div>
+      </div>
+      
+      <!-- Verdict -->
+      <div style="background-color: ${verdictBg}; color: ${verdictColor}; border: 1px solid ${verdictColor}55; padding: 12px; border-radius: var(--border-radius-sm); text-align: center; font-weight: 600; font-size: 0.88rem; margin-bottom: 20px;">
+        Vedic Verdict: ${verdict}
+      </div>
+      
+      <!-- Breakdown Table -->
+      <h4 style="font-size: 0.95rem; font-family: var(--font-serif); color: var(--color-maroon); margin-bottom: 10px;">8-Koota Detailed Breakdown</h4>
+      <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+        <thead>
+          <tr style="border-bottom: 1.5px solid var(--color-border); text-align: left; font-weight: 600; color: var(--color-text-muted);">
+            <th style="padding: 6px 4px;">Koota Name</th>
+            <th style="padding: 6px 4px;">Compatibility Aspect</th>
+            <th style="padding: 6px 4px; text-align: right;">Points Obtained</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${breakdown.map((item, idx) => `
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 8px 4px; font-weight: 600; color: var(--color-maroon);">${idx + 1}. ${item.name}</td>
+              <td style="padding: 8px 4px; color: var(--color-text-muted);">${item.label}</td>
+              <td style="padding: 8px 4px; text-align: right; font-weight: 700; color: ${item.got > 0 ? 'var(--color-text-dark)' : '#c62828'}">${item.got} / ${item.max}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      
+      <button onclick="closeModal()" class="btn btn-primary" style="width: 100%; margin-top: 24px; font-weight: 700;">Close Report</button>
+    </div>
+  `;
+  overlay.classList.add('active');
 }
 
 // Edit profile details
