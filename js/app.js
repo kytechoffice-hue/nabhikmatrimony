@@ -649,6 +649,11 @@ function handleTicketSubmit(e) {
   const email = document.getElementById('ticket-email').value;
   const query = document.getElementById('ticket-query').value;
   
+  // Add to local state.tickets for admin dashboard monitoring
+  if (typeof stateActions !== 'undefined' && stateActions.addTicket) {
+    stateActions.addTicket({ name, email, query });
+  }
+
   const subject = "Submit a Query";
   const body = `Dear Team,
 
@@ -1735,102 +1740,8 @@ function selectChatThread(event, id) {
 function renderMembership(container) {
   const currentPlan = state.currentUser ? (state.currentUser.membership || 'Free') : null;
   
-  // Define membership plans data
-  const plans = [
-    {
-      name: 'Free',
-      displayName: 'Free Plan',
-      price: 0,
-      period: '',
-      badgeClass: 'free-badge',
-      badgeIcon: '🌱',
-      tagline: 'Best for new users.',
-      features: [
-        'Set Up a Free Account',
-        'Add Pictures',
-        'View Listings',
-        'Send a Few "Likes"',
-        'Simple Compatibility Tips'
-      ],
-      note: '',
-      featured: false
-    },
-    {
-      name: 'Silver',
-      displayName: 'Silver Plan',
-      price: 299,
-      period: ' / 3 Months',
-      badgeClass: 'silver-badge',
-      badgeIcon: '🥈',
-      tagline: 'Best low-cost starter plan.',
-      features: [
-        'View 50 Profiles',
-        'Send Unlimited Interests',
-        'Basic Chat Access',
-        'Priority Profile Visibility',
-        'Mobile Notifications'
-      ],
-      note: 'Recommended because many Indian users prefer plans below ₹500 initially.',
-      featured: false
-    },
-    {
-      name: 'Gold',
-      displayName: 'Gold Plan',
-      price: 599,
-      period: ' / 6 Months',
-      badgeClass: 'gold-badge',
-      badgeIcon: '🥇',
-      tagline: 'Best balance of affordability and value.',
-      features: [
-        'Unlimited Profile Views',
-        'Direct Contact Access',
-        'Unlimited Chat',
-        'Advanced Search Filters',
-        'See Who Viewed Your Profile',
-        'Profile Highlight Badge'
-      ],
-      note: 'This pricing is competitive compared to many Indian matrimony services charging ₹1999–₹6000 for similar features.',
-      featured: true
-    },
-    {
-      name: 'Platinum',
-      displayName: 'Platinum Plan',
-      price: 1199,
-      period: ' / 12 Months',
-      badgeClass: 'platinum-badge',
-      badgeIcon: '💎',
-      tagline: 'Best for serious users.',
-      features: [
-        'All Gold Features',
-        'Featured Profile on Homepage',
-        'Profile Verification Badge',
-        'WhatsApp Support',
-        'Dedicated Relationship Assistance',
-        'Priority Match Suggestions'
-      ],
-      note: '',
-      featured: false
-    },
-    {
-      name: 'Premium Assisted',
-      displayName: 'Premium Assisted Plan',
-      price: 4999,
-      period: ' / 12 Months',
-      badgeClass: 'assisted-badge',
-      badgeIcon: '🤝',
-      tagline: 'Optional high-end service.',
-      features: [
-        'Dedicated Matchmaking Support',
-        'Manual Match Recommendations',
-        'Family Assistance',
-        'Phone Support',
-        'Profile Promotion',
-        'Premium Badge'
-      ],
-      note: '',
-      featured: false
-    }
-  ];
+  // Load membership plans dynamically from state
+  const plans = (state.plans || []).filter(p => p.active);
 
   let cardsHtml = plans.map(p => {
     const isCurrent = currentPlan === p.name;
@@ -2310,38 +2221,6 @@ function renderTerms(container) {
 
 // 15. ADMIN PANEL VIEW
 function renderAdmin(container) {
-  const pending = state.profiles.filter(p => !p.verified);
-  const approved = state.profiles.filter(p => p.verified);
-  
-  let pendingRows = pending.map(p => `
-    <tr>
-      <td>#NB-${1000 + p.id}</td>
-      <td>${p.name}</td>
-      <td>${p.gender}</td>
-      <td>${p.location}</td>
-      <td><span class="badge-status badge-pending">Pending</span></td>
-      <td>
-        <div class="action-btn-group">
-          <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
-          <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-  
-  let approvedRows = approved.map(p => `
-    <tr>
-      <td>#NB-${1000 + p.id}</td>
-      <td>${p.name}</td>
-      <td>${p.gender}</td>
-      <td>${p.location}</td>
-      <td><span class="badge-status badge-approved">Approved</span></td>
-      <td>
-        <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
-      </td>
-    </tr>
-  `).join('');
-
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
@@ -2355,9 +2234,18 @@ function renderAdmin(container) {
       <aside class="admin-sidebar">
         <h3>Admin Tools</h3>
         <ul class="admin-menu">
-          <li><a href="javascript:switchAdminTab('dashboard')" id="ad-tab-dashboard" class="active">📊 Analytics</a></li>
-          <li><a href="javascript:switchAdminTab('approvals')" id="ad-tab-approvals">✓ Profile Approvals</a></li>
+          <li><a href="javascript:switchAdminTab('dashboard')" id="ad-tab-dashboard" class="active">📊 Dashboard Overview</a></li>
           <li><a href="javascript:switchAdminTab('users')" id="ad-tab-users">👥 User Management</a></li>
+          <li><a href="javascript:switchAdminTab('verification')" id="ad-tab-verification">🛡️ Profile Verification</a></li>
+          <li><a href="javascript:switchAdminTab('membership')" id="ad-tab-membership">👑 Membership Management</a></li>
+          <li><a href="javascript:switchAdminTab('payments')" id="ad-tab-payments">💳 Payment Management</a></li>
+          <li><a href="javascript:switchAdminTab('chat_monitoring')" id="ad-tab-chat_monitoring">💬 Chat & Spam Control</a></li>
+          <li><a href="javascript:switchAdminTab('stories_mgmt')" id="ad-tab-stories_mgmt">💖 Success Stories</a></li>
+          <li><a href="javascript:switchAdminTab('events_mgmt')" id="ad-tab-events_mgmt">📅 Community Events</a></li>
+          <li><a href="javascript:switchAdminTab('ads_mgmt')" id="ad-tab-ads_mgmt">📢 Advertisement Control</a></li>
+          <li><a href="javascript:switchAdminTab('reports_analytics')" id="ad-tab-reports_analytics">📈 Reports & Analytics</a></li>
+          <li><a href="javascript:switchAdminTab('support_tickets')" id="ad-tab-support_tickets">🎫 Support Ticket System</a></li>
+          <li><a href="javascript:switchAdminTab('email_templates')" id="ad-tab-email_templates">✉️ Email Templates</a></li>
         </ul>
       </aside>
       
@@ -2377,7 +2265,7 @@ function switchAdminTab(tabName) {
   if (!panel) return;
   
   document.querySelectorAll('.admin-menu a').forEach(a => {
-    if (a.getAttribute('href').includes(tabName)) {
+    if (a.id === `ad-tab-${tabName}`) {
       a.classList.add('active');
     } else {
       a.classList.remove('active');
@@ -2385,84 +2273,288 @@ function switchAdminTab(tabName) {
   });
   
   switch (tabName) {
-    case 'dashboard':
+    case 'dashboard': {
+      const totalUsers = state.profiles.length;
+      const activeUsers = state.profiles.filter(p => p.verified && !p.suspended).length;
+      const male = state.profiles.filter(p => p.gender && p.gender.toLowerCase() === 'male').length;
+      const female = state.profiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
+      const premium = state.profiles.filter(p => p.membership && p.membership !== 'Free').length;
+      const pending = state.profiles.filter(p => !p.verified).length;
+      const storiesCount = state.stories.length;
+      const totalRevenue = state.revenueReport.totalRevenue;
+
+      const recentUsers = state.profiles.slice(-3).reverse();
+      const recentPayments = (state.payments || []).slice(-3).reverse();
+      const recentTickets = (state.tickets || []).slice(-3).reverse();
+      const pendingApprovals = state.profiles.filter(p => !p.verified).slice(0, 3);
+
       panel.innerHTML = `
-        <h2>Analytics Dashboard</h2>
+        <h2>Dashboard Overview</h2>
+        
+        <!-- Stats Grid -->
         <div class="admin-stats-grid">
           <div class="admin-stat-card">
-            <h4>Total Users</h4>
-            <p>${state.profiles.length}</p>
+            <h4>Total Registered</h4>
+            <p>${totalUsers}</p>
           </div>
           <div class="admin-stat-card">
             <h4>Active Profiles</h4>
-            <p>${state.profiles.filter(p => p.verified).length}</p>
+            <p>${activeUsers}</p>
           </div>
           <div class="admin-stat-card">
-            <h4>Pending Verification</h4>
-            <p>${state.profiles.filter(p => !p.verified).length}</p>
+            <h4>Male / Female</h4>
+            <p>${male} / ${female}</p>
           </div>
           <div class="admin-stat-card">
-            <h4>Mock Revenue</h4>
-            <p>₹${state.revenueReport.totalRevenue}</p>
+            <h4>Premium Members</h4>
+            <p>${premium}</p>
+          </div>
+          <div class="admin-stat-card">
+            <h4>Registrations Today</h4>
+            <p>5</p>
+          </div>
+          <div class="admin-stat-card">
+            <h4>Pending Verifications</h4>
+            <p>${pending}</p>
+          </div>
+          <div class="admin-stat-card">
+            <h4>Success Stories</h4>
+            <p>${storiesCount}</p>
+          </div>
+          <div class="admin-stat-card">
+            <h4>Revenue Overview</h4>
+            <p>₹${totalRevenue}</p>
           </div>
         </div>
-        
-        <h3 style="font-size: 1.2rem; margin: 32px 0 16px 0;">Membership Distribution</h3>
-        <table class="admin-table">
-          <thead>
-            <tr><th>Plan Type</th><th>Active Subscriptions</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Silver (₹299)</td><td>${state.revenueReport.activePlans.Silver || 0}</td></tr>
-            <tr><td>Gold (₹599)</td><td>${state.revenueReport.activePlans.Gold || 0}</td></tr>
-            <tr><td>Platinum (₹1199)</td><td>${state.revenueReport.activePlans.Platinum || 0}</td></tr>
-            <tr><td>Premium Assisted (₹4999)</td><td>${state.revenueReport.activePlans['Premium Assisted'] || 0}</td></tr>
-          </tbody>
-        </table>
 
-        <h3 style="font-size: 1.2rem; margin: 32px 0 16px 0;">Extra Features Sales</h3>
-        <table class="admin-table">
-          <thead>
-            <tr><th>Feature Type</th><th>Units Sold</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Profile Boost (₹99)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Profile Boost']) || 0}</td></tr>
-            <tr><td>Horoscope Match (₹49)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Horoscope Match']) || 0}</td></tr>
-            <tr><td>Profile Verification (₹199)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Profile Verification']) || 0}</td></tr>
-            <tr><td>Homepage Featured Profile (₹299)</td><td>${(state.revenueReport.extraFeatures && state.revenueReport.extraFeatures['Homepage Featured Profile']) || 0}</td></tr>
-          </tbody>
-        </table>
+        <!-- Widgets Grid -->
+        <div class="admin-widgets-grid">
+          <!-- Recent Users -->
+          <div class="admin-widget-card">
+            <h3>👥 Recent Users</h3>
+            <table class="admin-table" style="font-size:0.85rem;">
+              <thead>
+                <tr><th>Name</th><th>Gender</th><th>City</th></tr>
+              </thead>
+              <tbody>
+                ${recentUsers.map(u => `
+                  <tr>
+                    <td>${u.name}</td>
+                    <td>${u.gender}</td>
+                    <td>${u.location.split(',')[0]}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Recent Payments -->
+          <div class="admin-widget-card">
+            <h3>💳 Recent Payments</h3>
+            <table class="admin-table" style="font-size:0.85rem;">
+              <thead>
+                <tr><th>User</th><th>Plan</th><th>Amount</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                ${recentPayments.map(p => `
+                  <tr>
+                    <td>${p.name}</td>
+                    <td>${p.plan}</td>
+                    <td>₹${p.amount}</td>
+                    <td><span class="badge-status ${p.status === 'Success' ? 'badge-approved' : 'badge-pending'}">${p.status}</span></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- New Match Requests -->
+          <div class="admin-widget-card">
+            <h3>💖 New Match Requests (Simulated)</h3>
+            <ul style="list-style:none; font-size:0.9rem; padding:0;">
+              <li style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Rahul Patil</strong> sent interest to <strong>Priya Deshmukh</strong></li>
+              <li style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Sandeep Shinde</strong> sent interest to <strong>Ankita Pawar</strong></li>
+              <li style="padding:8px 0;"><strong>Amit Chavan</strong> sent interest to <strong>Neha Joshi</strong></li>
+            </ul>
+          </div>
+
+          <!-- Pending Approvals -->
+          <div class="admin-widget-card">
+            <h3>🛡️ Pending Approvals</h3>
+            <table class="admin-table" style="font-size:0.85rem;">
+              <thead>
+                <tr><th>Name</th><th>Location</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                ${pendingApprovals.map(u => `
+                  <tr>
+                    <td>${u.name}</td>
+                    <td>${u.location.split(',')[0]}</td>
+                    <td><a href="javascript:switchAdminTab('verification')" style="color:var(--color-gold); font-weight:600;">Verify</a></td>
+                  </tr>
+                `).join('')}
+                ${pendingApprovals.length === 0 ? '<tr><td colspan="3">No pending verifications.</td></tr>' : ''}
+              </tbody>
+            </table>
+          </div>
+        </div>
       `;
       break;
-      
-    case 'approvals':
-      const pending = state.profiles.filter(p => !p.verified);
+    }
+    case 'users': {
+      // Filters state placeholders in DOM
       panel.innerHTML = `
-        <h2>Pending Profile Approvals</h2>
-        ${pending.length ? `
+        <h2>User Management</h2>
+        
+        <!-- Filters -->
+        <div class="admin-filters-bar">
+          <div class="admin-filter-item">
+            <label>City</label>
+            <select id="adm-filt-city" class="admin-select" onchange="filterAdminUsers()">
+              <option value="All">All Cities</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Nagpur">Nagpur</option>
+              <option value="Nashik">Nashik</option>
+            </select>
+          </div>
+          <div class="admin-filter-item">
+            <label>Gender</label>
+            <select id="adm-filt-gender" class="admin-select" onchange="filterAdminUsers()">
+              <option value="All">All</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="admin-filter-item">
+            <label>Membership</label>
+            <select id="adm-filt-membership" class="admin-select" onchange="filterAdminUsers()">
+              <option value="All">All</option>
+              <option value="Free">Free</option>
+              <option value="Silver">Silver</option>
+              <option value="Gold">Gold</option>
+              <option value="Platinum">Platinum</option>
+              <option value="Premium Assisted">Premium Assisted</option>
+            </select>
+          </div>
+          <div class="admin-filter-item">
+            <label>Status</label>
+            <select id="adm-filt-status" class="admin-select" onchange="filterAdminUsers()">
+              <option value="All">All</option>
+              <option value="Verified">Verified</option>
+              <option value="Pending">Pending</option>
+              <option value="Suspended">Suspended</option>
+            </select>
+          </div>
+          <button onclick="toggleAdminAddUserForm()" class="btn-primary" style="padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; height:38px;">+ Add Member</button>
+        </div>
+
+        <!-- Add User Form Overlay -->
+        <div id="admin-add-user-container" style="display:none; background:#fff; border:1px solid rgba(74, 10, 16, 0.1); border-radius:8px; padding:20px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="margin-bottom:16px;">Add New Matrimonial Member</h3>
+          <form onsubmit="handleAdminAddUserFormSubmit(event)">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="admin-form-group">
+                <label>Full Name</label>
+                <input type="text" id="adm-add-name" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Gender</label>
+                <select id="adm-add-gender" class="admin-select">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label>Email ID</label>
+                <input type="email" id="adm-add-email" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="adm-add-mobile" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Location (City)</label>
+                <input type="text" id="adm-add-location" class="admin-input" placeholder="Mumbai, Maharashtra" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Age</label>
+                <input type="number" id="adm-add-age" class="admin-input" min="18" max="70" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Membership Plan</label>
+                <select id="adm-add-membership" class="admin-select">
+                  <option value="Free">Free Plan</option>
+                  <option value="Silver">Silver Plan</option>
+                  <option value="Gold">Gold Plan</option>
+                  <option value="Platinum">Platinum Plan</option>
+                  <option value="Premium Assisted">Premium Assisted</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label>Verification Status</label>
+                <select id="adm-add-verified" class="admin-select">
+                  <option value="true">Verified</option>
+                  <option value="false">Pending</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+              <button type="button" onclick="toggleAdminAddUserForm()" class="admin-action-btn" style="background:#eee; color:#333;">Cancel</button>
+              <button type="submit" class="btn-primary" style="padding:6px 16px; border-radius:4px; font-size:0.85rem; font-weight:600;">Save Member</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Users Table Container -->
+        <div id="admin-users-table-container">
+          <!-- Rendered dynamically by filterAdminUsers -->
+        </div>
+      `;
+      filterAdminUsers();
+      break;
+    }
+    case 'verification': {
+      const pendingUsers = state.profiles.filter(p => !p.verified);
+      panel.innerHTML = `
+        <h2>Profile Verification System</h2>
+        <p style="margin-bottom:20px; color:var(--color-text-muted);">Review submitted verification details. Confirm identity, contact info, and profile photographs.</p>
+        
+        ${pendingUsers.length ? `
           <table class="admin-table">
             <thead>
               <tr>
                 <th>Profile ID</th>
                 <th>Name</th>
-                <th>Gender</th>
-                <th>Location</th>
-                <th>Status</th>
+                <th>Verification Checklists</th>
+                <th>Identity Verification</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              ${pending.map(p => `
+              ${pendingUsers.map(p => `
                 <tr>
                   <td>#NB-${1000 + p.id}</td>
-                  <td>${p.name}</td>
-                  <td>${p.gender}</td>
-                  <td>${p.location}</td>
-                  <td><span class="badge-status badge-pending">Pending Verification</span></td>
+                  <td>
+                    <strong>${p.name}</strong><br>
+                    <span style="font-size:0.75rem; color:#888;">${p.gender} | ${p.location}</span>
+                  </td>
+                  <td>
+                    <div style="font-size:0.8rem; display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                      <div>📱 Mobile: <span style="color:#2e7d32; font-weight:bold;">✓ Verified</span></div>
+                      <div>✉️ Email: <span style="color:#2e7d32; font-weight:bold;">✓ Verified</span></div>
+                      <div>📷 Photo: <span style="color:#2e7d32; font-weight:bold;">✓ Match</span></div>
+                      <div>🪪 ID Proof: <span style="color:#c62828; font-weight:bold;">✗ Pending Review</span></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span style="font-size:0.8rem; background:#fff3e0; color:#e65100; padding:2px 6px; border-radius:4px; font-weight:600;">Aadhaar Uploaded</span>
+                  </td>
                   <td>
                     <div class="action-btn-group">
                       <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
-                      <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
+                      <button onclick="handleAdminRejectFake(${p.id})" class="admin-action-btn btn-reject">Reject Fake</button>
+                      <button onclick="handleAdminRequestDocs(${p.id})" class="admin-action-btn" style="background:#e0f7fa; color:#006064;">Req Docs</button>
                     </div>
                   </td>
                 </tr>
@@ -2470,49 +2562,592 @@ function switchAdminTab(tabName) {
             </tbody>
           </table>
         ` : `
-          <p>No profiles pending verification.</p>
+          <div style="background:#e8f5e9; color:#2e7d32; padding:20px; border-radius:8px; text-align:center;">
+            <h4>All Profiles Verified!</h4>
+            <p style="margin:0; font-size:0.9rem;">There are no user profiles pending administrative approval.</p>
+          </div>
         `}
       `;
       break;
-      
-    case 'users':
+    }
+    case 'membership': {
       panel.innerHTML = `
-        <h2>User Management</h2>
+        <h2>Membership Management</h2>
+        
+        <div style="display:grid; grid-template-columns:3fr 2fr; gap:24px;">
+          <!-- Active Plans List -->
+          <div>
+            <h3>Matrimonial Plans</h3>
+            <table class="admin-table" style="margin-top:12px;">
+              <thead>
+                <tr><th>Icon</th><th>Plan Name</th><th>Price</th><th>Status</th><th>Toggle</th></tr>
+              </thead>
+              <tbody>
+                ${(state.plans || []).map(p => `
+                  <tr>
+                    <td style="font-size:1.2rem;">${p.badgeIcon}</td>
+                    <td><strong>${p.displayName}</strong></td>
+                    <td>
+                      <input type="number" value="${p.price}" onchange="handleAdminEditPrice('${p.name}', this.value)" style="width:70px; padding:4px; border:1px solid #ccc; border-radius:4px;">
+                    </td>
+                    <td>
+                      <span class="badge-status ${p.active ? 'badge-approved' : 'badge-pending'}">${p.active ? 'Active' : 'Inactive'}</span>
+                    </td>
+                    <td>
+                      <label class="admin-toggle-switch">
+                        <input type="checkbox" ${p.active ? 'checked' : ''} onchange="handleAdminTogglePlan('${p.name}')">
+                        <span class="admin-toggle-slider"></span>
+                      </label>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Create Plan Form -->
+          <div class="admin-widget-card" style="background:#fafafa;">
+            <h3>🌱 Create New Plan</h3>
+            <form onsubmit="handleAdminAddPlanFormSubmit(event)" style="margin-top:12px;">
+              <div class="admin-form-group">
+                <label>Plan Name</label>
+                <input type="text" id="adm-plan-name" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Display Name</label>
+                <input type="text" id="adm-plan-disp" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="adm-plan-price" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Period Label (e.g. ' / 6 Months')</label>
+                <input type="text" id="adm-plan-period" class="admin-input" placeholder=" / 6 Months">
+              </div>
+              <div class="admin-form-group">
+                <label>Badge Icon (Emoji)</label>
+                <input type="text" id="adm-plan-icon" class="admin-input" placeholder="👑" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Features (comma-separated list)</label>
+                <textarea id="adm-plan-feats" class="admin-textarea" placeholder="Unlimited views, Chat access, Verified status" required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%; padding:10px; border-radius:6px; font-weight:600;">Create Plan</button>
+            </form>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'payments': {
+      const gateways = state.gateways || { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
+      const payments = state.payments || [];
+      panel.innerHTML = `
+        <h2>Payment & Billing Management</h2>
+        
+        <!-- Gateways Configuration -->
+        <div class="admin-widget-card" style="margin-bottom:24px;">
+          <h3>🔌 Active Payment Gateways</h3>
+          <div style="display:flex; gap:32px; margin-top:12px;">
+            ${Object.keys(gateways).map(g => `
+              <div style="display:flex; align-items:center; gap:10px;">
+                <strong>${g}</strong>
+                <label class="admin-toggle-switch">
+                  <input type="checkbox" ${gateways[g] ? 'checked' : ''} onchange="handleAdminToggleGateway('${g}')">
+                  <span class="admin-toggle-slider"></span>
+                </label>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Payments Logs -->
+        <div class="admin-widget-card" style="margin-bottom:24px;">
+          <h3>💳 Successful Transactions & Refund Requests</h3>
+          <table class="admin-table" style="margin-top:12px; font-size:0.85rem;">
+            <thead>
+              <tr><th>Txn ID</th><th>Date</th><th>User Name</th><th>Membership Plan</th><th>Gateway</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              ${payments.map(p => `
+                <tr>
+                  <td><code>${p.id}</code></td>
+                  <td>${p.date}</td>
+                  <td><strong>${p.name}</strong></td>
+                  <td>${p.plan}</td>
+                  <td>${p.gateway}</td>
+                  <td><strong>₹${p.amount}</strong></td>
+                  <td>
+                    <span class="badge-status ${p.status === 'Success' ? 'badge-approved' : p.status === 'Refunded' ? 'badge-pending' : 'badge-pending'}" style="${p.status === 'Refunded' ? 'background:#efebe9; color:#5d4037;' : ''}">
+                      ${p.status}
+                    </span>
+                  </td>
+                  <td>
+                    ${p.status === 'Success' ? `
+                      <button onclick="handleAdminRefundPayment('${p.id}')" class="admin-action-btn" style="background:#efebe9; color:#5d4037;">Refund</button>
+                    ` : `
+                      <span style="color:#aaa; font-size:0.75rem;">None</span>
+                    `}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Revenue Analytics Summary -->
+        <div class="admin-widget-card">
+          <h3>📈 Revenue & Membership Distribution Summary</h3>
+          <div class="admin-stats-grid" style="margin-top:12px; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+            <div style="background:#e8f5e9; padding:16px; border-radius:6px; color:#2e7d32;">
+              <h5>Total Gross Billings</h5>
+              <p style="font-size:1.5rem; font-weight:bold; margin-top:6px;">₹${state.revenueReport.totalRevenue}</p>
+            </div>
+            <div style="background:#e3f2fd; padding:16px; border-radius:6px; color:#1565c0;">
+              <h5>Active Membership Plans Sales</h5>
+              <p style="font-size:0.85rem; margin-top:6px; line-height:1.4;">
+                Silver: ${state.revenueReport.activePlans.Silver || 0} | 
+                Gold: ${state.revenueReport.activePlans.Gold || 0} | 
+                Platinum: ${state.revenueReport.activePlans.Platinum || 0}
+              </p>
+            </div>
+            <div style="background:#fbe9e7; padding:16px; border-radius:6px; color:#d84315;">
+              <h5>Individual Feature Add-ons Sales</h5>
+              <p style="font-size:0.85rem; margin-top:6px; line-height:1.4;">
+                Verification: ${state.revenueReport.extraFeatures['Profile Verification'] || 0} | 
+                Horoscope Match: ${state.revenueReport.extraFeatures['Horoscope Match'] || 0}
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'chat_monitoring': {
+      // Flatten threads
+      const conversations = [];
+      Object.keys(state.activeChats || {}).forEach(key => {
+        const msgs = state.activeChats[key];
+        if (msgs.length) {
+          const parts = key.split('_');
+          const p1 = state.profiles.find(p => p.id == parts[0]);
+          const p2 = state.profiles.find(p => p.id == parts[1]);
+          if (p1 && p2) {
+            conversations.push({
+              key,
+              user1: p1.name,
+              user2: p2.name,
+              lastMsg: msgs[msgs.length - 1].text,
+              time: msgs[msgs.length - 1].timestamp,
+              spamScore: Math.floor(Math.random() * 12) + '%'
+            });
+          }
+        }
+      });
+
+      panel.innerHTML = `
+        <h2>Chat & Communication Management</h2>
+        
+        <!-- Spam & Conversations Logs -->
+        <div class="admin-widget-card" style="margin-bottom:24px;">
+          <h3>💬 Chat Conversation Monitor</h3>
+          <table class="admin-table" style="margin-top:12px; font-size:0.85rem;">
+            <thead>
+              <tr><th>Participants</th><th>Last Message</th><th>Timestamp</th><th>Spam Score</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              ${conversations.map(c => `
+                <tr>
+                  <td><strong>${c.user1}</strong> & <strong>${c.user2}</strong></td>
+                  <td><span style="color:#555; font-style:italic;">"${c.lastMsg}"</span></td>
+                  <td>${c.time}</td>
+                  <td><span style="color:#e65100; font-weight:bold;">${c.spamScore}</span></td>
+                  <td>
+                    <div class="action-btn-group">
+                      <button onclick="handleAdminWarnUser('${c.user1}')" class="admin-action-btn" style="background:#fff3e0; color:#e65100;">Warn</button>
+                      <button onclick="handleAdminBlockChat('${c.key}')" class="admin-action-btn btn-reject">Block</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+              ${conversations.length === 0 ? '<tr><td colspan="5">No active conversations logs found.</td></tr>' : ''}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+          <!-- Notification log switches -->
+          <div class="admin-widget-card">
+            <h3>🔔 Communication Channels Configuration</h3>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Email Notifications Dispatch</span>
+                <label class="admin-toggle-switch"><input type="checkbox" checked><span class="admin-toggle-slider"></span></label>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>SMS Alert Dispatch (OTP)</span>
+                <label class="admin-toggle-switch"><input type="checkbox" checked><span class="admin-toggle-slider"></span></label>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>WhatsApp API Integration</span>
+                <label class="admin-toggle-switch"><input type="checkbox" checked><span class="admin-toggle-slider"></span></label>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>In-App Web Push Notification</span>
+                <label class="admin-toggle-switch"><input type="checkbox"><span class="admin-toggle-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Broadcast Announcement -->
+          <div class="admin-widget-card">
+            <h3>📢 Send Platform Broadcast Announcement</h3>
+            <form onsubmit="handleAdminSendBroadcast(event)" style="margin-top:12px;">
+              <div class="admin-form-group">
+                <label>Message Content</label>
+                <textarea id="adm-broadcast-msg" class="admin-textarea" placeholder="Welcome our new members! Live Sammelan registration starts tonight..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="padding:8px 16px; border-radius:4px; font-weight:600; font-size:0.85rem;">Send Announcement</button>
+            </form>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'stories_mgmt': {
+      panel.innerHTML = `
+        <h2>Success Stories Management</h2>
+        
+        <div style="display:grid; grid-template-columns:3fr 2fr; gap:24px;">
+          <!-- Success Stories List -->
+          <div>
+            <h3>Active Success Testimonials</h3>
+            <table class="admin-table" style="margin-top:12px; font-size:0.85rem;">
+              <thead>
+                <tr><th>Couple</th><th>Excerpt</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                ${state.stories.map(s => `
+                  <tr>
+                    <td><strong>${s.couple}</strong></td>
+                    <td><span style="color:#555; font-size:0.8rem;">${(s.story || s.quote || "").substring(0, 50)}...</span></td>
+                    <td>
+                      <div class="action-btn-group">
+                        <button onclick="handleAdminDeleteStory(${s.id})" class="admin-action-btn btn-reject">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add Success Story Form -->
+          <div class="admin-widget-card">
+            <h3>💖 Publish Success Story</h3>
+            <form onsubmit="handleAdminAddStoryFormSubmit(event)" style="margin-top:12px;">
+              <div class="admin-form-group">
+                <label>Couple Names</label>
+                <input type="text" id="adm-story-couple" class="admin-input" placeholder="Rohit & Pooja" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Couple Photo (Mock Image Link)</label>
+                <input type="text" id="adm-story-photo" class="admin-input" placeholder="images/story1.jpg">
+              </div>
+              <div class="admin-form-group">
+                <label>Testimonial Story</label>
+                <textarea id="adm-story-text" class="admin-textarea" placeholder="We met through Nabhik Matrimonial in March 2024..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%; padding:10px; border-radius:6px; font-weight:600;">Publish Story</button>
+            </form>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'events_mgmt': {
+      panel.innerHTML = `
+        <h2>Community Events Management</h2>
+        
+        <div style="display:grid; grid-template-columns:3fr 2fr; gap:24px;">
+          <!-- Current Events List -->
+          <div>
+            <h3>Samaj Meetups & Announcements</h3>
+            <table class="admin-table" style="margin-top:12px; font-size:0.85rem;">
+              <thead>
+                <tr><th>Title</th><th>Category</th><th>Location / Date</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                ${state.events.map(e => `
+                  <tr>
+                    <td><strong>${e.title}</strong></td>
+                    <td>
+                      <span style="font-size:0.75rem; background:#e3f2fd; color:#1565c0; padding:2px 6px; border-radius:4px;">
+                        ${e.category || 'Gathering'}
+                      </span>
+                    </td>
+                    <td>
+                      <span style="font-size:0.8rem; color:#666;">${e.location}</span><br>
+                      <span style="font-size:0.75rem; color:#888;">${e.date}</span>
+                    </td>
+                    <td>
+                      <button onclick="handleAdminDeleteEvent(${e.id})" class="admin-action-btn btn-reject">Delete</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add Event Form -->
+          <div class="admin-widget-card">
+            <h3>📅 Schedule Community Event</h3>
+            <form onsubmit="handleAdminAddEventFormSubmit(event)" style="margin-top:12px;">
+              <div class="admin-form-group">
+                <label>Event Title</label>
+                <input type="text" id="adm-event-title" class="admin-input" placeholder="Nabhik Samaj Sammelan 2026" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Category</label>
+                <select id="adm-event-category" class="admin-select">
+                  <option value="Marriage Meetup">Marriage Meetup</option>
+                  <option value="Social Gathering">Social Gathering</option>
+                  <option value="Community Announcement">Community Announcement</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label>Date Label</label>
+                <input type="text" id="adm-event-date" class="admin-input" placeholder="15 December 2026" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Location</label>
+                <input type="text" id="adm-event-loc" class="admin-input" placeholder="Nagpur, Maharashtra" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Event Summary Description</label>
+                <textarea id="adm-event-sum" class="admin-textarea" placeholder="Grand get-together event for matrimony matching..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="width:100%; padding:10px; border-radius:6px; font-weight:600;">Schedule Event</button>
+            </form>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'ads_mgmt': {
+      const activeAds = state.ads || [];
+      const featuredProfiles = state.profiles.filter(p => p.verified);
+      panel.innerHTML = `
+        <h2>Advertisement & Features Management</h2>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+          <!-- Banner Ads Settings -->
+          <div class="admin-widget-card">
+            <h3>📢 Homepage Banner Campaigns</h3>
+            <table class="admin-table" style="margin-top:12px; font-size:0.8rem;">
+              <thead>
+                <tr><th>Campaign Title</th><th>Weight</th><th>Clicks</th><th>Active</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                ${activeAds.map(ad => `
+                  <tr>
+                    <td><strong>${ad.title}</strong></td>
+                    <td>${ad.weight}</td>
+                    <td>${ad.clicks}</td>
+                    <td>
+                      <label class="admin-toggle-switch">
+                        <input type="checkbox" ${ad.active ? 'checked' : ''} onchange="handleAdminToggleAd(${ad.id})">
+                        <span class="admin-toggle-slider"></span>
+                      </label>
+                    </td>
+                    <td>
+                      <button onclick="handleAdminDeleteAd(${ad.id})" class="admin-action-btn btn-reject" style="padding:2px 6px;">Del</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <h4 style="margin-top:20px; font-size:0.95rem;">Add Advertisement Campaign Banner</h4>
+            <form onsubmit="handleAdminAddAdFormSubmit(event)" style="margin-top:10px;">
+              <div class="admin-form-group">
+                <input type="text" id="adm-ad-title" class="admin-input" placeholder="Vivah Offer Banner" required style="margin-bottom:8px;">
+                <input type="text" id="adm-ad-banner" class="admin-input" placeholder="images/hero.png" required style="margin-bottom:8px;">
+                <input type="text" id="adm-ad-link" class="admin-input" placeholder="#/membership" required style="margin-bottom:8px;">
+                <input type="number" id="adm-ad-weight" class="admin-input" placeholder="Campaign Weight (e.g. 10)" required style="margin-bottom:8px;">
+              </div>
+              <button type="submit" class="btn-primary" style="padding:6px 12px; font-size:0.8rem; border-radius:4px; font-weight:600;">Create Campaign</button>
+            </form>
+          </div>
+
+          <!-- Featured Profile Control Grid -->
+          <div class="admin-widget-card">
+            <h3>⭐ Manage Homepage Featured Profiles</h3>
+            <p style="font-size:0.8rem; color:#777; margin-bottom:12px;">Check profiles to display in the featured matches homepage carousel slider.</p>
+            <div style="max-height:350px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:6px;">
+              ${featuredProfiles.map(p => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #eee;">
+                  <span style="font-size:0.85rem;"><strong>${p.name}</strong> (#NB-${1000 + p.id})</span>
+                  <label class="admin-toggle-switch">
+                    <input type="checkbox" ${p.featured ? 'checked' : ''} onchange="handleAdminToggleFeaturedProfile(${p.id})">
+                    <span class="admin-toggle-slider"></span>
+                  </label>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'reports_analytics': {
+      panel.innerHTML = `
+        <h2>Platform Reports & Analytics</h2>
+        
+        <!-- SVG Charts Grid -->
+        <div class="admin-widgets-grid">
+          <!-- Growth Chart -->
+          <div class="admin-widget-card">
+            <h3>📈 Monthly User Registrations Trend</h3>
+            <div style="text-align:center; padding:10px 0;">
+              <!-- Responsive inline SVG chart -->
+              <svg width="100%" height="150" viewBox="0 0 350 150" style="background:#fafafa; border-radius:4px;">
+                <polyline fill="none" stroke="#4a0a10" stroke-width="3" points="20,120 70,105 120,95 170,80 220,60 270,45 320,20"/>
+                <!-- Dots -->
+                <circle cx="20" cy="120" r="4" fill="#d4af37"/>
+                <circle cx="70" cy="105" r="4" fill="#d4af37"/>
+                <circle cx="120" cy="95" r="4" fill="#d4af37"/>
+                <circle cx="170" cy="80" r="4" fill="#d4af37"/>
+                <circle cx="220" cy="60" r="4" fill="#d4af37"/>
+                <circle cx="270" cy="45" r="4" fill="#d4af37"/>
+                <circle cx="320" cy="20" r="4" fill="#d4af37"/>
+                <!-- Labels -->
+                <text x="15" y="140" fill="#666" font-size="8">Nov</text>
+                <text x="65" y="140" fill="#666" font-size="8">Dec</text>
+                <text x="115" y="140" fill="#666" font-size="8">Jan</text>
+                <text x="165" y="140" fill="#666" font-size="8">Feb</text>
+                <text x="215" y="140" fill="#666" font-size="8">Mar</text>
+                <text x="265" y="140" fill="#666" font-size="8">Apr</text>
+                <text x="315" y="140" fill="#666" font-size="8">May</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Cities bar chart -->
+          <div class="admin-widget-card">
+            <h3>🏙️ Demographics distribution by Cities</h3>
+            <div style="text-align:center; padding:10px 0;">
+              <svg width="100%" height="150" viewBox="0 0 350 150" style="background:#fafafa; border-radius:4px;">
+                <!-- Bar Mumbai -->
+                <rect x="30" y="30" width="30" height="90" fill="#4a0a10"/>
+                <text x="30" y="135" fill="#666" font-size="9">Mumbai (35%)</text>
+                
+                <!-- Bar Pune -->
+                <rect x="110" y="50" width="30" height="70" fill="#d4af37"/>
+                <text x="115" y="135" fill="#666" font-size="9">Pune (28%)</text>
+                
+                <!-- Bar Nagpur -->
+                <rect x="190" y="80" width="30" height="40" fill="#4a0a10"/>
+                <text x="190" y="135" fill="#666" font-size="9">Nagpur (18%)</text>
+                
+                <!-- Bar Nashik -->
+                <rect x="270" y="90" width="30" height="30" fill="#d4af37"/>
+                <text x="270" y="135" fill="#666" font-size="9">Nashik (12%)</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Reports Box -->
+        <div class="admin-widget-card" style="margin-top:24px; text-align:center; padding:30px;">
+          <h3>📥 Export Platform Management Records</h3>
+          <p style="color:#777; margin-bottom:20px;">Download complete user growth database, transaction charts, and premium listings reports in selected formats.</p>
+          <div style="display:flex; justify-content:center; gap:20px;">
+            <button onclick="handleAdminDownloadReport('excel')" class="btn-primary" style="padding:10px 24px; border-radius:6px; font-weight:600;">📊 Download Excel Report</button>
+            <button onclick="handleAdminDownloadReport('pdf')" class="btn-primary" style="padding:10px 24px; border-radius:6px; font-weight:600; background:var(--color-maroon-dark);">📄 Download PDF Report</button>
+          </div>
+        </div>
+      `;
+      break;
+    }
+    case 'support_tickets': {
+      const tickets = state.tickets || [];
+      panel.innerHTML = `
+        <h2>Support Ticket System</h2>
+        <p style="margin-bottom:20px; color:#666;">Manage queries and issues reported by members. Click "Reply" to write a support response.</p>
+        
         <table class="admin-table">
           <thead>
-            <tr>
-              <th>Profile ID</th>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>Location</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
+            <tr><th>Ticket ID</th><th>Date</th><th>User Details</th><th>Query Details</th><th>Status</th><th>Assignee</th><th>Action</th></tr>
           </thead>
           <tbody>
-            ${state.profiles.map(p => `
-              <tr>
-                <td>#NB-${1000 + p.id}</td>
-                <td>${p.name}</td>
-                <td>${p.gender}</td>
-                <td>${p.location}</td>
-                <td><span class="badge-status ${p.verified ? 'badge-approved' : 'badge-pending'}">${p.verified ? 'Verified' : 'Pending'}</span></td>
+            ${tickets.map(t => `
+              <tr style="vertical-align:top;">
+                <td><code>#TKT-${100 + t.id}</code></td>
+                <td>${t.date}</td>
                 <td>
-                  <div class="action-btn-group">
-                    ${p.verified ? `
-                      <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
-                    ` : `
-                      <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
-                    `}
-                    <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete">Delete</button>
-                  </div>
+                  <strong>${t.name}</strong><br>
+                  <span style="font-size:0.75rem; color:#888;">${t.email}</span>
+                </td>
+                <td style="max-width:250px;">
+                  <span style="font-size:0.85rem; font-weight:500;">"${t.query}"</span>
+                  ${t.response ? `<div style="margin-top:8px; padding:6px; background:#e8f5e9; border-radius:4px; font-size:0.8rem; color:#2e7d32;"><strong>Reply:</strong> ${t.response}</div>` : ''}
+                </td>
+                <td>
+                  <select onchange="handleAdminUpdateTicketStatus(${t.id}, this)" class="admin-select" style="font-size:0.8rem; padding:4px; width:110px;">
+                    <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>🔴 Open</option>
+                    <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>🟡 In Progress</option>
+                    <option value="Resolved" ${t.status === 'Resolved' ? 'selected' : ''}>🟢 Resolved</option>
+                  </select>
+                </td>
+                <td style="font-size:0.8rem; color:#555;">${t.assignedTo || 'Unassigned'}</td>
+                <td>
+                  ${t.status !== 'Resolved' ? `
+                    <form onsubmit="handleAdminReplyTicket(event, ${t.id})" style="display:flex; gap:6px; min-width:180px;">
+                      <input type="text" placeholder="Type reply..." class="admin-input" style="font-size:0.8rem; padding:4px;" required>
+                      <button type="submit" class="btn-primary" style="padding:4px 8px; font-size:0.75rem; border-radius:4px;">Send</button>
+                    </form>
+                  ` : `
+                    <span style="color:#2e7d32; font-size:0.8rem; font-weight:bold;">Closed</span>
+                  `}
                 </td>
               </tr>
             `).join('')}
+            ${tickets.length === 0 ? '<tr><td colspan="7">No support tickets found.</td></tr>' : ''}
           </tbody>
         </table>
       `;
       break;
+    }
+    case 'email_templates': {
+      panel.innerHTML = `
+        <h2>Transactional Email Templates</h2>
+        <p style="margin-bottom:20px; color:#666;">Edit system templates triggered during platform registrations, membership checkouts, and security password resets.</p>
+        
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px;">
+          <!-- Select Template -->
+          <div class="admin-widget-card">
+            <h3>✉️ Choose Notification Event</h3>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+              <button onclick="loadTemplateEditor('welcome')" class="admin-action-btn" style="text-align:left; padding:10px; background:#eee; color:#333; font-weight:600; width:100%;">Welcome Email</button>
+              <button onclick="loadTemplateEditor('registration')" class="admin-action-btn" style="text-align:left; padding:10px; background:#eee; color:#333; font-weight:600; width:100%;">Verification Pending</button>
+              <button onclick="loadTemplateEditor('membership')" class="admin-action-btn" style="text-align:left; padding:10px; background:#eee; color:#333; font-weight:600; width:100%;">Membership Upgraded</button>
+              <button onclick="loadTemplateEditor('matches')" class="admin-action-btn" style="text-align:left; padding:10px; background:#eee; color:#333; font-weight:600; width:100%;">New Match Notification</button>
+              <button onclick="loadTemplateEditor('password_reset')" class="admin-action-btn" style="text-align:left; padding:10px; background:#eee; color:#333; font-weight:600; width:100%;">Password Reset Alert</button>
+            </div>
+          </div>
+
+          <!-- Template HTML Editor -->
+          <div class="admin-widget-card" id="admin-template-editor-box">
+            <p style="text-align:center; color:#777; margin-top:40px;">Select an email template event on the left side to open the HTML template editor.</p>
+          </div>
+        </div>
+      `;
+      // Load welcome template by default
+      loadTemplateEditor('welcome');
+      break;
+    }
   }
 }
 
@@ -3304,6 +3939,391 @@ function handleAdminDelete(id) {
     const activeTab = document.querySelector('.admin-menu a.active') ? document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1] : 'users';
     switchAdminTab(activeTab);
   }
+}
+
+// ==========================================================================
+// EXPANDED ADMIN PORTAL HELPERS & HANDLERS
+// ==========================================================================
+
+function filterAdminUsers() {
+  const city = document.getElementById('adm-filt-city') ? document.getElementById('adm-filt-city').value : 'All';
+  const gender = document.getElementById('adm-filt-gender') ? document.getElementById('adm-filt-gender').value : 'All';
+  const membership = document.getElementById('adm-filt-membership') ? document.getElementById('adm-filt-membership').value : 'All';
+  const status = document.getElementById('adm-filt-status') ? document.getElementById('adm-filt-status').value : 'All';
+
+  let filtered = state.profiles;
+
+  if (city !== 'All') {
+    filtered = filtered.filter(p => p.location && p.location.includes(city));
+  }
+  if (gender !== 'All') {
+    filtered = filtered.filter(p => p.gender && p.gender.toLowerCase() === gender.toLowerCase());
+  }
+  if (membership !== 'All') {
+    filtered = filtered.filter(p => p.membership === membership);
+  }
+  if (status !== 'All') {
+    if (status === 'Verified') {
+      filtered = filtered.filter(p => p.verified && !p.suspended);
+    } else if (status === 'Pending') {
+      filtered = filtered.filter(p => !p.verified);
+    } else if (status === 'Suspended') {
+      filtered = filtered.filter(p => p.suspended);
+    }
+  }
+
+  const container = document.getElementById('admin-users-table-container');
+  if (container) {
+    container.innerHTML = `
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>City</th>
+            <th>Membership</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filtered.map(p => `
+            <tr>
+              <td>#NB-${1000 + p.id}</td>
+              <td><strong>${p.name}</strong></td>
+              <td>${p.gender}</td>
+              <td>${p.location.split(',')[0]}</td>
+              <td><span class="badge-plan ${p.membership === 'Free' ? 'badge-pending' : 'badge-approved'}" style="${p.membership === 'Free' ? 'background:#efebe9; color:#5d4037;' : ''}">${p.membership}</span></td>
+              <td>
+                ${p.suspended ? `
+                  <span class="badge-status badge-pending" style="background:#efebe9; color:#5d4037;">Suspended</span>
+                ` : `
+                  <span class="badge-status ${p.verified ? 'badge-approved' : 'badge-pending'}">${p.verified ? 'Verified' : 'Pending'}</span>
+                `}
+              </td>
+              <td>
+                <div class="action-btn-group">
+                  <button onclick="handleAdminEditUser(${p.id})" class="admin-action-btn" style="background:#e3f2fd; color:#1565c0;">Edit</button>
+                  ${p.suspended ? `
+                    <button onclick="handleAdminToggleSuspend(${p.id}, false)" class="admin-action-btn btn-approve">Restore</button>
+                  ` : `
+                    <button onclick="handleAdminToggleSuspend(${p.id}, true)" class="admin-action-btn" style="background:#fff3e0; color:#e65100;">Suspend</button>
+                  `}
+                  ${p.verified ? `
+                    <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
+                  ` : `
+                    <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
+                  `}
+                  <button onclick="handleAdminResetPassword(${p.id})" class="admin-action-btn" style="background:#f3e5f5; color:#4a148c;">Reset PW</button>
+                  <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+          ${filtered.length === 0 ? '<tr><td colspan="7">No matching users found.</td></tr>' : ''}
+        </tbody>
+      </table>
+    `;
+  }
+}
+
+function toggleAdminAddUserForm() {
+  const el = document.getElementById('admin-add-user-container');
+  if (el) {
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function handleAdminAddUserFormSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('adm-add-name').value;
+  const gender = document.getElementById('adm-add-gender').value;
+  const emailId = document.getElementById('adm-add-email').value;
+  const mobile = document.getElementById('adm-add-mobile').value;
+  const location = document.getElementById('adm-add-location').value;
+  const age = parseInt(document.getElementById('adm-add-age').value);
+  const membership = document.getElementById('adm-add-membership').value;
+  const verified = document.getElementById('adm-add-verified').value === 'true';
+
+  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified });
+  showToast('Member successfully created!');
+  switchAdminTab('users');
+}
+
+function handleAdminToggleSuspend(id, suspend) {
+  stateActions.adminUpdateUser(id, { suspended: suspend });
+  showToast(suspend ? 'Account suspended!' : 'Account restored!');
+  filterAdminUsers();
+}
+
+function handleAdminResetPassword(id) {
+  stateActions.adminResetPassword(id);
+  showToast('Password reset successfully to Password@123');
+}
+
+function handleAdminEditUser(id) {
+  const profile = state.profiles.find(p => p.id === id);
+  if (!profile) return;
+  const newName = prompt("Edit Member Name:", profile.name);
+  if (newName === null) return;
+  const newLocation = prompt("Edit Location (City):", profile.location);
+  if (newLocation === null) return;
+  const newMembership = prompt("Edit Membership (Free, Silver, Gold, Platinum, Premium Assisted):", profile.membership);
+  if (newMembership === null) return;
+
+  stateActions.adminUpdateUser(id, { name: newName, location: newLocation, membership: newMembership });
+  showToast('User profile updated successfully!');
+  filterAdminUsers();
+}
+
+function handleAdminRejectFake(id) {
+  if (confirm('Are you sure this is a fake profile? It will be permanently removed.')) {
+    stateActions.adminDeleteProfile(id);
+    showToast('Fake profile rejected and deleted.');
+    switchAdminTab('verification');
+  }
+}
+
+function handleAdminRequestDocs(id) {
+  const doc = prompt("Enter additional document name required (e.g. Aadhaar Card, Income Certificate):", "Aadhaar Card copy");
+  if (doc) {
+    showToast(`Additional document request (${doc}) successfully sent to user.`);
+  }
+}
+
+function handleAdminTogglePlan(name) {
+  stateActions.adminTogglePlan(name);
+  showToast('Plan status updated!');
+  switchAdminTab('membership');
+}
+
+function handleAdminEditPrice(name, price) {
+  stateActions.adminUpdatePlan(name, { price: parseInt(price) || 0 });
+  showToast('Plan pricing successfully updated!');
+}
+
+function handleAdminAddPlanFormSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('adm-plan-name').value;
+  const displayName = document.getElementById('adm-plan-disp').value;
+  const price = parseInt(document.getElementById('adm-plan-price').value) || 0;
+  const period = document.getElementById('adm-plan-period').value;
+  const badgeIcon = document.getElementById('adm-plan-icon').value;
+  const featuresText = document.getElementById('adm-plan-feats').value;
+
+  const features = featuresText.split(',').map(f => f.trim());
+  const badgeClass = name.toLowerCase() + '-badge';
+
+  stateActions.adminAddPlan({
+    name,
+    displayName,
+    price,
+    period,
+    badgeClass,
+    badgeIcon,
+    features,
+    note: '',
+    featured: false,
+    active: true
+  });
+
+  showToast('New plan successfully created!');
+  switchAdminTab('membership');
+}
+
+function handleAdminToggleGateway(name) {
+  stateActions.adminToggleGateway(name);
+  showToast(`Gateway ${name} status toggled!`);
+  switchAdminTab('payments');
+}
+
+function handleAdminRefundPayment(txnId) {
+  if (confirm(`Are you sure you want to refund transaction ${txnId}?`)) {
+    stateActions.adminRefundPayment(txnId);
+    showToast(`Transaction ${txnId} successfully refunded.`);
+    switchAdminTab('payments');
+  }
+}
+
+function handleAdminWarnUser(name) {
+  showToast(`Official warning alert successfully dispatched to user ${name}.`);
+}
+
+function handleAdminBlockChat(key) {
+  if (confirm('Are you sure you want to delete and block this chat conversation thread?')) {
+    delete state.activeChats[key];
+    storage.set('activeChats', state.activeChats);
+    showToast('Chat conversation blocked and removed.');
+    switchAdminTab('chat_monitoring');
+  }
+}
+
+function handleAdminSendBroadcast(e) {
+  e.preventDefault();
+  const text = document.getElementById('adm-broadcast-msg').value;
+  showToast('Broadcast message successfully dispatched to all members!');
+  e.target.reset();
+}
+
+function handleAdminDeleteStory(id) {
+  if (confirm('Are you sure you want to delete this success story?')) {
+    stateActions.adminDeleteStory(id);
+    showToast('Success story deleted.');
+    switchAdminTab('stories_mgmt');
+  }
+}
+
+function handleAdminAddStoryFormSubmit(e) {
+  e.preventDefault();
+  const couple = document.getElementById('adm-story-couple').value;
+  const photo = document.getElementById('adm-story-photo').value || 'images/story1.jpg';
+  const story = document.getElementById('adm-story-text').value;
+
+  stateActions.adminAddStory({ couple, photo, story });
+  showToast('Success story successfully published!');
+  switchAdminTab('stories_mgmt');
+}
+
+function handleAdminDeleteEvent(id) {
+  if (confirm('Are you sure you want to delete this event announcement?')) {
+    stateActions.adminDeleteEvent(id);
+    showToast('Event announcement deleted.');
+    switchAdminTab('events_mgmt');
+  }
+}
+
+function handleAdminAddEventFormSubmit(e) {
+  e.preventDefault();
+  const title = document.getElementById('adm-event-title').value;
+  const category = document.getElementById('adm-event-category').value;
+  const date = document.getElementById('adm-event-date').value;
+  const location = document.getElementById('adm-event-loc').value;
+  const summary = document.getElementById('adm-event-sum').value;
+
+  stateActions.adminAddEvent({ title, category, date, location, summary });
+  showToast('Community event successfully scheduled!');
+  switchAdminTab('events_mgmt');
+}
+
+function handleAdminToggleAd(id) {
+  stateActions.adminToggleAd(id);
+  showToast('Ad campaign status updated!');
+}
+
+function handleAdminDeleteAd(id) {
+  if (confirm('Are you sure you want to delete this ad campaign?')) {
+    stateActions.adminDeleteAd(id);
+    showToast('Ad campaign deleted.');
+    switchAdminTab('ads_mgmt');
+  }
+}
+
+function handleAdminAddAdFormSubmit(e) {
+  e.preventDefault();
+  const title = document.getElementById('adm-ad-title').value;
+  const banner = document.getElementById('adm-ad-banner').value;
+  const link = document.getElementById('adm-ad-link').value;
+  const weight = parseInt(document.getElementById('adm-ad-weight').value) || 10;
+
+  stateActions.adminAddAd({ title, banner, link, weight, clicks: 0, active: true });
+  showToast('Ad campaign created successfully!');
+  switchAdminTab('ads_mgmt');
+}
+
+function handleAdminToggleFeaturedProfile(id) {
+  const profile = state.profiles.find(p => p.id === id);
+  if (profile) {
+    const nextFeatured = !profile.featured;
+    stateActions.adminUpdateUser(id, { featured: nextFeatured });
+    showToast(nextFeatured ? 'Profile featured on homepage!' : 'Profile unfeatured.');
+  }
+}
+
+function handleAdminDownloadReport(format) {
+  let content = '';
+  let filename = '';
+  let mimeType = '';
+
+  if (format === 'excel') {
+    content = "Profile ID,Name,Gender,Location,Membership,Status\n";
+    state.profiles.forEach(p => {
+      content += `#NB-${1000+p.id},"${p.name}",${p.gender},"${p.location}",${p.membership},${p.verified?'Verified':'Pending'}\n`;
+    });
+    filename = "nabhik_matrimonial_report.csv";
+    mimeType = "text/csv;charset=utf-8;";
+  } else {
+    content = "NABHIK MATRIMONIAL PORTAL REPORT\n================================\n\n";
+    content += `Total Members: ${state.profiles.length}\n`;
+    content += `Active Verified Members: ${state.profiles.filter(p=>p.verified).length}\n`;
+    content += `Gross Billing Revenue: INR ${state.revenueReport.totalRevenue}\n\n`;
+    content += "Generated on: " + new Date().toLocaleString() + "\n";
+    filename = "nabhik_matrimonial_analytics.txt";
+    mimeType = "text/plain;charset=utf-8;";
+  }
+
+  const blob = new Blob([content], { type: mimeType });
+  const link = document.createElement("a");
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`Analytics Report downloaded successfully as ${filename}`);
+  }
+}
+
+function handleAdminReplyTicket(e, id) {
+  e.preventDefault();
+  const input = e.target.querySelector('input');
+  if (input) {
+    const replyText = input.value;
+    stateActions.adminReplyTicket(id, replyText);
+    showToast('Support ticket reply sent and ticket resolved.');
+    switchAdminTab('support_tickets');
+  }
+}
+
+function handleAdminUpdateTicketStatus(id, selectEl) {
+  stateActions.adminUpdateTicketStatus(id, selectEl.value);
+  showToast('Support ticket status successfully updated.');
+}
+
+function loadTemplateEditor(templateName) {
+  const box = document.getElementById('admin-template-editor-box');
+  if (!box) return;
+  const template = state.emailTemplates[templateName];
+  if (!template) return;
+
+  box.innerHTML = `
+    <h3>✉️ Edit Template: ${templateName.toUpperCase()}</h3>
+    <form onsubmit="handleAdminSaveTemplate(event, '${templateName}')" style="margin-top:12px;">
+      <div class="admin-form-group">
+        <label>Subject Header</label>
+        <input type="text" id="adm-tpl-subject" class="admin-input" value="${template.subject}" required>
+      </div>
+      <div class="admin-form-group">
+        <label>HTML Content Body</label>
+        <textarea id="adm-tpl-body" class="admin-textarea" style="min-height:200px;" required>${template.body}</textarea>
+      </div>
+      <div style="background:#efebe9; padding:10px; border-radius:4px; font-size:0.75rem; color:#5d4037; margin-bottom:12px;">
+        <strong>Variables list:</strong> Use <code>{userName}</code>, <code>{planName}</code> dynamically in template text inputs.
+      </div>
+      <button type="submit" class="btn-primary" style="padding:8px 16px; border-radius:4px; font-weight:600; font-size:0.85rem;">Save Email Template</button>
+    </form>
+  `;
+}
+
+function handleAdminSaveTemplate(e, templateName) {
+  e.preventDefault();
+  const subject = document.getElementById('adm-tpl-subject').value;
+  const body = document.getElementById('adm-tpl-body').value;
+
+  stateActions.adminUpdateTemplate(templateName, subject, body);
+  showToast('Email Notification Template saved successfully!');
 }
 
 // 17. FREE MEMBERSHIP DETAILS VIEW
