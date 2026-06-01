@@ -9,10 +9,63 @@
   <!-- Preconnect to Google Fonts to speed up DNS lookup and connection handshake -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/styles.css?v=7.2">
+  <!-- Asynchronously load Google Fonts to eliminate render-blocking -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  </noscript>
+  
+  <!-- Asynchronously load stylesheet to eliminate render-blocking -->
+  <link rel="preload" href="css/styles.css?v=8.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="css/styles.css?v=8.2">
+  </noscript>
+  
   <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+  <!-- Critical Inline CSS to prevent FOUC (Flash of Unstyled Content) during async load -->
+  <style>
+    :root {
+      --color-maroon-dark: #220306;
+      --color-maroon: #4a0a10;
+      --color-maroon-light: #5c0d16;
+      --color-maroon-trans: rgba(74, 10, 16, 0.85);
+      --color-gold: #d4af37;
+      --color-gold-hover: #e5b842;
+      --color-gold-light: #f5dfa3;
+      --color-gold-trans: rgba(212, 175, 55, 0.2);
+      --color-cream: #fcf8f2;
+      --color-cream-dark: #faf3e7;
+      --color-text-dark: #201311;
+      --color-text-light: #fdfaf6;
+      --color-text-muted: #826e6b;
+      --color-border: rgba(74, 10, 16, 0.08);
+      --color-border-gold: rgba(212, 175, 55, 0.3);
+      --color-success: #2e7d32;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Outfit', -apple-system, sans-serif;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-cream);
+      color: var(--color-text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .header-wrapper {
+      background-color: var(--color-maroon);
+      border-bottom: 2px solid var(--color-gold);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+  </style>
 
   <!-- Defer loading of JS modules to move them out of the critical rendering path -->
   <script src="js/app.js?v=8.4" defer></script>
