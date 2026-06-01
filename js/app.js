@@ -915,7 +915,7 @@ function renderProfileDetails(container, profileId) {
     <div class="container profile-detail-grid">
       <!-- Left sidebar -->
       <div class="profile-detail-sidebar">
-        <img src="${avatar}" alt="${profile.name}" class="profile-detail-avatar" width="320" height="360">
+        <img src="${avatar}" alt="${profile.name}" class="profile-detail-avatar" width="320" height="360" loading="lazy">
         
         <div class="profile-detail-actions">
           <button onclick="handleSendInterest(${profile.id}, true)" class="btn btn-primary" style="width: 100%;">
