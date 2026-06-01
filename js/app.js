@@ -2805,7 +2805,17 @@ function handleEmailLogin(e) {
   if (user) {
     showToast(`Successfully logged in as ${user.name}`);
     closeModal(true);
-    window.location.hash = '#/dashboard';
+    
+    const isAdmin = (
+      user.isAdmin === true || 
+      user.role === 'admin' || 
+      (user.emailId && user.emailId.toLowerCase().includes('admin'))
+    );
+    if (isAdmin) {
+      window.location.hash = '#/admin';
+    } else {
+      window.location.hash = '#/dashboard';
+    }
   } else {
     showToast('Error logging in. Try again.');
   }
@@ -2908,7 +2918,17 @@ function confirmOtpCodeSubmit() {
     }
     
     showToast(`Verification Successful! Logged in as ${user.name}`);
-    window.location.hash = '#/dashboard?tab=overview';
+    
+    const isAdmin = (
+      user.isAdmin === true || 
+      user.role === 'admin' || 
+      (user.emailId && user.emailId.toLowerCase().includes('admin'))
+    );
+    if (isAdmin) {
+      window.location.hash = '#/admin';
+    } else {
+      window.location.hash = '#/dashboard?tab=overview';
+    }
   } else {
     alert('Invalid verification code. Please check the SMS mockup box and try again.');
   }
