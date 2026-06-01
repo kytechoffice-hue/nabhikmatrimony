@@ -1556,6 +1556,7 @@ img {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
 }
 
 .chat-header {
@@ -1569,32 +1570,113 @@ img {
 .chat-messages-box {
   flex-grow: 1;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   gap: 12px;
   background-color: #fcfcfc;
+  min-height: 0;
+}
+
+/* Beautiful custom scrollbars for chat box & threads list */
+.chat-messages-box::-webkit-scrollbar,
+.chat-threads::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages-box::-webkit-scrollbar-track,
+.chat-threads::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+}
+
+.chat-messages-box::-webkit-scrollbar-thumb,
+.chat-threads::-webkit-scrollbar-thumb {
+  background: rgba(74, 10, 16, 0.2);
+  border-radius: 4px;
+}
+
+.chat-messages-box::-webkit-scrollbar-thumb:hover,
+.chat-threads::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 10, 16, 0.4);
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 80%;
+  margin-bottom: 4px;
+}
+
+.message-sent-row {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.message-received-row {
+  align-self: flex-start;
+  justify-content: flex-start;
+}
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .message-bubble {
-  max-width: 70%;
-  padding: 10px 14px;
+  max-width: 100%;
+  padding: 8px 12px;
   border-radius: 12px;
   font-size: 0.85rem;
   line-height: 1.4;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .message-received {
   background-color: var(--color-cream);
-  align-self: flex-start;
   border-bottom-left-radius: 2px;
+  color: var(--color-text);
 }
 
 .message-sent {
   background-color: var(--color-gold);
   color: var(--color-maroon-dark);
-  align-self: flex-end;
   border-bottom-right-radius: 2px;
+}
+
+.message-text {
+  word-break: break-word;
+}
+
+.message-meta {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  margin-top: 4px;
+}
+
+.message-received .message-meta {
+  color: var(--color-text-muted);
+}
+
+.message-sent .message-meta {
+  color: rgba(74, 10, 16, 0.6);
+}
+
+.message-status-ticks {
+  color: #34b7f1;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .chat-input-box {
