@@ -2318,11 +2318,16 @@ input:checked + .admin-toggle-slider:before {
    8. FOOTER SECTION
    ========================================================================== */
 .footer-wrapper {
+  display: none;
   background-color: var(--color-maroon-dark);
   color: var(--color-text-light);
   padding: 80px 0 20px 0;
   border-top: 3px solid var(--color-gold);
   position: relative;
+}
+
+body.app-loaded .footer-wrapper {
+  display: block;
 }
 
 .footer-top {
