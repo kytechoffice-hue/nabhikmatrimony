@@ -1,5 +1,12 @@
 // Nabhik Matrimonial Mock Database & State Management
 
+// Symmetrical chat thread composite key generator
+function getChatKey(id1, id2) {
+  const a = Math.min(id1, id2);
+  const b = Math.max(id1, id2);
+  return `${a}_${b}`;
+}
+
 // Dynamic SVG Avatar Generator for high-end vector illustrations
 function getSvgAvatar(gender, seedId, name) {
   // Check if profile has a custom uploaded photo path
@@ -121,7 +128,10 @@ const initialProfiles = [
   {
     id: 1,
     gender: 'Male',
-    name: 'Rahul Nabhik',
+    name: 'Rahul Patil',
+    emailId: 'rahul@gmail.com',
+    mobile: '9823450001',
+    password: 'password123',
     age: 27,
     height: "5'9\"",
     education: 'B.Tech, Software Engineer',
@@ -131,8 +141,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹12,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Rajesh Nabhik',
-    motherName: 'Sunita Nabhik',
+    fatherName: 'Rajesh Patil',
+    motherName: 'Sunita Patil',
     nativePlace: 'Satara, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -144,7 +154,10 @@ const initialProfiles = [
   {
     id: 2,
     gender: 'Female',
-    name: 'Priya Nabhik',
+    name: 'Priya Deshmukh',
+    emailId: 'priya@gmail.com',
+    mobile: '9823450002',
+    password: 'password123',
     age: 25,
     height: "5'3\"",
     education: 'MBA, HR Manager',
@@ -154,8 +167,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹8,000,000 / Year',
     familyType: 'Nuclear Family',
-    fatherName: 'Sanjay Nabhik',
-    motherName: 'Lata Nabhik',
+    fatherName: 'Sanjay Deshmukh',
+    motherName: 'Lata Deshmukh',
     nativePlace: 'Amravati, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -167,7 +180,10 @@ const initialProfiles = [
   {
     id: 3,
     gender: 'Male',
-    name: 'Sandeep Nabhik',
+    name: 'Sandeep Shinde',
+    emailId: 'sandeep@gmail.com',
+    mobile: '9823450003',
+    password: 'password123',
     age: 29,
     height: "5'6\"",
     education: 'MCA, Senior Developer',
@@ -177,8 +193,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹15,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Vikas Nabhik',
-    motherName: 'Rekha Nabhik',
+    fatherName: 'Vikas Shinde',
+    motherName: 'Rekha Shinde',
     nativePlace: 'Nashik, Maharashtra',
     foodPreference: 'Non-Vegetarian (Occasional)',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -190,7 +206,10 @@ const initialProfiles = [
   {
     id: 4,
     gender: 'Female',
-    name: 'Ankita Nabhik',
+    name: 'Ankita Pawar',
+    emailId: 'ankita@gmail.com',
+    mobile: '9823450004',
+    password: 'password123',
     age: 24,
     height: "5'3\"",
     education: 'B.Com, Accountant',
@@ -200,8 +219,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹5,000,000 / Year',
     familyType: 'Nuclear Family',
-    fatherName: 'Anil Nabhik',
-    motherName: 'Jyoti Nabhik',
+    fatherName: 'Anil Pawar',
+    motherName: 'Jyoti Pawar',
     nativePlace: 'Jalna, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -213,7 +232,10 @@ const initialProfiles = [
   {
     id: 5,
     gender: 'Male',
-    name: 'Vikram Nabhik',
+    name: 'Vikram More',
+    emailId: 'vikram@gmail.com',
+    mobile: '9823450005',
+    password: 'password123',
     age: 30,
     height: "5'10\"",
     education: 'Business Owner',
@@ -223,8 +245,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹20,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Harish Nabhik',
-    motherName: 'Meena Nabhik',
+    fatherName: 'Harish More',
+    motherName: 'Meena More',
     nativePlace: 'Sangli, Maharashtra',
     foodPreference: 'Non-Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -236,7 +258,10 @@ const initialProfiles = [
   {
     id: 6,
     gender: 'Female',
-    name: 'Snehal Nabhik',
+    name: 'Snehal Kadam',
+    emailId: 'snehal@gmail.com',
+    mobile: '9823450006',
+    password: 'password123',
     age: 26,
     height: "5'4\"",
     education: 'M.Tech, Assistant Professor',
@@ -246,8 +271,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹7,000,000 / Year',
     familyType: 'Nuclear Family',
-    fatherName: 'Dilip Nabhik',
-    motherName: 'Chhaya Nabhik',
+    fatherName: 'Dilip Kadam',
+    motherName: 'Chhaya Kadam',
     nativePlace: 'Kolhapur, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -259,7 +284,10 @@ const initialProfiles = [
   {
     id: 7,
     gender: 'Male',
-    name: 'Amit Nabhik',
+    name: 'Amit Chavan',
+    emailId: 'amit@gmail.com',
+    mobile: '9823450007',
+    password: 'password123',
     age: 28,
     height: "5'8\"",
     education: 'B.Sc, Government Officer',
@@ -269,8 +297,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹9,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Pradip Nabhik',
-    motherName: 'Seema Nabhik',
+    fatherName: 'Pradip Chavan',
+    motherName: 'Seema Chavan',
     nativePlace: 'Chandrapur, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -282,7 +310,10 @@ const initialProfiles = [
   {
     id: 8,
     gender: 'Female',
-    name: 'Neha Nabhik',
+    name: 'Neha Joshi',
+    emailId: 'neha@gmail.com',
+    mobile: '9823450008',
+    password: 'password123',
     age: 27,
     height: "5'2\"",
     education: 'MBBS, Doctor',
@@ -292,8 +323,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹18,000,000 / Year',
     familyType: 'Nuclear Family',
-    fatherName: 'Dr. Ramesh Nabhik',
-    motherName: 'Dr. Mangal Nabhik',
+    fatherName: 'Dr. Ramesh Joshi',
+    motherName: 'Dr. Mangal Joshi',
     nativePlace: 'Pune, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -305,7 +336,10 @@ const initialProfiles = [
   {
     id: 9,
     gender: 'Male',
-    name: 'Ganesh Nabhik',
+    name: 'Ganesh Kulkarni',
+    emailId: 'ganesh@gmail.com',
+    mobile: '9823450009',
+    password: 'password123',
     age: 31,
     height: "5'7\"",
     education: 'B.Arch, Architect',
@@ -315,8 +349,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹14,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Shankar Nabhik',
-    motherName: 'Shaila Nabhik',
+    fatherName: 'Shankar Kulkarni',
+    motherName: 'Shaila Kulkarni',
     nativePlace: 'Ratnagiri, Maharashtra',
     foodPreference: 'Non-Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -328,7 +362,10 @@ const initialProfiles = [
   {
     id: 10,
     gender: 'Female',
-    name: 'Pooja Nabhik',
+    name: 'Pooja Salunkhe',
+    emailId: 'pooja@gmail.com',
+    mobile: '9823450010',
+    password: 'password123',
     age: 23,
     height: "5'1\"",
     education: 'B.Sc Nursing, Nurse',
@@ -338,8 +375,8 @@ const initialProfiles = [
     community: 'Nabhik',
     income: '₹4,000,000 / Year',
     familyType: 'Joint Family',
-    fatherName: 'Balaji Nabhik',
-    motherName: 'Sarika Nabhik',
+    fatherName: 'Balaji Salunkhe',
+    motherName: 'Sarika Salunkhe',
     nativePlace: 'Satara, Maharashtra',
     foodPreference: 'Vegetarian',
     smokingDrinking: 'No Smoking / No Drinking',
@@ -354,24 +391,59 @@ const initialProfiles = [
 const initialStories = [
   {
     id: 1,
-    couple: 'Rohit & Pooja',
-    date: '12 May 2023',
+    couple: 'Aditya & Gauri',
+    date: '14 Jan 2024',
     photo: 'images/story1.jpg',
-    quote: 'We found the perfect match through Nabhik Metromonial. Thank you for connecting our families. The platform made searching secure and simple.'
+    quote: 'Finding Aditya on Nabhik Matrimonial was a blessing. From our very first conversation, we felt a deep connection. Our families met and instantly clicked. Thank you for helping us find our forever!'
   },
   {
     id: 2,
-    couple: 'Amit & Sneha',
-    date: '18 Feb 2023',
+    couple: 'Rahul & Snehal',
+    date: '28 Dec 2023',
     photo: 'images/story2.jpg',
-    quote: 'The platform is genuine and extremely easy to use. We are thankful to Nabhik Metromonial. Finding someone with similar family values was very easy.'
+    quote: 'Nabhik Matrimonial made it incredibly easy to connect with someone who shares the same values and lifestyle. We are happily married now and highly recommend this platform to everyone searching for a genuine partner.'
   },
   {
     id: 3,
-    couple: 'Nilesh & Komal',
-    date: '22 Nov 2022',
+    couple: 'Siddharth & Priya',
+    date: '12 Nov 2023',
     photo: 'images/story3.jpg',
-    quote: 'We got good responses and found a life partner who understands our traditional values and supports modern aspirations.'
+    quote: 'The holy fire witnessed our union, but it was Nabhik Matrimonial that lit the spark. We found deep compatibility, mutual respect, and pure love. It truly brings two families together beautifully.'
+  },
+  {
+    id: 4,
+    couple: 'Vikram & Ankita',
+    date: '05 Mar 2024',
+    photo: 'images/story4.jpg',
+    quote: 'Our wedding was like a dream, and it all started with a simple interest request on this portal. The platform is highly secure, reliable, and verified profiles make the search stress-free.'
+  },
+  {
+    id: 5,
+    couple: 'Sameer & Pooja',
+    date: '18 Apr 2024',
+    photo: 'images/story5.jpg',
+    quote: 'We wanted a partner who loves nature and traveling as much as we do. Through the advanced search filters, we found each other. Everyday has been an adventure since then!'
+  },
+  {
+    id: 6,
+    couple: 'Karan & Divya',
+    date: '09 Jan 2025',
+    photo: 'images/story6.jpg',
+    quote: 'Holding hands under the sunset, we knew we were meant to be. Nabhik Matrimonial helped us bridge the gap and start our beautiful journey of love and togetherness.'
+  },
+  {
+    id: 7,
+    couple: 'Abhishek & Riya',
+    date: '15 Feb 2025',
+    photo: 'images/story7.jpg',
+    quote: 'From matching profiles to looking into each other\'s eyes on our wedding day, Nabhik Matrimonial made the search magical. We found our soulmates here!'
+  },
+  {
+    id: 8,
+    couple: 'Harish & Pallavi',
+    date: '20 Mar 2025',
+    photo: 'images/story8.jpg',
+    quote: 'We love long walks and sharing laughter. Finding someone who complements your spirit perfectly is rare, but this portal made it happen for us.'
   }
 ];
 
@@ -455,12 +527,13 @@ const storage = {
   }
 };
 
-// Force update profiles in localStorage if they don't have the photo field (to handle version transitions)
+// Force update profiles in localStorage if they don't have the photo field or contain old Nabhik surnames
 try {
   const stored = localStorage.getItem('nabhik_matrimonial_profiles');
   if (stored) {
     const parsed = JSON.parse(stored);
-    if (parsed && (parsed.length < 10 || !parsed[9].photo)) {
+    const needsReset = parsed && (parsed.length < 20 || !parsed[9].photo || parsed.some(p => p.name && p.name.includes('Nabhik')));
+    if (needsReset) {
       localStorage.removeItem('nabhik_matrimonial_profiles');
       localStorage.removeItem('nabhik_matrimonial_currentUser');
     }
@@ -499,10 +572,10 @@ const state = {
   interestsReceived: storage.get('interestsReceived', [1, 3]), // dummy received interests
   shortlisted: storage.get('shortlisted', []), // array of shortlisted profile IDs
   activeChats: storage.get('activeChats', {
-    // profileId: Array of messages
-    1: [
-      { sender: 'them', text: 'Namaskar, I saw your profile and found it matching. Can we speak?' },
-      { sender: 'you', text: 'Namaskar, thank you for reaching out. Yes, we can connect.' }
+    // Symmetrical chat thread composite key ("1_2" representing chat between Rahul Patil [1] and Priya Deshmukh [2])
+    "1_2": [
+      { senderId: 1, text: 'Namaskar, I saw your profile and found it matching. Can we speak?', timestamp: '10:30 AM' },
+      { senderId: 2, text: 'Namaskar, thank you for reaching out. Yes, we can connect.', timestamp: '10:32 AM' }
     ]
   }),
   
@@ -513,6 +586,35 @@ const state = {
     extraFeatures: { 'Profile Boost': 15, 'Horoscope Match': 24, 'Profile Verification': 8, 'Homepage Featured Profile': 5 }
   })
 };
+
+// Symmetrical database migration: convert old single-number keys to composite keys
+if (state.activeChats && typeof state.activeChats === 'object') {
+  let migrated = false;
+  Object.keys(state.activeChats).forEach(key => {
+    if (!isNaN(key) && !key.includes('_')) {
+      const partnerId = parseInt(key);
+      if (state.currentUser && state.currentUser.id !== partnerId) {
+        const compositeKey = getChatKey(state.currentUser.id, partnerId);
+        const oldMsgs = state.activeChats[key];
+        if (Array.isArray(oldMsgs)) {
+          state.activeChats[compositeKey] = oldMsgs.map(m => {
+            if (m.senderId !== undefined) return m;
+            return {
+              senderId: m.sender === 'you' ? state.currentUser.id : partnerId,
+              text: m.text,
+              timestamp: m.timestamp || '10:30 AM'
+            };
+          });
+        }
+        delete state.activeChats[key];
+        migrated = true;
+      }
+    }
+  });
+  if (migrated) {
+    storage.set('activeChats', state.activeChats);
+  }
+}
 
 // Sanitization: Ensure all profiles and currentUser have a gender defined to avoid runtime crashes
 if (state.profiles) {
@@ -624,10 +726,13 @@ const stateActions = {
   },
   
   sendChatMessage(profileId, text) {
-    if (!state.activeChats[profileId]) {
-      state.activeChats[profileId] = [];
+    if (!state.currentUser) return;
+    const key = getChatKey(state.currentUser.id, profileId);
+    if (!state.activeChats[key]) {
+      state.activeChats[key] = [];
     }
-    state.activeChats[profileId].push({ sender: 'you', text });
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    state.activeChats[key].push({ senderId: state.currentUser.id, text, timestamp: timeStr });
     this.saveAll();
   },
   
