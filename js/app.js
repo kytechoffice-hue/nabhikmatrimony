@@ -757,7 +757,7 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.png', link: '#/membership', weight: 10, clicks: 142, active: true },
+  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '#/membership', weight: 10, clicks: 142, active: true },
   { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '#/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
@@ -1636,7 +1636,7 @@ function renderHome(container) {
         <div class="hero-image-container">
           <div class="hero-image-frame">
             <!-- Reference the generated hero image -->
-            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
+            <img src="images/hero.webp" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
           </div>
         </div>
       </div>
@@ -4317,7 +4317,7 @@ function switchAdminTab(tabName) {
             <form onsubmit="handleAdminAddAdFormSubmit(event)" style="margin-top:10px;">
               <div class="admin-form-group">
                 <input type="text" id="adm-ad-title" class="admin-input" placeholder="Vivah Offer Banner" required style="margin-bottom:8px;">
-                <input type="text" id="adm-ad-banner" class="admin-input" placeholder="images/hero.png" required style="margin-bottom:8px;">
+                <input type="text" id="adm-ad-banner" class="admin-input" placeholder="images/hero.webp" required style="margin-bottom:8px;">
                 <input type="text" id="adm-ad-link" class="admin-input" placeholder="#/membership" required style="margin-bottom:8px;">
                 <input type="number" id="adm-ad-weight" class="admin-input" placeholder="Campaign Weight (e.g. 10)" required style="margin-bottom:8px;">
               </div>
