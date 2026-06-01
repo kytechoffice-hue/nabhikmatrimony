@@ -47,7 +47,7 @@ function updateNavigation() {
   
   const hash = window.location.hash || '#/';
   
-  const makeLink = (href, text) => {
+  const makeLink = (href, text, extraStyle = '') => {
     const cleanHash = hash.split('?')[0];
     const isActive = (
       cleanHash === href || 
@@ -55,7 +55,7 @@ function updateNavigation() {
       (cleanHash.startsWith('#/profile') && href === '#/search') ||
       (cleanHash.startsWith('#/membership') && href === '#/membership')
     );
-    return `<li><a href="${href}" class="${isActive ? 'active' : ''}">${text}</a></li>`;
+    return `<li><a href="${href}" class="${isActive ? 'active' : ''}" style="${extraStyle}">${text}</a></li>`;
   };
   
   if (state.currentUser) {
@@ -65,11 +65,9 @@ function updateNavigation() {
       (state.currentUser.emailId && state.currentUser.emailId.toLowerCase().includes('admin'))
     );
     if (isAdmin) {
-      // Admins only see Home, Dashboard, and Admin menu (removing Search, Membership, Stories, Contact, Help)
+      // Admins only see Admin Dashboard menu link (removing Home, Dashboard, Search, Membership, Stories, Contact, Help)
       navContainer.innerHTML = `
-        ${makeLink('#/', 'Home')}
-        ${makeLink('#/dashboard', 'Dashboard')}
-        <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
+        ${makeLink('#/admin', 'Admin Dashboard', 'color: var(--color-gold-light); font-weight: 600;')}
       `;
     } else {
       // Show full menu when logged in for normal members
