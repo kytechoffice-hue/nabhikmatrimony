@@ -24,7 +24,7 @@ function makeSuccessCard(story) {
         <img src="${avatar}" alt="${story.couple}" style="object-fit: cover;">
       </div>
       <div class="success-card-content">
-        <p class="success-quote">“${story.quote}”</p>
+        <p class="success-quote">“${story.story || story.quote || ''}”</p>
         <div>
           <h4 class="success-names">${story.couple}</h4>
           <p class="success-date">Married on ${story.date}</p>
