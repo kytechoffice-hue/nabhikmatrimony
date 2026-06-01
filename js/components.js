@@ -7,7 +7,7 @@ function makeProfileCard(profile) {
   return `
     <div class="profile-card only-photo" data-id="${profile.id}" onclick="window.location.hash = '#/profile/${profile.id}'" style="cursor: pointer; height: 320px;">
       <div class="profile-card-image" style="height: 100%;">
-        <img src="${avatar}" alt="${profile.name}">
+        <img src="${avatar}" alt="${profile.name}" width="250" height="240" style="object-fit: cover;">
         ${profile.verified ? `<div class="profile-card-overlay"><span style="margin-right:2px;">✔</span> Verified</div>` : ''}
       </div>
     </div>
@@ -21,7 +21,7 @@ function makeSuccessCard(story) {
   return `
     <div class="success-card">
       <div class="success-card-image">
-        <img src="${avatar}" alt="${story.couple}" style="object-fit: cover;">
+        <img src="${avatar}" alt="${story.couple}" width="300" height="200" style="object-fit: cover;">
       </div>
       <div class="success-card-content">
         <p class="success-quote">“${story.story || story.quote || ''}”</p>
@@ -49,7 +49,7 @@ function makeEventCard(event) {
   return `
     <div class="event-card">
       <div class="event-image">
-        <img src="${eventImg}" alt="${event.title}">
+        <img src="${eventImg}" alt="${event.title}" width="300" height="140" style="object-fit: cover;">
       </div>
       <div class="event-info">
         <h3>${event.title}</h3>
@@ -79,7 +79,7 @@ function makeBlogCard(blog) {
   return `
     <div class="blog-card">
       <div class="blog-card-image">
-        <img src="${blogImg}" alt="${blog.title}">
+        <img src="${blogImg}" alt="${blog.title}" width="300" height="180" style="object-fit: cover;">
       </div>
       <div class="blog-card-content">
         <div>
