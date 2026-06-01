@@ -1711,7 +1711,7 @@ img {
    ========================================================================== */
 .admin-layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 280px 1fr;
   min-height: 600px;
   background-color: #fff;
   border: 1px solid var(--color-border);
@@ -1725,6 +1725,132 @@ img {
   background-color: var(--color-maroon-dark);
   color: var(--color-text-light);
   padding: 24px 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 20px;
+}
+
+/* Admin switch toggles */
+.admin-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  vertical-align: middle;
+}
+.admin-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.admin-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 20px;
+}
+.admin-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+input:checked + .admin-toggle-slider {
+  background-color: var(--color-gold);
+}
+input:checked + .admin-toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Grid & Cards */
+.admin-widgets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+.admin-widget-card {
+  background-color: #fff;
+  border: 1px solid rgba(74, 10, 16, 0.08);
+  border-radius: var(--border-radius-sm);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.admin-widget-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(74, 10, 16, 0.05);
+  padding-bottom: 8px;
+}
+
+/* Forms & Editors */
+.admin-form-group {
+  margin-bottom: 16px;
+}
+.admin-form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  color: var(--color-maroon);
+}
+.admin-input, .admin-select, .admin-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(74, 10, 16, 0.15);
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.9rem;
+  transition: border-color var(--transition-fast);
+}
+.admin-input:focus, .admin-select:focus, .admin-textarea:focus {
+  border-color: var(--color-gold);
+}
+.admin-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Filters bar */
+.admin-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background-color: var(--color-cream-dark);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  align-items: flex-end;
+}
+.admin-filter-item {
+  flex: 1 1 150px;
+}
+.admin-filter-item label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--color-maroon);
+}
+
+/* Tab menu layout scrollbar fix */
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
 }
 
 .admin-sidebar h3 {
