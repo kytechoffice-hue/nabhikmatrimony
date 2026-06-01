@@ -2498,7 +2498,14 @@ function switchAdminTab(tabName) {
                 <td>${p.location}</td>
                 <td><span class="badge-status ${p.verified ? 'badge-approved' : 'badge-pending'}">${p.verified ? 'Verified' : 'Pending'}</span></td>
                 <td>
-                  <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
+                  <div class="action-btn-group">
+                    ${p.verified ? `
+                      <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
+                    ` : `
+                      <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
+                    `}
+                    <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete">Delete</button>
+                  </div>
                 </td>
               </tr>
             `).join('')}
@@ -3275,15 +3282,26 @@ function handleLogout() {
 function handleAdminApprove(id) {
   stateActions.adminApproveProfile(id);
   showToast('Profile verification approved!');
-  switchAdminTab('approvals');
+  const activeTab = document.querySelector('.admin-menu a.active') ? document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1] : 'approvals';
+  switchAdminTab(activeTab);
 }
 
-// Admin blocks profile (deletes it)
+// Admin blocks profile (sets verified to false)
 function handleAdminReject(id) {
-  if (confirm('Are you sure you want to block and delete this profile permanently?')) {
+  if (confirm('Are you sure you want to block (unverify) this profile?')) {
     stateActions.adminBlockProfile(id);
-    showToast('Profile blocked and deleted.');
-    const activeTab = document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1];
+    showToast('Profile blocked and moved to pending verification.');
+    const activeTab = document.querySelector('.admin-menu a.active') ? document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1] : 'users';
+    switchAdminTab(activeTab);
+  }
+}
+
+// Admin deletes profile permanently
+function handleAdminDelete(id) {
+  if (confirm('Are you sure you want to permanently delete this profile? This action cannot be undone.')) {
+    stateActions.adminDeleteProfile(id);
+    showToast('Profile permanently deleted.');
+    const activeTab = document.querySelector('.admin-menu a.active') ? document.querySelector('.admin-menu a.active').id.split('ad-tab-')[1] : 'users';
     switchAdminTab(activeTab);
   }
 }
