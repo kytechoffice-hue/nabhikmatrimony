@@ -1636,7 +1636,7 @@ function renderHome(container) {
         <div class="hero-image-container">
           <div class="hero-image-frame">
             <!-- Reference the generated hero image -->
-            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo" width="380" height="380">
+            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
           </div>
         </div>
       </div>
