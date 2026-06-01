@@ -70,15 +70,17 @@ function updateNavigation() {
       ${makeLink('#/search', 'Search Profiles')}
       ${makeLink('#/membership', 'Membership')}
       ${makeLink('#/stories', 'Success Stories')}
+      ${makeLink('#/contact', 'Contact Us')}
       ${makeLink('#/help', 'Help')}
       ${isAdmin ? `<li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>` : ''}
     `;
   } else {
-    // Show Home, About Us, Membership, and Help when not logged in
+    // Show Home, About Us, Membership, Contact Us, and Help when not logged in
     navContainer.innerHTML = `
       ${makeLink('#/', 'Home')}
       ${makeLink('#/about', 'About Us')}
       ${makeLink('#/membership', 'Membership')}
+      ${makeLink('#/contact', 'Contact Us')}
       ${makeLink('#/help', 'Help')}
     `;
   }
@@ -255,7 +257,7 @@ function renderHome(container) {
   let featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
-  const stories = state.stories.slice(0, 3);
+  const stories = state.stories.slice(0, 8);
   let storiesHtml = stories.map(s => makeSuccessCard(s)).join('');
   
   // Grab events
@@ -1354,7 +1356,11 @@ function switchDashboardTab(tabName) {
             <p>Shortlisted</p>
           </div>
           <div class="stat-tile">
-            <h3>${Object.keys(state.activeChats).length}</h3>
+            <h3>${Object.keys(state.activeChats).filter(key => {
+              if (typeof key !== 'string' || !key.includes('_')) return false;
+              const parts = key.split('_').map(id => parseInt(id));
+              return parts.includes(state.currentUser.id);
+            }).length}</h3>
             <p>Chats</p>
           </div>
         </div>
@@ -1403,13 +1409,38 @@ function switchDashboardTab(tabName) {
       break;
       
     case 'messages':
-      // Get chat threads
-      const threadIds = Object.keys(state.activeChats).map(id => parseInt(id));
-      const threadProfiles = state.profiles.filter(p => threadIds.includes(p.id));
+      // Get chat threads for the logged-in user based on composite keys
+      const currentUserId = state.currentUser.id;
+      const threadKeys = Object.keys(state.activeChats).filter(key => {
+        if (typeof key !== 'string' || !key.includes('_')) return false;
+        const parts = key.split('_').map(id => parseInt(id));
+        return parts.includes(currentUserId);
+      });
+      
+      let threadProfiles = threadKeys.map(key => {
+        const parts = key.split('_').map(id => parseInt(id));
+        const partnerId = parts.find(id => id !== currentUserId);
+        return state.profiles.find(p => p.id === partnerId);
+      }).filter(p => p !== undefined);
+      
+      // If no other threads exist, seed a default thread with a verified profile of the opposite gender
+      if (threadProfiles.length === 0) {
+        const isMale = state.currentUser.gender.toLowerCase() === 'male';
+        const defaultPartner = state.profiles.find(p => p.gender.toLowerCase() === (isMale ? 'female' : 'male') && p.id !== currentUserId);
+        if (defaultPartner) {
+          const key = getChatKey(currentUserId, defaultPartner.id);
+          state.activeChats[key] = [
+            { senderId: defaultPartner.id, text: `Namaskar! Thank you for connecting. I am checking your profile details.`, timestamp: '10:30 AM' }
+          ];
+          stateActions.saveAll();
+          threadProfiles = [defaultPartner];
+        }
+      }
       
       let threadItemsHtml = threadProfiles.map((p, idx) => {
-        const msgs = state.activeChats[p.id];
-        const lastMsg = msgs[msgs.length - 1];
+        const key = getChatKey(currentUserId, p.id);
+        const msgs = state.activeChats[key];
+        const lastMsg = msgs ? msgs[msgs.length - 1] : null;
         return `
           <div class="thread-item ${idx === 0 ? 'active' : ''}" onclick="selectChatThread(event, ${p.id})">
             <img src="${p.photo || getSvgAvatar(p.gender, p.id, p.name)}" alt="${p.name}">
@@ -1439,6 +1470,16 @@ function switchDashboardTab(tabName) {
           <p style="color: var(--color-text-muted);">No active chats yet. Open a profile and click "Chat Now" to start chatting.</p>
         `}
       `;
+      
+      // Auto scroll active chat box to bottom on initial tab load
+      setTimeout(() => {
+        if (threadProfiles.length > 0) {
+          const firstBox = document.getElementById(`chat-messages-box-${threadProfiles[0].id}`);
+          if (firstBox) {
+            firstBox.scrollTop = firstBox.scrollHeight;
+          }
+        }
+      }, 50);
       break;
       
     case 'edit':
@@ -1622,13 +1663,34 @@ function switchDashboardTab(tabName) {
 // Helper to construct Chat Conversation Panel HTML
 function makeChatPanel(profileId) {
   const profile = state.profiles.find(p => p.id === profileId);
-  const messages = state.activeChats[profileId] || [];
+  if (!profile || !state.currentUser) return '';
   
-  let msgsHtml = messages.map(m => `
-    <div class="message-bubble ${m.sender === 'you' ? 'message-sent' : 'message-received'}">
-      ${m.text}
-    </div>
-  `).join('');
+  const key = getChatKey(state.currentUser.id, profileId);
+  const messages = state.activeChats[key] || [];
+  
+  const partnerPhoto = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
+  const userPhoto = state.currentUser ? (state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)) : getSvgAvatar('male', 99, 'You');
+  
+  let msgsHtml = messages.map((m, idx) => {
+    const isYou = m.senderId !== undefined ? (m.senderId === state.currentUser.id) : (m.sender === 'you');
+    const avatar = isYou ? userPhoto : partnerPhoto;
+    const timeStr = m.timestamp || (isYou ? '10:32 AM' : '10:30 AM');
+    const ticksHtml = isYou ? `<span class="message-status-ticks">✓✓</span>` : '';
+    
+    return `
+      <div class="message-row ${isYou ? 'message-sent-row' : 'message-received-row'}">
+        ${!isYou ? `<img src="${avatar}" class="message-avatar" alt="${profile.name}">` : ''}
+        <div class="message-bubble ${isYou ? 'message-sent' : 'message-received'}">
+          <div class="message-text">${m.text}</div>
+          <div class="message-meta">
+            <span class="message-time">${timeStr}</span>
+            ${ticksHtml}
+          </div>
+        </div>
+        ${isYou ? `<img src="${avatar}" class="message-avatar" alt="You">` : ''}
+      </div>
+    `;
+  }).join('');
   
   return `
     <div class="chat-header">
@@ -2062,7 +2124,7 @@ function renderStories(container) {
         <div class="traditional-divider"><span class="icon">✦</span></div>
       </div>
       
-      <div class="success-slider" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="success-slider">
         ${listHtml}
       </div>
     </div>
@@ -2131,8 +2193,6 @@ function renderContact(container) {
           <p>Feel free to reach out to us regarding queries, membership details, offline registration centers, or support.</p>
           
           <ul class="contact-info-list">
-            <li><span class="icon">📍</span> Nabhik Matrimonial Headquarters, Nagpur, Maharashtra, India</li>
-            <li><span class="icon">📞</span> +91 12345 67890</li>
             <li><span class="icon">✉</span> info@nabhikmatrimonial.com</li>
             <li><span class="icon">🌐</span> www.nabhikmatrimonial.com</li>
           </ul>
@@ -2582,6 +2642,11 @@ function handleStartChat(id) {
     return;
   }
   
+  if (id === state.currentUser.id) {
+    showToast("⚠️ You cannot chat with yourself.");
+    return;
+  }
+  
   if (!state.currentUser.membership || state.currentUser.membership === 'Free') {
     showToast('💬 Chatting is exclusive to premium members. Upgrade your plan to start chatting!');
     window.location.hash = '#/membership';
@@ -2589,9 +2654,10 @@ function handleStartChat(id) {
   }
   
   // Add to active threads if not present
-  if (!state.activeChats[id]) {
-    state.activeChats[id] = [
-      { sender: 'them', text: `Namaskar, thank you for connecting. I am checking your profile details.` }
+  const key = getChatKey(state.currentUser.id, id);
+  if (!state.activeChats[key]) {
+    state.activeChats[key] = [
+      { senderId: id, text: `Namaskar, thank you for connecting. I am checking your profile details.`, timestamp: '10:30 AM' }
     ];
     stateActions.saveAll();
   }
@@ -2628,22 +2694,32 @@ function handleSendChatMessage(e, profileId) {
   // Trigger partner automatic reply
   const partner = state.profiles.find(p => p.id === profileId);
   const replies = [
-    `Namaskar! Thank you for the message. I would love to connect. I will speak to my parents about your profile and let you know.`,
-    `Thank you for reaching out! Your profile looks compatibility matching. Can we share biodatas on WhatsApp?`,
-    `Hello! Good to hear from you. I am currently working as ${partner.profession}. Yes, let's discuss details.`
+    `Namaskar! Thank you for the message. I would love to connect. I will speak to my parents about your profile and let you know.`
   ];
   
   setTimeout(() => {
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const randomReply = replies[Math.floor(Math.random() * replies.length)];
-    state.activeChats[profileId].push({ sender: 'them', text: randomReply });
+    const key = getChatKey(state.currentUser.id, profileId);
+    if (!state.activeChats[key]) {
+      state.activeChats[key] = [];
+    }
+    state.activeChats[key].push({ senderId: profileId, text: randomReply, timestamp: timeStr });
     stateActions.saveAll();
     
     // Re-render chat list again if we are still viewing this chat
     const currentBox = document.getElementById(`chat-messages-box-${profileId}`);
     if (currentBox) {
+      const partnerPhoto = partner.photo || getSvgAvatar(partner.gender, partner.id, partner.name);
       currentBox.innerHTML += `
-        <div class="message-bubble message-received">
-          ${randomReply}
+        <div class="message-row message-received-row">
+          <img src="${partnerPhoto}" class="message-avatar" alt="${partner.name}">
+          <div class="message-bubble message-received">
+            <div class="message-text">${randomReply}</div>
+            <div class="message-meta">
+              <span class="message-time">${timeStr}</span>
+            </div>
+          </div>
         </div>
       `;
       currentBox.scrollTop = currentBox.scrollHeight;
