@@ -1,5 +1,24 @@
 // Consolidated Matrimonial Application Bundle
 // ==========================================
+// Load Google Fonts asynchronously to eliminate render-blocking issues
+(function() {
+  const preconnect1 = document.createElement('link');
+  preconnect1.rel = 'preconnect';
+  preconnect1.href = 'https://fonts.googleapis.com';
+  document.head.appendChild(preconnect1);
+
+  const preconnect2 = document.createElement('link');
+  preconnect2.rel = 'preconnect';
+  preconnect2.href = 'https://fonts.gstatic.com';
+  preconnect2.crossOrigin = 'anonymous';
+  document.head.appendChild(preconnect2);
+
+  const fontStyle = document.createElement('link');
+  fontStyle.rel = 'stylesheet';
+  fontStyle.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap';
+  document.head.appendChild(fontStyle);
+})();
+
 // SECTION 1: DATABASE & ACTIONS (formerly data.js)
 // Nabhik Matrimonial Mock Database & State Management
 
