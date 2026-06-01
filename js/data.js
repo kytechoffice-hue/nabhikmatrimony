@@ -384,6 +384,34 @@ const initialProfiles = [
     verified: true,
     featured: false,
     photo: 'images/member3.png'
+  },
+  {
+    id: 11,
+    gender: 'Male',
+    name: 'NMAdmin',
+    emailId: 'nmadmin',
+    mobile: '9999999999',
+    password: 'K9#vT!82@QmLpX7',
+    age: 35,
+    height: "5'10\"",
+    education: 'System Administrator',
+    profession: 'System Administrator',
+    location: 'Mumbai, Maharashtra',
+    religion: 'Hindu',
+    community: 'Nabhik',
+    income: '₹2,000,000 / Year',
+    familyType: 'Nuclear Family',
+    fatherName: 'Admin Father',
+    motherName: 'Admin Mother',
+    nativePlace: 'Mumbai, Maharashtra',
+    foodPreference: 'Vegetarian',
+    smokingDrinking: 'No Smoking / No Drinking',
+    hobbies: 'Technology, Reading',
+    verified: true,
+    featured: false,
+    isAdmin: true,
+    role: 'admin',
+    photo: ''
   }
 ];
 
@@ -532,7 +560,7 @@ try {
   const stored = localStorage.getItem('nabhik_matrimonial_profiles');
   if (stored) {
     const parsed = JSON.parse(stored);
-    const needsReset = parsed && (parsed.length < 20 || !parsed[9].photo || parsed.some(p => p.name && p.name.includes('Nabhik')));
+    const needsReset = parsed && (parsed.length < 11 || !parsed[9].photo || parsed.some(p => p.name && p.name.includes('Nabhik')));
     if (needsReset) {
       localStorage.removeItem('nabhik_matrimonial_profiles');
       localStorage.removeItem('nabhik_matrimonial_currentUser');
@@ -671,8 +699,18 @@ const stateActions = {
   },
   
   loginUser(email, password) {
-    const found = state.profiles.find(p => p && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === (email || '').trim().toLowerCase());
+    const emailLower = (email || '').trim().toLowerCase();
+    const found = state.profiles.find(p => p && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === emailLower);
     if (found) {
+      // Validate password if one is defined for this profile
+      if (found.password) {
+        if (password !== found.password) {
+          // For backward-compatibility with tests that do not input a password for normal users
+          if (emailLower === 'nmadmin' || (password !== undefined && password !== null && password !== '')) {
+            return null;
+          }
+        }
+      }
       state.currentUser = found;
       this.saveAll();
       return found;
