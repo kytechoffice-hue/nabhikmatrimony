@@ -292,7 +292,7 @@ function renderHome(container) {
         <div class="hero-image-container">
           <div class="hero-image-frame">
             <!-- Reference the generated hero image -->
-            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo">
+            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo" width="380" height="380">
           </div>
         </div>
       </div>
@@ -915,7 +915,7 @@ function renderProfileDetails(container, profileId) {
     <div class="container profile-detail-grid">
       <!-- Left sidebar -->
       <div class="profile-detail-sidebar">
-        <img src="${avatar}" alt="${profile.name}" class="profile-detail-avatar">
+        <img src="${avatar}" alt="${profile.name}" class="profile-detail-avatar" width="320" height="360">
         
         <div class="profile-detail-actions">
           <button onclick="handleSendInterest(${profile.id}, true)" class="btn btn-primary" style="width: 100%;">
@@ -1276,7 +1276,7 @@ function renderDashboard(container) {
       <!-- Dashboard Sidebar -->
       <aside class="dashboard-sidebar">
         <div class="dashboard-user-summary">
-          <img id="db-sidebar-user-photo" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}">
+          <img id="db-sidebar-user-photo" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" alt="${state.currentUser.name}" width="80" height="80">
           <h4 id="db-sidebar-user-name" style="display: flex; align-items: center; justify-content: center; gap: 6px;">${state.currentUser.name} ${state.currentUser.verified ? '<span style="background-color: #2e7d32; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; display: inline-flex; align-items: center; gap: 2px;" title="Verified Profile">✔ Verified</span>' : ''}</h4>
           <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member${state.currentUser.boosted ? ' | 🚀 Boosted' : ''}</p>
         </div>
@@ -1460,7 +1460,7 @@ function switchDashboardTab(tabName) {
         const lastMsg = msgs ? msgs[msgs.length - 1] : null;
         return `
           <div class="thread-item ${idx === 0 ? 'active' : ''}" onclick="selectChatThread(event, ${p.id})">
-            <img src="${p.photo || getSvgAvatar(p.gender, p.id, p.name)}" alt="${p.name}">
+            <img src="${p.photo || getSvgAvatar(p.gender, p.id, p.name)}" alt="${p.name}" width="36" height="36">
             <div class="thread-details">
               <h4>${p.name}</h4>
               <p>${lastMsg ? lastMsg.text : 'Start talking...'}</p>
@@ -1696,7 +1696,7 @@ function makeChatPanel(profileId) {
     
     return `
       <div class="message-row ${isYou ? 'message-sent-row' : 'message-received-row'}">
-        ${!isYou ? `<img src="${avatar}" class="message-avatar" alt="${profile.name}">` : ''}
+        ${!isYou ? `<img src="${avatar}" class="message-avatar" alt="${profile.name}" width="32" height="32">` : ''}
         <div class="message-bubble ${isYou ? 'message-sent' : 'message-received'}">
           <div class="message-text">${m.text}</div>
           <div class="message-meta">
@@ -1704,7 +1704,7 @@ function makeChatPanel(profileId) {
             ${ticksHtml}
           </div>
         </div>
-        ${isYou ? `<img src="${avatar}" class="message-avatar" alt="You">` : ''}
+        ${isYou ? `<img src="${avatar}" class="message-avatar" alt="You" width="32" height="32">` : ''}
       </div>
     `;
   }).join('');
@@ -3367,7 +3367,7 @@ function handleSendChatMessage(e, profileId) {
       const partnerPhoto = partner.photo || getSvgAvatar(partner.gender, partner.id, partner.name);
       currentBox.innerHTML += `
         <div class="message-row message-received-row">
-          <img src="${partnerPhoto}" class="message-avatar" alt="${partner.name}">
+          <img src="${partnerPhoto}" class="message-avatar" alt="${partner.name}" width="32" height="32">
           <div class="message-bubble message-received">
             <div class="message-text">${randomReply}</div>
             <div class="message-meta">
