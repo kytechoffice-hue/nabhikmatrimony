@@ -1,0 +1,14 @@
+# Nabhik Matrimonial Apache Redirects
+# Enforce Canonical Domain (apex https://nabhikmatrimony.com/)
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # 1. Redirect www.nabhikmatrimony.com to nabhikmatrimony.com (301 Permanent)
+    RewriteCond %{HTTP_HOST} ^www\.nabhikmatrimony\.com$ [NC]
+    RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
+    
+    # 2. Redirect HTTP requests to HTTPS (301 Permanent)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
+</IfModule>
