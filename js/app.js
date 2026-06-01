@@ -1356,6 +1356,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Bind global clicks
   document.body.addEventListener('click', handleGlobalClicks);
+  
+  // Mark app as loaded to show footer without Cumulative Layout Shift (CLS)
+  setTimeout(() => {
+    document.body.classList.add('app-loaded');
+  }, 150);
 });
 
 // Update auth buttons in header based on active session
