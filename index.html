@@ -6,6 +6,9 @@
   <title>Nabhik Matrimonial - Where Tradition Meets Perfect Match</title>
   <meta name="description" content="Trusted Matrimonial Platform for the Nabhik Society. Find your perfect life partner matching traditional values and modern aspirations.">
   
+  <!-- Preload the Largest Contentful Paint (LCP) Hero Image -->
+  <link rel="preload" as="image" href="images/hero.png" fetchpriority="high">
+
   <!-- Asynchronously load stylesheet to eliminate render-blocking -->
   <link rel="preload" href="css/styles.css?v=8.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -94,7 +97,23 @@
        MAIN APP ROUTER ROOT VIEW CONTAINER
        ========================================================================== -->
   <main id="app-view">
-    <!-- Component pages will be injected here dynamically by the hash router -->
+    <!-- Pre-rendered above-the-fold Hero Section for instant loading and LCP optimization -->
+    <section class="hero-section">
+      <div class="bell-container bell-left"><svg class="bell-svg" viewBox="0 0 24 24"><path d="M12,2A2,2,0,0,0,10,4V5.09A7,7,0,0,0,5,12v4H3v2H21V16H19V12a7,7,0,0,0,5-6.91V4a2,2,0,0,0-2-2H12m0,20a3,3,0,0,0,3-3H9a3,3,0,0,0,3,3Z"/></svg></div>
+      <div class="bell-container bell-right"><svg class="bell-svg" viewBox="0 0 24 24"><path d="M12,2A2,2,0,0,0,10,4V5.09A7,7,0,0,0,5,12v4H3v2H21V16H19V12a7,7,0,0,0,5-6.91V4a2,2,0,0,0-2-2H12m0,20a3,3,0,0,0,3-3H9a3,3,0,0,0,3,3Z"/></svg></div>
+      
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <h1>Where Tradition<br>Meets <span class="text-gold">Perfect Match</span></h1>
+          <p>Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.</p>
+        </div>
+        <div class="hero-image-container">
+          <div class="hero-image-frame">
+            <img src="images/hero.png" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ==========================================================================
