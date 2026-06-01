@@ -589,6 +589,156 @@ try {
   console.error("Failed to check or clear localStorage stories", e);
 }
 
+// Seed Plans for Dynamic Membership Management
+const initialPlans = [
+  {
+    name: 'Free',
+    displayName: 'Free Plan',
+    price: 0,
+    period: '',
+    badgeClass: 'free-badge',
+    badgeIcon: '🌱',
+    tagline: 'Best for new users.',
+    features: [
+      'Set Up a Free Account',
+      'Add Pictures',
+      'View Listings',
+      'Send a Few "Likes"',
+      'Simple Compatibility Tips'
+    ],
+    note: '',
+    featured: false,
+    active: true
+  },
+  {
+    name: 'Silver',
+    displayName: 'Silver Plan',
+    price: 299,
+    period: ' / 3 Months',
+    badgeClass: 'silver-badge',
+    badgeIcon: '🥈',
+    tagline: 'Best low-cost starter plan.',
+    features: [
+      'View 50 Profiles',
+      'Send Unlimited Interests',
+      'Basic Chat Access',
+      'Priority Profile Visibility',
+      'Mobile Notifications'
+    ],
+    note: 'Recommended because many Indian users prefer plans below ₹500 initially.',
+    featured: false,
+    active: true
+  },
+  {
+    name: 'Gold',
+    displayName: 'Gold Plan',
+    price: 599,
+    period: ' / 6 Months',
+    badgeClass: 'gold-badge',
+    badgeIcon: '🥇',
+    tagline: 'Best balance of affordability and value.',
+    features: [
+      'Unlimited Profile Views',
+      'Direct Contact Access',
+      'Unlimited Chat',
+      'Advanced Search Filters',
+      'See Who Viewed Your Profile',
+      'Profile Highlight Badge'
+    ],
+    note: 'This pricing is competitive compared to many Indian matrimony services charging ₹1999–₹6000 for similar features.',
+    featured: true,
+    active: true
+  },
+  {
+    name: 'Platinum',
+    displayName: 'Platinum Plan',
+    price: 1199,
+    period: ' / 12 Months',
+    badgeClass: 'platinum-badge',
+    badgeIcon: '💎',
+    tagline: 'Best for serious users.',
+    features: [
+      'All Gold Features',
+      'Featured Profile on Homepage',
+      'Profile Verification Badge',
+      'WhatsApp Support',
+      'Dedicated Relationship Assistance',
+      'Priority Match Suggestions'
+    ],
+    note: '',
+    featured: false,
+    active: true
+  },
+  {
+    name: 'Premium Assisted',
+    displayName: 'Premium Assisted Plan',
+    price: 4999,
+    period: ' / 12 Months',
+    badgeClass: 'assisted-badge',
+    badgeIcon: '🤝',
+    tagline: 'Optional high-end service.',
+    features: [
+      'Dedicated Matchmaking Support',
+      'Manual Match Recommendations',
+      'Family Assistance',
+      'Phone Support',
+      'Profile Promotion',
+      'Premium Badge'
+    ],
+    note: '',
+    featured: false,
+    active: true
+  }
+];
+
+// Seed Support Tickets
+const initialTickets = [
+  { id: 1, name: 'Sandeep Shinde', email: 'sandeep@gmail.com', query: 'I am unable to upload my Kundali PDF. It shows an invalid format error.', date: '30 May 2026', status: 'Open', response: '', assignedTo: 'Support Agent A' },
+  { id: 2, name: 'Neha Joshi', email: 'neha@gmail.com', query: 'Can I hide my phone number from unverified members? Please help.', date: '31 May 2026', status: 'In Progress', response: '', assignedTo: 'Support Agent B' },
+  { id: 3, name: 'Amit Chavan', email: 'amit@gmail.com', query: 'Payment successful for Gold Plan but my profile still shows Free Plan status.', date: '01 June 2026', status: 'Resolved', response: 'Thank you for reaching out. The transaction was verified and your profile has been upgraded to Gold.', assignedTo: 'Support Agent A' }
+];
+
+// Seed Payment History Logs
+const initialPayments = [
+  { id: 'TXN-98402', name: 'Rahul Patil', plan: 'Gold Plan', amount: 599, date: '28 May 2026', gateway: 'Razorpay', status: 'Success' },
+  { id: 'TXN-98403', name: 'Priya Deshmukh', plan: 'Silver Plan', amount: 299, date: '29 May 2026', gateway: 'UPI', status: 'Success' },
+  { id: 'TXN-98404', name: 'Sandeep Shinde', plan: 'Platinum Plan', amount: 1199, date: '30 May 2026', gateway: 'Stripe', status: 'Success' },
+  { id: 'TXN-98405', name: 'Ankita Pawar', plan: 'Gold Plan', amount: 599, date: '31 May 2026', gateway: 'Paytm', status: 'Failed' }
+];
+
+// Seed Gateway Settings
+const initialGateways = { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
+
+// Seed Email Templates
+const initialEmailTemplates = {
+  welcome: {
+    subject: 'Welcome to Nabhik Matrimonial!',
+    body: '<p>Namaskar {userName},</p><p>Welcome to Nabhik Matrimonial - the premier community matchmaking portal. We are thrilled to help you find your perfect life partner.</p><p>Best Regards,<br>Nabhik Matrimonial Team</p>'
+  },
+  registration: {
+    subject: 'Complete Your Verification on Nabhik Matrimonial',
+    body: '<p>Namaskar {userName},</p><p>Thank you for registering. Please upload your ID proof or get mobile verification completed to activate your profile match filters.</p>'
+  },
+  membership: {
+    subject: 'Your Membership Upgrade Confirmation',
+    body: '<p>Namaskar {userName},</p><p>Congratulations! Your profile has been successfully upgraded to the <strong>{planName}</strong>. You now have access to premium contacts and features.</p>'
+  },
+  matches: {
+    subject: 'New Match Recommendations for You',
+    body: '<p>Namaskar {userName},</p><p>Our matching algorithm has found new verified profiles matching your criteria. Log in now to view them.</p>'
+  },
+  password_reset: {
+    subject: 'Password Reset Request',
+    body: '<p>Namaskar {userName},</p><p>Your password has been successfully reset to: <strong>Password@123</strong>. Please log in and change your password immediately.</p>'
+  }
+};
+
+// Seed Advertisement Banners
+const initialAds = [
+  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.png', link: '#/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '#/membership/assisted', weight: 5, clicks: 88, active: true }
+];
+
 const state = {
   profiles: (storage.get('profiles', initialProfiles) || []).filter(p => p && typeof p === 'object'),
   stories: storage.get('stories', initialStories),
@@ -612,7 +762,14 @@ const state = {
     totalRevenue: 24988,
     activePlans: { Silver: 12, Gold: 8, Platinum: 4, 'Premium Assisted': 2 },
     extraFeatures: { 'Profile Boost': 15, 'Horoscope Match': 24, 'Profile Verification': 8, 'Homepage Featured Profile': 5 }
-  })
+  }),
+  
+  plans: storage.get('plans', initialPlans),
+  tickets: storage.get('tickets', initialTickets),
+  payments: storage.get('payments', initialPayments),
+  gateways: storage.get('gateways', initialGateways),
+  emailTemplates: storage.get('emailTemplates', initialEmailTemplates),
+  ads: storage.get('ads', initialAds)
 };
 
 // Symmetrical database migration: convert old single-number keys to composite keys
@@ -680,6 +837,196 @@ const stateActions = {
     storage.set('shortlisted', state.shortlisted);
     storage.set('activeChats', state.activeChats);
     storage.set('revenueReport', state.revenueReport);
+    storage.set('plans', state.plans);
+    storage.set('tickets', state.tickets);
+    storage.set('payments', state.payments);
+    storage.set('gateways', state.gateways);
+    storage.set('emailTemplates', state.emailTemplates);
+    storage.set('ads', state.ads);
+  },
+
+  addTicket(ticketData) {
+    const newId = state.tickets.length ? Math.max(...state.tickets.map(t => t.id)) + 1 : 1;
+    const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const ticket = {
+      id: newId,
+      name: ticketData.name,
+      email: ticketData.email,
+      query: ticketData.query,
+      date: dateStr,
+      status: 'Open',
+      response: '',
+      assignedTo: 'Support Agent A'
+    };
+    state.tickets.push(ticket);
+    this.saveAll();
+    return ticket;
+  },
+  
+  adminReplyTicket(id, responseText) {
+    const ticket = state.tickets.find(t => t.id === id);
+    if (ticket) {
+      ticket.response = responseText;
+      ticket.status = 'Resolved';
+      this.saveAll();
+    }
+  },
+  
+  adminUpdateTicketStatus(id, status) {
+    const ticket = state.tickets.find(t => t.id === id);
+    if (ticket) {
+      ticket.status = status;
+      this.saveAll();
+    }
+  },
+
+  adminAddPlan(plan) {
+    state.plans.push(plan);
+    this.saveAll();
+  },
+
+  adminUpdatePlan(name, fields) {
+    const plan = state.plans.find(p => p.name === name);
+    if (plan) {
+      Object.assign(plan, fields);
+      this.saveAll();
+    }
+  },
+
+  adminTogglePlan(name) {
+    const plan = state.plans.find(p => p.name === name);
+    if (plan) {
+      plan.active = !plan.active;
+      this.saveAll();
+    }
+  },
+
+  adminRefundPayment(txnId) {
+    const payment = state.payments.find(p => p.id === txnId);
+    if (payment && payment.status === 'Success') {
+      payment.status = 'Refunded';
+      state.revenueReport.totalRevenue -= payment.amount;
+      this.saveAll();
+    }
+  },
+
+  adminToggleGateway(name) {
+    if (state.gateways[name] !== undefined) {
+      state.gateways[name] = !state.gateways[name];
+      this.saveAll();
+    }
+  },
+
+  adminUpdateTemplate(name, subject, body) {
+    if (state.emailTemplates[name]) {
+      state.emailTemplates[name].subject = subject;
+      state.emailTemplates[name].body = body;
+      this.saveAll();
+    }
+  },
+
+  adminAddAd(ad) {
+    const newId = state.ads.length ? Math.max(...state.ads.map(a => a.id)) + 1 : 1;
+    ad.id = newId;
+    state.ads.push(ad);
+    this.saveAll();
+  },
+
+  adminToggleAd(id) {
+    const ad = state.ads.find(a => a.id === id);
+    if (ad) {
+      ad.active = !ad.active;
+      this.saveAll();
+    }
+  },
+
+  adminDeleteAd(id) {
+    const idx = state.ads.findIndex(a => a.id === id);
+    if (idx > -1) {
+      state.ads.splice(idx, 1);
+      this.saveAll();
+    }
+  },
+
+  adminAddEvent(eventData) {
+    const newId = state.events.length ? Math.max(...state.events.map(e => e.id)) + 1 : 1;
+    const newEvent = {
+      id: newId,
+      title: eventData.title,
+      date: eventData.date,
+      location: eventData.location,
+      summary: eventData.summary,
+      category: eventData.category || 'General Announcement'
+    };
+    state.events.push(newEvent);
+    this.saveAll();
+  },
+
+  adminDeleteEvent(id) {
+    const idx = state.events.findIndex(e => e.id === id);
+    if (idx > -1) {
+      state.events.splice(idx, 1);
+      this.saveAll();
+    }
+  },
+
+  adminAddStory(storyData) {
+    const newId = state.stories.length ? Math.max(...state.stories.map(s => s.id)) + 1 : 1;
+    const newStory = {
+      id: newId,
+      couple: storyData.couple,
+      photo: storyData.photo || 'images/story1.jpg',
+      story: storyData.story,
+      quote: storyData.story,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      verified: true
+    };
+    state.stories.push(newStory);
+    this.saveAll();
+  },
+
+  adminDeleteStory(id) {
+    const idx = state.stories.findIndex(s => s.id === id);
+    if (idx > -1) {
+      state.stories.splice(idx, 1);
+      this.saveAll();
+    }
+  },
+
+  adminAddUser(userData) {
+    const newId = state.profiles.length ? Math.max(...state.profiles.map(p => p.id)) + 1 : 1;
+    const newProfile = {
+      id: newId,
+      name: userData.name,
+      gender: userData.gender,
+      emailId: userData.emailId,
+      mobile: userData.mobile || '',
+      password: userData.password || 'Password@123',
+      location: userData.location || 'Mumbai, Maharashtra',
+      age: parseInt(userData.age) || 28,
+      verified: userData.verified !== undefined ? userData.verified : true,
+      membership: userData.membership || 'Free',
+      photo: userData.photo || 'images/member1.png'
+    };
+    state.profiles.push(newProfile);
+    this.saveAll();
+    return newProfile;
+  },
+
+  adminResetPassword(id) {
+    const profile = state.profiles.find(p => p.id === id);
+    if (profile) {
+      profile.password = 'Password@123';
+      this.saveAll();
+    }
+  },
+
+  adminUpdateUser(id, fields) {
+    const profile = state.profiles.find(p => p.id === id);
+    if (profile) {
+      Object.assign(profile, fields);
+      this.saveAll();
+    }
   },
   
   registerUser(userData) {
