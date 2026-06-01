@@ -52,7 +52,8 @@ function updateNavigation() {
     const isActive = (
       cleanHash === href || 
       (cleanHash === '#/' && href === '#/') || 
-      (cleanHash.startsWith('#/profile') && href === '#/search')
+      (cleanHash.startsWith('#/profile') && href === '#/search') ||
+      (cleanHash.startsWith('#/membership') && href === '#/membership')
     );
     return `<li><a href="${href}" class="${isActive ? 'active' : ''}">${text}</a></li>`;
   };
@@ -147,7 +148,12 @@ function initRouter() {
   document.querySelectorAll('.nav-links a').forEach(a => {
     const aHash = a.getAttribute('href');
     const cleanAHash = aHash ? aHash.split('?')[0] : '';
-    if (path === cleanAHash || (path === '#/' && cleanAHash === '#') || (path.startsWith('#/profile') && cleanAHash === '#/search')) {
+    if (
+      path === cleanAHash || 
+      (path === '#/' && cleanAHash === '#') || 
+      (path.startsWith('#/profile') && cleanAHash === '#/search') ||
+      (path.startsWith('#/membership') && cleanAHash === '#/membership')
+    ) {
       a.classList.add('active');
     } else {
       a.classList.remove('active');
