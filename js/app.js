@@ -1184,8 +1184,8 @@ function openLoginModal() {
       <!-- Email Form -->
       <form id="login-email-form" onsubmit="handleEmailLogin(event)">
         <div class="form-group">
-          <label>Email ID</label>
-          <input type="email" id="login-email" required placeholder="Enter registered email">
+          <label>Email ID or Username</label>
+          <input type="text" id="login-email" required placeholder="Enter Email ID or Username">
         </div>
         <div class="form-group">
           <label>Password</label>
