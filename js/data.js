@@ -783,6 +783,14 @@ const stateActions = {
   },
   
   adminBlockProfile(id) {
+    const profile = state.profiles.find(p => p.id === id);
+    if (profile) {
+      profile.verified = false;
+      this.saveAll();
+    }
+  },
+  
+  adminDeleteProfile(id) {
     const idx = state.profiles.findIndex(p => p.id === id);
     if (idx > -1) {
       state.profiles.splice(idx, 1);
