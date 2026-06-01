@@ -735,7 +735,7 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.png', link: '#/membership', weight: 10, clicks: 142, active: true },
+  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '#/membership', weight: 10, clicks: 142, active: true },
   { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '#/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
