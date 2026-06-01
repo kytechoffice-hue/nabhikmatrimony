@@ -176,7 +176,7 @@ const initialProfiles = [
     hobbies: 'Reading, Cricket, Coding',
     verified: true,
     featured: true,
-    photo: 'images/member1.png'
+    photo: 'images/member1.webp'
   },
   {
     id: 2,
@@ -202,7 +202,7 @@ const initialProfiles = [
     hobbies: 'Classical Dance, Painting, Cooking',
     verified: true,
     featured: true,
-    photo: 'images/member3.png'
+    photo: 'images/member3.webp'
   },
   {
     id: 3,
@@ -228,7 +228,7 @@ const initialProfiles = [
     hobbies: 'Trekking, Photography, Music',
     verified: true,
     featured: true,
-    photo: 'images/member2.png'
+    photo: 'images/member2.webp'
   },
   {
     id: 4,
@@ -254,7 +254,7 @@ const initialProfiles = [
     hobbies: 'Gardening, Reading, Travel',
     verified: true,
     featured: true,
-    photo: 'images/member4.png'
+    photo: 'images/member4.webp'
   },
   {
     id: 5,
@@ -280,7 +280,7 @@ const initialProfiles = [
     hobbies: 'Gym, Traveling, Driving',
     verified: true,
     featured: true,
-    photo: 'images/member5.png'
+    photo: 'images/member5.webp'
   },
   {
     id: 6,
@@ -306,7 +306,7 @@ const initialProfiles = [
     hobbies: 'Writing, Yoga, Music',
     verified: false, // Pending verification (admin test case)
     featured: false,
-    photo: 'images/member8.png'
+    photo: 'images/member8.webp'
   },
   {
     id: 7,
@@ -332,7 +332,7 @@ const initialProfiles = [
     hobbies: 'News, Badminton, Public Service',
     verified: true,
     featured: false,
-    photo: 'images/member7.png'
+    photo: 'images/member7.webp'
   },
   {
     id: 8,
@@ -358,7 +358,7 @@ const initialProfiles = [
     hobbies: 'Social Work, Reading, Flute',
     verified: true,
     featured: false,
-    photo: 'images/member9.png'
+    photo: 'images/member9.webp'
   },
   {
     id: 9,
@@ -384,7 +384,7 @@ const initialProfiles = [
     hobbies: 'Designing, Sketching, Traveling',
     verified: false, // Pending verification (admin test case)
     featured: false,
-    photo: 'images/member6.png'
+    photo: 'images/member6.webp'
   },
   {
     id: 10,
@@ -410,7 +410,7 @@ const initialProfiles = [
     hobbies: 'Cooking, Caring, Cinema',
     verified: true,
     featured: false,
-    photo: 'images/member3.png'
+    photo: 'images/member3.webp'
   },
   {
     id: 11,
@@ -1033,7 +1033,7 @@ const stateActions = {
       age: parseInt(userData.age) || 28,
       verified: userData.verified !== undefined ? userData.verified : true,
       membership: userData.membership || 'Free',
-      photo: userData.photo || 'images/member1.png'
+      photo: userData.photo || 'images/member1.webp'
     };
     state.profiles.push(newProfile);
     this.saveAll();
