@@ -64,17 +64,25 @@ function updateNavigation() {
       state.currentUser.role === 'admin' || 
       (state.currentUser.emailId && state.currentUser.emailId.toLowerCase().includes('admin'))
     );
-    // Show full menu when logged in (cleaned up to prevent overflow, added Dashboard)
-    navContainer.innerHTML = `
-      ${makeLink('#/', 'Home')}
-      ${makeLink('#/dashboard', 'Dashboard')}
-      ${makeLink('#/search', 'Search Profiles')}
-      ${makeLink('#/membership', 'Membership')}
-      ${makeLink('#/stories', 'Success Stories')}
-      ${makeLink('#/contact', 'Contact Us')}
-      ${makeLink('#/help', 'Help')}
-      ${isAdmin ? `<li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>` : ''}
-    `;
+    if (isAdmin) {
+      // Admins only see Home, Dashboard, and Admin menu (removing Search, Membership, Stories, Contact, Help)
+      navContainer.innerHTML = `
+        ${makeLink('#/', 'Home')}
+        ${makeLink('#/dashboard', 'Dashboard')}
+        <li><a href="#/admin" style="color: var(--color-gold-light); font-weight: 600;">Admin</a></li>
+      `;
+    } else {
+      // Show full menu when logged in for normal members
+      navContainer.innerHTML = `
+        ${makeLink('#/', 'Home')}
+        ${makeLink('#/dashboard', 'Dashboard')}
+        ${makeLink('#/search', 'Search Profiles')}
+        ${makeLink('#/membership', 'Membership')}
+        ${makeLink('#/stories', 'Success Stories')}
+        ${makeLink('#/contact', 'Contact Us')}
+        ${makeLink('#/help', 'Help')}
+      `;
+    }
   } else {
     // Show Home, About Us, Membership, Contact Us, and Help when not logged in
     navContainer.innerHTML = `
