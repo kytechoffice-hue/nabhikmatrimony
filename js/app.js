@@ -1,5 +1,10 @@
 // Consolidated Matrimonial Application Bundle
 // ==========================================
+// Canonical redirect backstop: enforce HTTPS and apex domain (no-www) in production
+if (window.location.hostname === 'www.nabhikmatrimony.com' || (window.location.protocol === 'http:' && window.location.hostname === 'nabhikmatrimony.com')) {
+  window.location.replace('https://nabhikmatrimony.com' + window.location.pathname + window.location.search + window.location.hash);
+}
+
 // Load Google Fonts asynchronously to eliminate render-blocking issues
 (function() {
   const preconnect1 = document.createElement('link');
