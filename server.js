@@ -19,6 +19,14 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+  const host = req.headers.host;
+  // HTTP 301 Canonical redirect: www to apex domain
+  if (host && host.toLowerCase() === 'www.nabhikmatrimony.com') {
+    res.writeHead(301, { 'Location': `https://nabhikmatrimony.com${req.url}` });
+    res.end();
+    return;
+  }
+
   // Clean query strings and hashes
   const cleanUrl = req.url.split('?')[0].split('#')[0];
   let filePath = path.join(PUBLIC_DIR, cleanUrl === '/' ? 'index.html' : cleanUrl);
