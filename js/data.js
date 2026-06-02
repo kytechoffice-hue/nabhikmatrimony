@@ -735,8 +735,8 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '#/membership', weight: 10, clicks: 142, active: true },
-  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '#/membership/assisted', weight: 5, clicks: 88, active: true }
+  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
 const state = {
@@ -995,7 +995,7 @@ const stateActions = {
     const newStory = {
       id: newId,
       couple: storyData.couple,
-      photo: storyData.photo || 'images/story1.jpg',
+      photo: storyData.photo || '/images/story1.jpg',
       story: storyData.story,
       quote: storyData.story,
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
