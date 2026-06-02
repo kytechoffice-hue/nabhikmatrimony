@@ -1,14 +1,70 @@
-# Nabhik Matrimonial Apache Redirects
-# Enforce Canonical Domain (apex https://nabhikmatrimony.com/)
+# Nabhik Matrimonial Apache Configuration
+# Enforce HTTPS, Canonical Domain (non-www), GZIP Compression, Browser Caching, and Security Headers
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # 1. Redirect www.nabhikmatrimony.com to nabhikmatrimony.com (301 Permanent)
+    # 1. Redirect www to non-www (canonicalize)
     RewriteCond %{HTTP_HOST} ^www\.nabhikmatrimony\.com$ [NC]
     RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
     
-    # 2. Redirect HTTP requests to HTTPS (301 Permanent)
-    RewriteCond %{HTTPS} off
+    # 2. Redirect HTTP to HTTPS (handles standard HTTP, reverse proxies, and Cloudflare SSL)
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
+</IfModule>
+
+# GZIP COMPRESSION
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML, and SVG
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+</IfModule>
+
+# BROWSER CACHING (EXPIRES HEADERS)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+    
+    # Images & Graphics
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # Web Fonts
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# SECURITY HEADERS
+<IfModule mod_headers.c>
+    # Protect against MIME sniffing
+    Header set X-Content-Type-Options "nosniff"
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Enable XSS protection filter in older browsers
+    Header set X-XSS-Protection "1; mode=block"
+    # Control Referrer information sent
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
