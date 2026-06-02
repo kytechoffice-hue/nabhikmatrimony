@@ -824,6 +824,26 @@ if (state.profiles) {
   }
 }
 
+// Self-healing migration: replace any cached PNG extensions with WebP for profiles and currentUser
+if (state.profiles) {
+  let migrated = false;
+  state.profiles.forEach(p => {
+    if (p.photo && typeof p.photo === 'string' && p.photo.endsWith('.png')) {
+      p.photo = p.photo.replace(/\.png$/, '.webp');
+      migrated = true;
+    }
+  });
+  if (state.currentUser && state.currentUser.photo && typeof state.currentUser.photo === 'string' && state.currentUser.photo.endsWith('.png')) {
+    state.currentUser.photo = state.currentUser.photo.replace(/\.png$/, '.webp');
+    migrated = true;
+  }
+  if (migrated) {
+    storage.set('profiles', state.profiles);
+    storage.set('currentUser', state.currentUser);
+  }
+}
+
+
 // State Updates Helpers
 const stateActions = {
   saveAll() {
