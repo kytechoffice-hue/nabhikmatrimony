@@ -1244,7 +1244,7 @@ function makeProfileCard(profile) {
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   return `
-    <div class="profile-card only-photo" data-id="${profile.id}" onclick="window.location.hash = '#/profile/${profile.id}'" style="cursor: pointer; height: 320px;">
+    <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/${profile.id}')" style="cursor: pointer; height: 320px;">
       <div class="profile-card-image" style="height: 100%;">
         <img src="${avatar}" alt="${profile.name}" width="250" height="240" style="object-fit: cover;" loading="lazy">
         ${profile.verified ? `<div class="profile-card-overlay"><span style="margin-right:2px;">✔</span> Verified</div>` : ''}
@@ -1369,12 +1369,25 @@ function showToast(message) {
 // SECTION 3: APP ROUTER & LOGIC (formerly app.js)
 // Nabhik Matrimonial App Routing & Core Logic
 
+// Global navigation helper
+window.navigateTo = function(path) {
+  if (window.location.pathname + window.location.search === path) return;
+  window.history.pushState(null, '', path);
+  initRouter();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Listen for popstate changes (History API)
+  window.addEventListener('popstate', initRouter);
+  
+  // Redirect old hash routes to clean path URLs for backwards compatibility
+  if (window.location.hash.startsWith('#/')) {
+    const cleanPath = window.location.hash.substring(2) || '/';
+    window.history.replaceState(null, '', cleanPath);
+  }
+  
   // Initialize App
   initRouter();
-  
-  // Listen for hash changes
-  window.addEventListener('hashchange', initRouter);
   
   // Update header auth visual state
   updateHeaderAuth();
@@ -1395,18 +1408,18 @@ function updateHeaderAuth() {
   
   if (state.currentUser) {
     const isPremium = state.currentUser.membership && state.currentUser.membership !== 'Free';
-    const isDashboardActive = window.location.hash.split('?')[0] === '#/dashboard';
+    const isDashboardActive = window.location.pathname === '/dashboard';
     authContainer.innerHTML = `
       <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px;">
         👤 ${state.currentUser.name} ${isPremium ? `👑 ${state.currentUser.membership}` : ''}
       </span>
-      <a href="#/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">Dashboard</a>
+      <a href="/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">Dashboard</a>
       <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">Logout</button>
     `;
   } else {
     authContainer.innerHTML = `
-      <a href="#/login" class="btn-login">Login</a>
-      <a href="#/register" class="btn-register">Register</a>
+      <a href="/login" class="btn-login">Login</a>
+      <a href="/register" class="btn-register">Register</a>
     `;
   }
   
@@ -1419,15 +1432,15 @@ function updateNavigation() {
   const navContainer = document.getElementById('nav-links-container');
   if (!navContainer) return;
   
-  const hash = window.location.hash || '#/';
+  const pathName = window.location.pathname || '/';
   
   const makeLink = (href, text, extraStyle = '') => {
-    const cleanHash = hash.split('?')[0];
+    const cleanPath = pathName.split('?')[0];
     const isActive = (
-      cleanHash === href || 
-      (cleanHash === '#/' && href === '#/') || 
-      (cleanHash.startsWith('#/profile') && href === '#/search') ||
-      (cleanHash.startsWith('#/membership') && href === '#/membership')
+      cleanPath === href || 
+      (cleanPath === '/' && href === '/') || 
+      (cleanPath.startsWith('/profile') && href === '/search') ||
+      (cleanPath.startsWith('/membership') && href === '/membership')
     );
     return `<li><a href="${href}" class="${isActive ? 'active' : ''}" style="${extraStyle}">${text}</a></li>`;
   };
@@ -1439,36 +1452,48 @@ function updateNavigation() {
       (state.currentUser.emailId && state.currentUser.emailId.toLowerCase().includes('admin'))
     );
     if (isAdmin) {
-      // Admins only see Admin Dashboard menu link (removing Home, Dashboard, Search, Membership, Stories, Contact, Help)
+      // Admins only see Admin Dashboard menu link
       navContainer.innerHTML = `
-        ${makeLink('#/admin', 'Admin Dashboard', 'color: var(--color-gold-light); font-weight: 600;')}
+        ${makeLink('/admin', 'Admin Dashboard', 'color: var(--color-gold-light); font-weight: 600;')}
       `;
     } else {
       // Show full menu when logged in for normal members
       navContainer.innerHTML = `
-        ${makeLink('#/', 'Home')}
-        ${makeLink('#/dashboard', 'Dashboard')}
-        ${makeLink('#/search', 'Search Profiles')}
-        ${makeLink('#/membership', 'Membership')}
-        ${makeLink('#/stories', 'Success Stories')}
-        ${makeLink('#/contact', 'Contact Us')}
-        ${makeLink('#/help', 'Help')}
+        ${makeLink('/', 'Home')}
+        ${makeLink('/dashboard', 'Dashboard')}
+        ${makeLink('/search', 'Search Profiles')}
+        ${makeLink('/membership', 'Membership')}
+        ${makeLink('/stories', 'Success Stories')}
+        ${makeLink('/contact', 'Contact Us')}
+        ${makeLink('/help', 'Help')}
       `;
     }
   } else {
     // Show Home, About Us, Membership, Contact Us, and Help when not logged in
     navContainer.innerHTML = `
-      ${makeLink('#/', 'Home')}
-      ${makeLink('#/about', 'About Us')}
-      ${makeLink('#/membership', 'Membership')}
-      ${makeLink('#/contact', 'Contact Us')}
-      ${makeLink('#/help', 'Help')}
+      ${makeLink('/', 'Home')}
+      ${makeLink('/about', 'About Us')}
+      ${makeLink('/membership', 'Membership')}
+      ${makeLink('/contact', 'Contact Us')}
+      ${makeLink('/help', 'Help')}
     `;
   }
 }
 
 // Global click event dispatcher (e.g. for closing modals)
 function handleGlobalClicks(e) {
+  // Intercept local links for HTML5 pushState routing
+  const link = e.target.closest('a');
+  if (link) {
+    const href = link.getAttribute('href');
+    // If it's a local path routing link (starts with / and not external)
+    if (href && href.startsWith('/') && !href.startsWith('//')) {
+      e.preventDefault();
+      navigateTo(href);
+      return;
+    }
+  }
+
   if (e.target.classList.contains('modal-overlay')) {
     closeModal();
   }
@@ -1494,18 +1519,18 @@ function closeModal(isProgrammatic = false) {
     modal.innerHTML = '';
     
     if (wasActive && !isProgrammatic) {
-      // If we closed the login modal route manually, reset the hash back to home
-      const cleanHash = window.location.hash.split('?')[0];
-      if (cleanHash === '#/login') {
-        window.location.hash = '#/';
+      // If we closed the login modal route manually, reset the path back to home
+      const cleanPath = window.location.pathname.split('?')[0];
+      if (cleanPath === '/login') {
+        navigateTo('/');
       }
     }
   }
 }
 
-// Hash Router
+// HTML5 History API Router
 function initRouter() {
-  const hash = window.location.hash || '#/';
+  const pathName = window.location.pathname || '/';
   const appView = document.getElementById('app-view');
   if (!appView) return;
   
@@ -1515,24 +1540,24 @@ function initRouter() {
   // Close modals
   closeModal();
   
-  // Clean query string from hash for routing (e.g. #/help?submitted=true)
-  let path = hash.split('?')[0];
+  // Clean query string from path for routing (e.g. /help?submitted=true)
+  let path = pathName.split('?')[0];
   let params = null;
   
-  if (path.startsWith('#/profile/')) {
-    params = path.split('#/profile/')[1];
-    path = '#/profile/:id';
+  if (path.startsWith('/profile/')) {
+    params = path.split('/profile/')[1];
+    path = '/profile/:id';
   }
   
   // Active nav highlighting
   document.querySelectorAll('.nav-links a').forEach(a => {
-    const aHash = a.getAttribute('href');
-    const cleanAHash = aHash ? aHash.split('?')[0] : '';
+    const aHref = a.getAttribute('href');
+    const cleanAHref = aHref ? aHref.split('?')[0] : '';
     if (
-      path === cleanAHash || 
-      (path === '#/' && cleanAHash === '#') || 
-      (path.startsWith('#/profile') && cleanAHash === '#/search') ||
-      (path.startsWith('#/membership') && cleanAHash === '#/membership')
+      path === cleanAHref || 
+      (path === '/' && cleanAHref === '/') || 
+      (path.startsWith('/profile') && cleanAHref === '/search') ||
+      (path.startsWith('/membership') && cleanAHref === '/membership')
     ) {
       a.classList.add('active');
     } else {
@@ -1542,64 +1567,64 @@ function initRouter() {
 
   // Render view
   switch (path) {
-    case '#/':
+    case '/':
       renderHome(appView);
       break;
-    case '#/about':
+    case '/about':
       renderAbout(appView);
       break;
-    case '#/search':
+    case '/search':
       renderSearch(appView);
       break;
-    case '#/profile/:id':
+    case '/profile/:id':
       renderProfileDetails(appView, params);
       break;
-    case '#/register':
+    case '/register':
       renderRegister(appView);
       break;
-    case '#/login':
+    case '/login':
       renderLogin(appView);
       break;
-    case '#/dashboard':
+    case '/dashboard':
       renderDashboard(appView);
       break;
-    case '#/membership':
+    case '/membership':
       renderMembership(appView);
       break;
-    case '#/membership/free':
+    case '/membership/free':
       renderFreePlanDetails(appView);
       break;
-    case '#/membership/silver':
+    case '/membership/silver':
       renderSilverPlanDetails(appView);
       break;
-    case '#/membership/gold':
+    case '/membership/gold':
       renderGoldPlanDetails(appView);
       break;
-    case '#/membership/platinum':
+    case '/membership/platinum':
       renderPlatinumPlanDetails(appView);
       break;
-    case '#/membership/assisted':
+    case '/membership/assisted':
       renderPremiumAssistedPlanDetails(appView);
       break;
-    case '#/stories':
+    case '/stories':
       renderStories(appView);
       break;
-    case '#/events':
+    case '/events':
       renderEvents(appView);
       break;
-    case '#/blogs':
+    case '/blogs':
       renderBlogs(appView);
       break;
-    case '#/contact':
+    case '/contact':
       renderContact(appView);
       break;
-    case '#/policy':
+    case '/policy':
       renderPrivacyPolicy(appView);
       break;
-    case '#/terms':
+    case '/terms':
       renderTerms(appView);
       break;
-    case '#/admin':
+    case '/admin':
       const isUserAdmin = state.currentUser && (
         state.currentUser.isAdmin === true || 
         state.currentUser.role === 'admin' || 
@@ -1607,12 +1632,12 @@ function initRouter() {
       );
       if (!isUserAdmin) {
         showToast('Access Denied. Admin privilege required.');
-        window.location.hash = '#/';
+        navigateTo('/');
       } else {
         renderAdmin(appView);
       }
       break;
-    case '#/help':
+    case '/help':
       renderHelp(appView);
       break;
     default:
@@ -1622,10 +1647,10 @@ function initRouter() {
   updateHeaderAuth();
 
   // If redirected from FormSubmit after successful submission
-  if (hash.includes('submitted=true')) {
+  if (window.location.search.includes('submitted=true')) {
     showToast('Success! Query sent to support@nabhikmatrimony.com');
-    // Remove query parameter from hash without triggering a routing event
-    window.history.replaceState(null, null, window.location.pathname + path);
+    // Remove query parameter from path without triggering a routing event
+    window.history.replaceState(null, null, path);
   }
 
   // Dynamic SEO Page Tags update
@@ -2609,22 +2634,13 @@ function renderLogin(container) {
 function renderDashboard(container) {
   if (!state.currentUser) {
     // If not logged in, redirect to login
-    window.location.hash = '#/login';
+    navigateTo('/login');
     return;
   }
   
-  // Extract tab parameter from hash query string
-  const hash = window.location.hash || '#/dashboard';
-  const parts = hash.split('?');
-  let activeTab = 'overview';
-  if (parts[1]) {
-    parts[1].split('&').forEach(param => {
-      const [key, val] = param.split('=');
-      if (key === 'tab') {
-        activeTab = decodeURIComponent(val);
-      }
-    });
-  }
+  // Extract tab parameter from search query string
+  const urlParams = new URLSearchParams(window.location.search);
+  const activeTab = urlParams.get('tab') || 'overview';
   
   // Check if we are already on the dashboard page layout
   const alreadyRendered = document.getElementById('dashboard-content');
@@ -2655,12 +2671,12 @@ function renderDashboard(container) {
           <p>ID: #NB-${1000 + state.currentUser.id} • ${state.currentUser.membership || 'Free'} Member${state.currentUser.boosted ? ' | 🚀 Boosted' : ''}</p>
         </div>
         <ul class="dashboard-menu">
-          <li><a href="#/dashboard?tab=overview" id="db-tab-overview">📊 Overview</a></li>
-          <li><a href="#/dashboard?tab=matches" id="db-tab-matches">❤️ Matches</a></li>
-          <li><a href="#/dashboard?tab=interests" id="db-tab-interests">✉ Received Interests</a></li>
-          <li><a href="#/dashboard?tab=shortlisted" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
-          <li><a href="#/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>
-          <li><a href="#/dashboard?tab=edit" id="db-tab-edit">✏ Edit Profile</a></li>
+          <li><a href="/dashboard?tab=overview" id="db-tab-overview">📊 Overview</a></li>
+          <li><a href="/dashboard?tab=matches" id="db-tab-matches">❤️ Matches</a></li>
+          <li><a href="/dashboard?tab=interests" id="db-tab-interests">✉ Received Interests</a></li>
+          <li><a href="/dashboard?tab=shortlisted" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
+          <li><a href="/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>
+          <li><a href="/dashboard?tab=edit" id="db-tab-edit">✏ Edit Profile</a></li>
         </ul>
       </aside>
       
@@ -4600,7 +4616,7 @@ function handleQuickSearch(e) {
   const city = document.getElementById('qs-city').value;
   const education = document.getElementById('qs-education').value;
   
-  window.location.hash = '#/search';
+  navigateTo('/search');
   
   // Wait for DOM routing load to apply quick search parameters
   setTimeout(() => {
@@ -4642,7 +4658,7 @@ function handleSendInterest(id, updateDetailsPage = false) {
   if (state.currentUser && (!state.currentUser.membership || state.currentUser.membership === 'Free')) {
     if (state.interestsSent.length >= 5 && !state.interestsSent.includes(id)) {
       showToast('⚠️ Daily limit reached! Free accounts can only send 5 interests. Upgrade to Silver or above for unlimited interests.');
-      window.location.hash = '#/membership';
+      navigateTo('/membership');
       return;
     }
   }
@@ -4666,7 +4682,7 @@ function handleSendInterest(id, updateDetailsPage = false) {
 // Start chat simulator
 function handleStartChat(id) {
   if (!state.currentUser) {
-    window.location.hash = '#/login';
+    navigateTo('/login');
     return;
   }
   
@@ -4677,7 +4693,7 @@ function handleStartChat(id) {
   
   if (!state.currentUser.membership || state.currentUser.membership === 'Free') {
     showToast('💬 Chatting is exclusive to premium members. Upgrade your plan to start chatting!');
-    window.location.hash = '#/membership';
+    navigateTo('/membership');
     return;
   }
   
@@ -4690,7 +4706,7 @@ function handleStartChat(id) {
     stateActions.saveAll();
   }
   
-  window.location.hash = '#/dashboard?tab=messages';
+  navigateTo('/dashboard?tab=messages');
   setTimeout(() => {
     // Find thread and click
     const threadBtn = document.querySelector(`.thread-item[onclick*="${id}"]`);
@@ -4828,9 +4844,9 @@ function handleEmailLogin(e) {
       (user.emailId && user.emailId.toLowerCase().includes('admin'))
     );
     if (isAdmin) {
-      window.location.hash = '#/admin';
+      navigateTo('/admin');
     } else {
-      window.location.hash = '#/dashboard';
+      navigateTo('/dashboard');
     }
   } else {
     showToast('Error logging in. Try again.');
@@ -4941,9 +4957,9 @@ function confirmOtpCodeSubmit() {
       (user.emailId && user.emailId.toLowerCase().includes('admin'))
     );
     if (isAdmin) {
-      window.location.hash = '#/admin';
+      navigateTo('/admin');
     } else {
-      window.location.hash = '#/dashboard?tab=overview';
+      navigateTo('/dashboard?tab=overview');
     }
   } else {
     alert('Invalid verification code. Please check the SMS mockup box and try again.');
@@ -4953,7 +4969,7 @@ function confirmOtpCodeSubmit() {
 // Membership plan select (opens card simulator modal)
 function handleSelectPlan(planName, price) {
   if (!state.currentUser) {
-    window.location.hash = '#/login';
+    navigateTo('/login');
     return;
   }
   
@@ -5032,7 +5048,7 @@ function handleCreditCardPaySubmit(e, planName, price) {
 // Function to handle Check Kundali Match compatibility report
 function handleCheckKundaliMatch(profileId) {
   if (!state.currentUser) {
-    window.location.hash = '#/login';
+    navigateTo('/login');
     return;
   }
   
@@ -5262,7 +5278,7 @@ function handleEditProfileSubmit(e) {
     stateActions.saveAll();
     
     showToast('Profile updated successfully!');
-    window.location.hash = '#/dashboard?tab=overview';
+    navigateTo('/dashboard?tab=overview');
   }
   
   if (photoInput && photoInput.files && photoInput.files[0]) {
@@ -5280,10 +5296,10 @@ function handleEditProfileSubmit(e) {
 function handleLogout() {
   stateActions.logoutUser();
   showToast('Logged out successfully.');
-  if (window.location.hash === '#/') {
+  if (window.location.pathname === '/') {
     initRouter();
   } else {
-    window.location.hash = '#/';
+    navigateTo('/');
   }
 }
 
