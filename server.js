@@ -41,19 +41,31 @@ const server = http.createServer((req, res) => {
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      res.statusCode = 404;
-      res.end(`404 Not Found: ${cleanUrl}`);
+      // Fallback to index.html for HTML5 History API virtual routing
+      filePath = path.join(PUBLIC_DIR, 'index.html');
+      fs.stat(filePath, (errIndex, statsIndex) => {
+        if (errIndex || !statsIndex.isFile()) {
+          res.statusCode = 404;
+          res.end(`404 Not Found: ${cleanUrl}`);
+          return;
+        }
+        serveFile(filePath);
+      });
       return;
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    res.setHeader('Content-Type', MIME_TYPES[ext] || 'text/plain');
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0'); // Disable caching
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    serveFile(filePath);
 
-    const stream = fs.createReadStream(filePath);
-    stream.pipe(res);
+    function serveFile(fileToServe) {
+      const ext = path.extname(fileToServe).toLowerCase();
+      res.setHeader('Content-Type', MIME_TYPES[ext] || 'text/plain');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0'); // Disable caching
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+
+      const stream = fs.createReadStream(fileToServe);
+      stream.pipe(res);
+    }
   });
 });
 
