@@ -5,7 +5,7 @@ function makeProfileCard(profile) {
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   return `
-    <div class="profile-card only-photo" data-id="${profile.id}" onclick="window.location.hash = '#/profile/${profile.id}'" style="cursor: pointer; height: 320px;">
+    <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px;">
       <div class="profile-card-image" style="height: 100%;">
         <img src="${avatar}" alt="${profile.name}" width="250" height="240" style="object-fit: cover;" loading="lazy">
         ${profile.verified ? `<div class="profile-card-overlay"><span style="margin-right:2px;">✔</span> Verified</div>` : ''}
@@ -87,7 +87,7 @@ function makeBlogCard(blog) {
           <h3>${blog.title}</h3>
           <p>${blog.excerpt}</p>
         </div>
-        <a href="#/blogs" class="blog-read-more" style="margin-top: 12px; display: inline-block;">Read Full Article →</a>
+        <a href="/blogs" class="blog-read-more" style="margin-top: 12px; display: inline-block;">Read Full Article →</a>
       </div>
     </div>
   `;
