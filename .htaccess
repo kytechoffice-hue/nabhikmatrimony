@@ -1,8 +1,12 @@
 # Nabhik Matrimonial Apache Configuration
 # Enforce HTTPS, Canonical Domain (non-www), GZIP Compression, Browser Caching, and Security Headers
 
+# Disable MultiViews to prevent conflicts with file extensions
+Options -MultiViews
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
     
     # 1. Redirect www to non-www (canonicalize)
     RewriteCond %{HTTP_HOST} ^www\.nabhikmatrimony\.com$ [NC]
@@ -13,10 +17,13 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
     
+    # Prevent rewrite loop for existing index.html
+    RewriteRule ^index\.html$ - [L]
+    
     # 3. HTML5 History API Routing fallback: serve index.html for any virtual paths (about, search, etc.)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ /index.html [L]
+    RewriteRule . /index.html [L]
 </IfModule>
 
 # GZIP COMPRESSION
