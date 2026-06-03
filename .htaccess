@@ -4,30 +4,24 @@
 # Disable MultiViews to prevent conflicts with file extensions
 Options -MultiViews
 
-# SPA Fallback Resource (native Apache fallback mechanism if mod_rewrite is bypassed)
-FallbackResource /index.html
+RewriteEngine On
+RewriteBase /
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    
-    # 1. Redirect www to non-www (canonicalize)
-    RewriteCond %{HTTP_HOST} ^www\.nabhikmatrimony\.com$ [NC]
-    RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
-    
-    # 2. Redirect HTTP to HTTPS (handles standard HTTP, reverse proxies, and Cloudflare SSL)
-    RewriteCond %{HTTPS} off [OR]
-    RewriteCond %{HTTP:X-Forwarded-Proto} !https
-    RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
-    
-    # Prevent rewrite loop for existing index.html
-    RewriteRule ^index\.html$ - [L]
-    
-    # 3. HTML5 History API Routing fallback: serve index.html for any virtual paths (about, search, etc.)
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . /index.html [L]
-</IfModule>
+# 1. Redirect www to non-www (canonicalize)
+RewriteCond %{HTTP_HOST} ^www\.nabhikmatrimony\.com$ [NC]
+RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
+
+# 2. Redirect HTTP to HTTPS (handles standard HTTPS and reverse proxies)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://nabhikmatrimony.com/$1 [R=301,L]
+
+# Prevent rewrite loop for existing index.html
+RewriteRule ^index\.html$ - [L]
+
+# 3. HTML5 History API Routing fallback: serve index.html for any virtual paths (about, search, etc.)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
 
 # GZIP COMPRESSION
 <IfModule mod_deflate.c>
