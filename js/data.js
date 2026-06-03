@@ -149,7 +149,7 @@ const initialProfiles = [
     hobbies: 'Reading, Cricket, Coding',
     verified: true,
     featured: true,
-    photo: 'images/member1.webp'
+    photo: '/images/member1.webp'
   },
   {
     id: 2,
@@ -175,7 +175,7 @@ const initialProfiles = [
     hobbies: 'Classical Dance, Painting, Cooking',
     verified: true,
     featured: true,
-    photo: 'images/member3.webp'
+    photo: '/images/member3.webp'
   },
   {
     id: 3,
@@ -201,7 +201,7 @@ const initialProfiles = [
     hobbies: 'Trekking, Photography, Music',
     verified: true,
     featured: true,
-    photo: 'images/member2.webp'
+    photo: '/images/member2.webp'
   },
   {
     id: 4,
@@ -227,7 +227,7 @@ const initialProfiles = [
     hobbies: 'Gardening, Reading, Travel',
     verified: true,
     featured: true,
-    photo: 'images/member4.webp'
+    photo: '/images/member4.webp'
   },
   {
     id: 5,
@@ -253,7 +253,7 @@ const initialProfiles = [
     hobbies: 'Gym, Traveling, Driving',
     verified: true,
     featured: true,
-    photo: 'images/member5.webp'
+    photo: '/images/member5.webp'
   },
   {
     id: 6,
@@ -279,7 +279,7 @@ const initialProfiles = [
     hobbies: 'Writing, Yoga, Music',
     verified: false, // Pending verification (admin test case)
     featured: false,
-    photo: 'images/member8.webp'
+    photo: '/images/member8.webp'
   },
   {
     id: 7,
@@ -305,7 +305,7 @@ const initialProfiles = [
     hobbies: 'News, Badminton, Public Service',
     verified: true,
     featured: false,
-    photo: 'images/member7.webp'
+    photo: '/images/member7.webp'
   },
   {
     id: 8,
@@ -331,7 +331,7 @@ const initialProfiles = [
     hobbies: 'Social Work, Reading, Flute',
     verified: true,
     featured: false,
-    photo: 'images/member9.webp'
+    photo: '/images/member9.webp'
   },
   {
     id: 9,
@@ -357,7 +357,7 @@ const initialProfiles = [
     hobbies: 'Designing, Sketching, Traveling',
     verified: false, // Pending verification (admin test case)
     featured: false,
-    photo: 'images/member6.webp'
+    photo: '/images/member6.webp'
   },
   {
     id: 10,
@@ -383,7 +383,7 @@ const initialProfiles = [
     hobbies: 'Cooking, Caring, Cinema',
     verified: true,
     featured: false,
-    photo: 'images/member3.webp'
+    photo: '/images/member3.webp'
   },
   {
     id: 11,
@@ -421,56 +421,56 @@ const initialStories = [
     id: 1,
     couple: 'Aditya & Gauri',
     date: '14 Jan 2024',
-    photo: 'images/story1.jpg',
+    photo: '/images/story1.jpg',
     quote: 'Finding Aditya on Nabhik Matrimonial was a blessing. From our very first conversation, we felt a deep connection. Our families met and instantly clicked. Thank you for helping us find our forever!'
   },
   {
     id: 2,
     couple: 'Rahul & Snehal',
     date: '28 Dec 2023',
-    photo: 'images/story2.jpg',
+    photo: '/images/story2.jpg',
     quote: 'Nabhik Matrimonial made it incredibly easy to connect with someone who shares the same values and lifestyle. We are happily married now and highly recommend this platform to everyone searching for a genuine partner.'
   },
   {
     id: 3,
     couple: 'Siddharth & Priya',
     date: '12 Nov 2023',
-    photo: 'images/story3.jpg',
+    photo: '/images/story3.jpg',
     quote: 'The holy fire witnessed our union, but it was Nabhik Matrimonial that lit the spark. We found deep compatibility, mutual respect, and pure love. It truly brings two families together beautifully.'
   },
   {
     id: 4,
     couple: 'Vikram & Ankita',
     date: '05 Mar 2024',
-    photo: 'images/story4.jpg',
+    photo: '/images/story4.jpg',
     quote: 'Our wedding was like a dream, and it all started with a simple interest request on this portal. The platform is highly secure, reliable, and verified profiles make the search stress-free.'
   },
   {
     id: 5,
     couple: 'Sameer & Pooja',
     date: '18 Apr 2024',
-    photo: 'images/story5.jpg',
+    photo: '/images/story5.jpg',
     quote: 'We wanted a partner who loves nature and traveling as much as we do. Through the advanced search filters, we found each other. Everyday has been an adventure since then!'
   },
   {
     id: 6,
     couple: 'Karan & Divya',
     date: '09 Jan 2025',
-    photo: 'images/story6.jpg',
+    photo: '/images/story6.jpg',
     quote: 'Holding hands under the sunset, we knew we were meant to be. Nabhik Matrimonial helped us bridge the gap and start our beautiful journey of love and togetherness.'
   },
   {
     id: 7,
     couple: 'Abhishek & Riya',
     date: '15 Feb 2025',
-    photo: 'images/story7.jpg',
+    photo: '/images/story7.jpg',
     quote: 'From matching profiles to looking into each other\'s eyes on our wedding day, Nabhik Matrimonial made the search magical. We found our soulmates here!'
   },
   {
     id: 8,
     couple: 'Harish & Pallavi',
     date: '20 Mar 2025',
-    photo: 'images/story8.jpg',
+    photo: '/images/story8.jpg',
     quote: 'We love long walks and sharing laughter. Finding someone who complements your spirit perfectly is rare, but this portal made it happen for us.'
   }
 ];
@@ -735,8 +735,8 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
-  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
+  { id: 1, title: 'Summer Vivah Offer', banner: '/images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Premium Assisted Services', banner: '/images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
 const state = {
@@ -1026,7 +1026,7 @@ const stateActions = {
       age: parseInt(userData.age) || 28,
       verified: userData.verified !== undefined ? userData.verified : true,
       membership: userData.membership || 'Free',
-      photo: userData.photo || 'images/member1.webp'
+      photo: userData.photo || '/images/member1.webp'
     };
     state.profiles.push(newProfile);
     this.saveAll();
