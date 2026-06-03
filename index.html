@@ -8,15 +8,15 @@
   <link rel="canonical" href="https://nabhikmatrimony.com/">
   
   <!-- Preload the Largest Contentful Paint (LCP) Hero Image -->
-  <link rel="preload" as="image" href="images/hero.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="/images/hero.webp" fetchpriority="high">
 
   <!-- Asynchronously load stylesheet to eliminate render-blocking -->
-  <link rel="preload" href="css/styles.css?v=9.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="/css/styles.css?v=9.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="css/styles.css?v=9.0">
+    <link rel="stylesheet" href="/css/styles.css?v=9.0">
   </noscript>
   
-  <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+  <link rel="icon" type="image/jpeg" href="/images/logo.jpg">
 
   <!-- Critical Inline CSS to prevent FOUC (Flash of Unstyled Content) during async load -->
   <style>
@@ -178,7 +178,7 @@
   </style>
 
   <!-- Defer loading of JS modules to move them out of the critical rendering path -->
-  <script src="js/app.js?v=9.0" defer></script>
+  <script src="/js/app.js?v=9.0" defer></script>
 </head>
 <body>
 
@@ -190,7 +190,7 @@
       <!-- Logo and Brand Name -->
       <a href="/" class="logo-container">
         <!-- Site Brand Logo Image -->
-        <img class="logo-icon" src="images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;">
+        <img class="logo-icon" src="/images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;">
         <div>
           <h1 class="brand-name">Nabhik<span class="brand-sub">MATRIMONIAL</span></h1>
         </div>
@@ -231,7 +231,7 @@
         </div>
         <div class="hero-image-container">
           <div class="hero-image-frame">
-            <img src="images/hero.webp" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
+            <img src="/images/hero.webp" alt="Nabhik Wedding Couple Logo" width="380" height="380" fetchpriority="high">
           </div>
         </div>
       </div>
@@ -251,7 +251,7 @@
         <!-- Brand Column -->
         <div class="footer-brand">
           <div class="logo-container" style="margin-bottom: 16px;">
-            <img class="logo-icon" src="images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;" loading="lazy">
+            <img class="logo-icon" src="/images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;" loading="lazy">
             <h3>Nabhik Matrimonial</h3>
           </div>
           <p>Nabhik Matrimonial is a trusted community platform dedicated to helping Nabhik society families find suitable partners with privacy, safety, and respect for traditions.</p>
