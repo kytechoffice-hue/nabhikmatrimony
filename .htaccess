@@ -16,7 +16,7 @@
     # 3. HTML5 History API Routing fallback: serve index.html for any virtual paths (about, search, etc.)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.html [L]
+    RewriteRule ^(.*)$ /index.html [L]
 </IfModule>
 
 # GZIP COMPRESSION
