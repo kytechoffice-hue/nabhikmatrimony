@@ -4,6 +4,9 @@
 # Disable MultiViews to prevent conflicts with file extensions
 Options -MultiViews
 
+# SPA Fallback Resource (native Apache fallback mechanism if mod_rewrite is bypassed)
+FallbackResource /index.html
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
