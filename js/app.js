@@ -1560,6 +1560,7 @@ function initRouter() {
       renderPlatinumPlanDetails(appView);
       break;
     case '/membership/assisted':
+    case '/membrship/assisted':
       renderPremiumAssistedPlanDetails(appView);
       break;
     case '/stories':
@@ -6445,6 +6446,7 @@ function updatePageSEO(path, params) {
       keywords = "Platinum membership package, superior matchmaking, featured profile, WhatsApp support, verified premium emblem, top priority matches";
       break;
     case '/membership/assisted':
+    case '/membrship/assisted':
       title = "Premier Assisted Membership Program | Nabhik Matrimonial";
       description = "Experience tailored matchmaking with dedicated guidance in our Premier Assisted Membership Program. Hand-picked curated matches with priority WhatsApp and telephone support.";
       keywords = "Premier Assisted Program, tailored matchmaking, dedicated guidance, relationship facilitator, curated match suggestions, family matchmaking support";
