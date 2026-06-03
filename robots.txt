@@ -1,12 +1,4 @@
 User-agent: *
-Disallow: /#/login
-Disallow: /login
-Disallow: /#/membership
-Disallow: /membership
-Disallow: /#/dashboard
-Disallow: /dashboard
-Disallow: /#/admin
-Disallow: /admin
-Disallow: /cgi-bin/
+Allow: /
 
 Sitemap: https://nabhikmatrimony.com/sitemap.xml
