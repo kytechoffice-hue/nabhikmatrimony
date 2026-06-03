@@ -762,8 +762,8 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '#/membership', weight: 10, clicks: 142, active: true },
-  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '#/membership/assisted', weight: 5, clicks: 88, active: true }
+  { id: 1, title: 'Summer Vivah Offer', banner: 'images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Premium Assisted Services', banner: 'images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
 const state = {
@@ -1271,7 +1271,7 @@ function makeSuccessCard(story) {
             <span style="font-size: 0.72rem; color: var(--color-text-muted);">Share:</span>
             <a href="https://api.whatsapp.com/send?text=Check%20out%20the%20inspiring%20success%20story%20of%20${encodeURIComponent(story.couple)}%20on%20Nabhik%20Matrimonial!%20https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fstories" target="_blank" class="share-btn-wa" title="Share on WhatsApp" style="color: #25D366; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.45.002 9.885-4.427 9.888-9.88.002-2.64-1.019-5.123-2.877-6.983C16.425 1.874 13.945.854 11.314.854c-5.452 0-9.887 4.43-9.89 9.884-.001 1.778.475 3.51 1.378 5.061L1.8 21.03l5.305-1.391z"/></svg></a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fstories" target="_blank" class="share-btn-fb" title="Share on Facebook" style="color: #1877F2; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/#/stories').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-gold); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
+            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/stories').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-gold); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
           </div>
         </div>
       </div>
@@ -1306,7 +1306,7 @@ function makeEventCard(event) {
             <span style="font-size: 0.72rem; color: var(--color-text-muted);">Share:</span>
             <a href="https://api.whatsapp.com/send?text=Join%20the%20event%20'${encodeURIComponent(event.title)}'%20on%20Nabhik%20Matrimonial!%20https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fevents" target="_blank" class="share-btn-wa" title="Share on WhatsApp" style="color: #25D366; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.45.002 9.885-4.427 9.888-9.88.002-2.64-1.019-5.123-2.877-6.983C16.425 1.874 13.945.854 11.314.854c-5.452 0-9.887 4.43-9.89 9.884-.001 1.778.475 3.51 1.378 5.061L1.8 21.03l5.305-1.391z"/></svg></a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fevents" target="_blank" class="share-btn-fb" title="Share on Facebook" style="color: #1877F2; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/#/events').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-maroon); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
+            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/events').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-maroon); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
           </div>
         </div>
       </div>
@@ -1339,12 +1339,12 @@ function makeBlogCard(blog) {
           <p>${blog.excerpt}</p>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 8px;">
-          <a href="#/blogs" class="blog-read-more" style="text-decoration: none; font-weight: 600;">Read Article →</a>
+          <a href="/blogs" class="blog-read-more" style="text-decoration: none; font-weight: 600;">Read Article →</a>
           <div style="display: flex; gap: 8px; align-items: center;">
             <span style="font-size: 0.72rem; color: var(--color-text-muted);">Share:</span>
             <a href="https://api.whatsapp.com/send?text=Read%20'${encodeURIComponent(blog.title)}'%20on%20Nabhik%20Matrimonial!%20https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fblogs" target="_blank" class="share-btn-wa" title="Share on WhatsApp" style="color: #25D366; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.45.002 9.885-4.427 9.888-9.88.002-2.64-1.019-5.123-2.877-6.983C16.425 1.874 13.945.854 11.314.854c-5.452 0-9.887 4.43-9.89 9.884-.001 1.778.475 3.51 1.378 5.061L1.8 21.03l5.305-1.391z"/></svg></a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnabhikmatrimony.com%2F%23%2Fblogs" target="_blank" class="share-btn-fb" title="Share on Facebook" style="color: #1877F2; text-decoration: none; display: inline-flex; align-items: center;"><svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/#/blogs').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-maroon); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
+            <span onclick="navigator.clipboard.writeText('https://nabhikmatrimony.com/blogs').then(()=>showToast('Link copied to clipboard!'))" class="share-btn-copy" title="Copy Link" style="color: var(--color-maroon); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;"><svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span>
           </div>
         </div>
       </div>
@@ -1758,7 +1758,7 @@ function renderHome(container) {
             <h2>Success Stories</h2>
             <div class="traditional-divider"><span class="icon">✦</span></div>
           </div>
-          <a href="#/stories" class="btn btn-outline">View All Stories</a>
+          <a href="/stories" class="btn btn-outline">View All Stories</a>
         </div>
         
         <div class="success-slider-container">
@@ -1781,7 +1781,7 @@ function renderHome(container) {
       <div class="container">
         <h2>Ready to Find Your Life Partner?</h2>
         <p>Join Nabhik Matrimonial today to connect with matching verified profiles in our community. Registration is free and takes only a few minutes.</p>
-        <a href="#/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Register Now</a>
+        <a href="/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Register Now</a>
       </div>
     </section>
 
@@ -2126,7 +2126,7 @@ Sent this email on support@nabhikmatrimony.com`;
       email: email,
       message: query,
       _subject: subject,
-      _next: window.location.origin + window.location.pathname + '#/help?submitted=true',
+      _next: window.location.origin + window.location.pathname + '?submitted=true',
       _captcha: 'false'
     };
     
@@ -2296,7 +2296,7 @@ function renderProfileDetails(container, profileId) {
   const profile = state.profiles.find(p => p.id === idNum);
   
   if (!profile) {
-    container.innerHTML = `<div class="container section-padding text-center"><h2>Profile not found</h2><a href="#/search" class="btn btn-maroon" style="margin-top: 20px;">Back to Search</a></div>`;
+    container.innerHTML = `<div class="container section-padding text-center"><h2>Profile not found</h2><a href="/search" class="btn btn-maroon" style="margin-top: 20px;">Back to Search</a></div>`;
     return;
   }
   
@@ -2404,7 +2404,7 @@ function renderProfileDetails(container, profileId) {
               <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
                 <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Direct Contact Details Locked (Gold & Above)</h4>
                 <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">You are currently on the Silver Plan. Direct contact details and Kundali matching options are exclusive for Gold, Platinum & Premium Assisted members.</p>
-                <a href="#/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to Gold Plan</a>
+                <a href="/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to Gold Plan</a>
               </div>
             `;
           } else {
@@ -2412,7 +2412,7 @@ function renderProfileDetails(container, profileId) {
               <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
                 <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Partner Preferences & Contacts Locked</h4>
                 <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">Contact numbers, biodata PDF download, and matching kundali options are exclusive for Gold & Platinum members.</p>
-                <a href="#/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to View Contact</a>
+                <a href="/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to View Contact</a>
               </div>
             `;
           }
@@ -2616,7 +2616,7 @@ function openLoginModal() {
       
       <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
         <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">Forgot Password?</a>
-        <p style="margin-top: 12px;">Don't have an account? <a href="#/register" onclick="closeModal()" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
+        <p style="margin-top: 12px;">Don't have an account? <a href="/register" onclick="closeModal()" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
       </div>
     </div>
   `;
@@ -3142,19 +3142,19 @@ function renderMembership(container) {
     if (p.name === 'Free') {
       if (!state.currentUser) {
         btnHtml = `
-          <a href="#/register" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Register Free</a>
-          <a href="#/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+          <a href="/register" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Register Free</a>
+          <a href="/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
         `;
       } else {
         btnHtml = `
           <button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>
-          <a href="#/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+          <a href="/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
         `;
       }
     } else if (p.name === 'Silver') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
@@ -3162,12 +3162,12 @@ function renderMembership(container) {
       }
       btnHtml = `
         ${mainBtn}
-        <a href="#/membership/silver" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+        <a href="/membership/silver" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (p.name === 'Gold') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
@@ -3175,12 +3175,12 @@ function renderMembership(container) {
       }
       btnHtml = `
         ${mainBtn}
-        <a href="#/membership/gold" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+        <a href="/membership/gold" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (p.name === 'Platinum') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
@@ -3188,12 +3188,12 @@ function renderMembership(container) {
       }
       btnHtml = `
         ${mainBtn}
-        <a href="#/membership/platinum" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+        <a href="/membership/platinum" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (p.name === 'Premium Assisted') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="#/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
       } else if (isCurrent) {
         mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
       } else {
@@ -3201,10 +3201,10 @@ function renderMembership(container) {
       }
       btnHtml = `
         ${mainBtn}
-        <a href="#/membership/assisted" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
+        <a href="/membership/assisted" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
       `;
     } else if (!state.currentUser) {
-      btnHtml = `<a href="#/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
+      btnHtml = `<a href="/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
     } else if (isCurrent) {
       btnHtml = `<button class="plan-btn plan-btn-active" disabled>Active Plan</button>`;
     } else {
@@ -3414,7 +3414,7 @@ function renderMembership(container) {
         <p style="font-size: 0.9rem; color: var(--color-text-muted); max-width: 620px; margin: 0 auto 16px auto;">
           Our Premium Assisted Plan offers custom matchmaking search managed directly by Nabhik Matrimonial coordinators. We help schedule introductions and work closely with your family.
         </p>
-        <a href="#/contact" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 20px;">Contact Relationship Advisor</a>
+        <a href="/contact" class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 20px;">Contact Relationship Advisor</a>
       </div>
     </div>
   `;
@@ -4364,7 +4364,7 @@ function switchAdminTab(tabName) {
               <div class="admin-form-group">
                 <input type="text" id="adm-ad-title" class="admin-input" placeholder="Vivah Offer Banner" required style="margin-bottom:8px;">
                 <input type="text" id="adm-ad-banner" class="admin-input" placeholder="images/hero.webp" required style="margin-bottom:8px;">
-                <input type="text" id="adm-ad-link" class="admin-input" placeholder="#/membership" required style="margin-bottom:8px;">
+                <input type="text" id="adm-ad-link" class="admin-input" placeholder="/membership" required style="margin-bottom:8px;">
                 <input type="number" id="adm-ad-weight" class="admin-input" placeholder="Campaign Weight (e.g. 10)" required style="margin-bottom:8px;">
               </div>
               <button type="submit" class="btn-primary" style="padding:6px 12px; font-size:0.8rem; border-radius:4px; font-weight:600;">Create Campaign</button>
@@ -5728,7 +5728,7 @@ function renderFreePlanDetails(container) {
     </div>
     
     <div class="container section-padding">
-      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      <a href="/membership" class="back-to-plans-btn">← Back to All Plans</a>
       
       <div class="free-plan-layout">
         <!-- Main Column: What You'll Gain -->
@@ -5840,7 +5840,7 @@ function renderFreePlanDetails(container) {
               <li>Verification Emblem</li>
               <li>Dedicated Assistance</li>
             </ul>
-            <a href="#/membership" class="btn btn-primary" style="display: block; width: 100%; text-align: center; font-size: 0.88rem;">See Premium Plans</a>
+            <a href="/membership" class="btn btn-primary" style="display: block; width: 100%; text-align: center; font-size: 0.88rem;">See Premium Plans</a>
           </div>
         </div>
         
@@ -5850,7 +5850,7 @@ function renderFreePlanDetails(container) {
           <p>Begin your odyssey today and uncover meaningful connections within the trusted Nabhik community.</p>
           ${!isUserLoggedIn ? `
             <div style="margin-top: 16px;">
-              <a href="#/register" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">Register For Free</a>
+              <a href="/register" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">Register For Free</a>
             </div>
           ` : ''}
         </div>
@@ -5866,7 +5866,7 @@ function renderSilverPlanDetails(container) {
   
   let priceCTA = '';
   if (!isUserLoggedIn) {
-    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+    priceCTA = `<a href="/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
   } else if (isCurrentPlanSilver) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
@@ -5881,7 +5881,7 @@ function renderSilverPlanDetails(container) {
     </div>
     
     <div class="container section-padding">
-      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      <a href="/membership" class="back-to-plans-btn">← Back to All Plans</a>
       
       <div class="free-plan-layout">
         <!-- Main Column: Silver Tier Advantages -->
@@ -6019,7 +6019,7 @@ function renderGoldPlanDetails(container) {
   
   let priceCTA = '';
   if (!isUserLoggedIn) {
-    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+    priceCTA = `<a href="/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
   } else if (isCurrentPlanGold) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
@@ -6034,7 +6034,7 @@ function renderGoldPlanDetails(container) {
     </div>
     
     <div class="container section-padding">
-      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      <a href="/membership" class="back-to-plans-btn">← Back to All Plans</a>
       
       <div class="free-plan-layout">
         <!-- Main Column: Gold Plan Benefits -->
@@ -6155,7 +6155,7 @@ function renderPlatinumPlanDetails(container) {
   
   let priceCTA = '';
   if (!isUserLoggedIn) {
-    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+    priceCTA = `<a href="/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
   } else if (isCurrentPlanPlatinum) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
@@ -6170,7 +6170,7 @@ function renderPlatinumPlanDetails(container) {
     </div>
     
     <div class="container section-padding">
-      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      <a href="/membership" class="back-to-plans-btn">← Back to All Plans</a>
       
       <div class="free-plan-layout">
         <!-- Main Column: Platinum Package Benefits -->
@@ -6288,7 +6288,7 @@ function renderPremiumAssistedPlanDetails(container) {
   
   let priceCTA = '';
   if (!isUserLoggedIn) {
-    priceCTA = `<a href="#/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
+    priceCTA = `<a href="/login" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">Sign In to Choose</a>`;
   } else if (isCurrentPlanAssisted) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
@@ -6303,7 +6303,7 @@ function renderPremiumAssistedPlanDetails(container) {
     </div>
     
     <div class="container section-padding">
-      <a href="#/membership" class="back-to-plans-btn">← Back to All Plans</a>
+      <a href="/membership" class="back-to-plans-btn">← Back to All Plans</a>
       
       <div class="free-plan-layout">
         <!-- Main Column: Premier Assisted Benefits -->
@@ -6423,22 +6423,22 @@ function updatePageSEO(path, params) {
   let keywords = "Nabhik Matrimonial, Nabhik Matrimony, Nabhik Vivah, Nabhik bride, Nabhik groom, Nabhik community, matrimonial services, trusted matrimony";
 
   switch (path) {
-    case '#/':
+    case '/':
       title = "Nabhik Matrimonial | Trusted Matrimony Site for Nabhik Community";
       description = "Find your perfect life partner on Nabhik Matrimonial. The most trusted matrimonial platform for the Nabhik community offering secure, verified profiles.";
       keywords = "Nabhik Matrimonial, Nabhik Matrimony, Nabhik Vivah, Nabhik bride, Nabhik groom, Nabhik community, matrimonial services, trusted matrimony";
       break;
-    case '#/about':
+    case '/about':
       title = "About Us | Nabhik Matrimonial Services & Values";
       description = "Learn about Nabhik Matrimonial, our mission, traditional family values, and commitment to bringing Nabhik brides and grooms together securely.";
       keywords = "About Nabhik Matrimonial, community matrimony, matrimonial platform history, Nabhik marriage mission";
       break;
-    case '#/search':
+    case '/search':
       title = "Search Nabhik Profiles | Find Brides & Grooms Online";
       description = "Browse and search verified profiles of Nabhik brides and grooms. Filter search results by age, location, education, and profession.";
       keywords = "search Nabhik profiles, find Nabhik matches, Nabhik brides search, Nabhik grooms search, verified profiles";
       break;
-    case '#/profile/:id':
+    case '/profile/:id':
       let profileName = "Member";
       if (params && typeof state !== 'undefined' && state.profiles) {
         const p = state.profiles.find(x => x.id == params);
@@ -6448,87 +6448,87 @@ function updatePageSEO(path, params) {
       description = `View full profile details, education, profession, family background, and photos of verified Nabhik member ${profileName}.`;
       keywords = `${profileName} profile, Nabhik member details, Nabhik bride profile, Nabhik groom profile, matrimonial candidate`;
       break;
-    case '#/register':
+    case '/register':
       title = "Register Account | Join Nabhik Matrimonial Free";
       description = "Create your matrimonial profile on Nabhik Matrimonial today. Register free to connect with verified matches from the Nabhik community.";
       keywords = "Nabhik Matrimonial registration, register free matrimony, create matrimonial account, Nabhik matchmaking signup";
       break;
-    case '#/login':
+    case '/login':
       title = "Welcome Back | Member Login | Nabhik Matrimonial";
       description = "Log in to your Nabhik Matrimonial account to check received interests, chat with matched profiles, and view recommendations.";
       keywords = "Nabhik matrimonial login, member sign in, access dashboard, matrimonial login portal";
       break;
-    case '#/dashboard':
+    case '/dashboard':
       title = "Member Dashboard | Nabhik Matrimonial Control Panel";
       description = "Access matches, received interests, shortlists, and chat center from your secure Nabhik Matrimonial member dashboard.";
       keywords = "Nabhik dashboard, member matches, dashboard overview, matrimonial control panel";
       break;
-    case '#/membership':
+    case '/membership':
       title = "Premium Membership Plans | Upgrade Nabhik Matrimonial";
       description = "Upgrade your profile with Free, Silver, Gold, Platinum, or Premium Assisted membership plans to unlock direct contacts, chats, and family assistance.";
       keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan, assisted matchmaking plan";
       break;
-    case '#/membership/free':
+    case '/membership/free':
       title = "Free Membership Plan | Nabhik Matrimonial";
       description = "Establish your matrimonial profile, upload images, explore pairings, and connect with authentic matches with our free membership plan.";
       keywords = "Free matrimony plan, complementary matrimonial membership, register free Nabhik matrimony, profile creation";
       break;
-    case '#/membership/silver':
+    case '/membership/silver':
       title = "Silver Membership Plan | Nabhik Matrimonial";
       description = "Elevate your partner-finding journey with our Silver Membership Tier. Get unlimited connection requests, basic chat, and advanced search filters.";
       keywords = "Silver membership plan, budget matrimony plan, connection invitations, basic chat, matrimonial match suggestions";
       break;
-    case '#/membership/gold':
+    case '/membership/gold':
       title = "Gold Membership Plan | Nabhik Matrimonial";
       description = "Unlock a premium matchmaking experience with our Gold Membership Plan. Connect directly with verified profiles, get unlimited views, and premium support.";
       keywords = "Gold membership plan, premium matchmaking, unlock contact details, unlimited profile views, premium matrimonial highlight";
       break;
-    case '#/membership/platinum':
+    case '/membership/platinum':
       title = "Platinum Membership Package | Nabhik Matrimonial";
       description = "Discover superior matchmaking services with our top-tier Platinum Membership Package. Get peak profile visibility, priority WhatsApp support, and advanced filters.";
       keywords = "Platinum membership package, superior matchmaking, featured profile, WhatsApp support, verified premium emblem, top priority matches";
       break;
-    case '#/membership/assisted':
+    case '/membership/assisted':
       title = "Premier Assisted Membership Program | Nabhik Matrimonial";
       description = "Experience tailored matchmaking with dedicated guidance in our Premier Assisted Membership Program. Hand-picked curated matches with priority WhatsApp and telephone support.";
       keywords = "Premier Assisted Program, tailored matchmaking, dedicated guidance, relationship facilitator, curated match suggestions, family matchmaking support";
       break;
-    case '#/stories':
+    case '/stories':
       title = "Success Stories | Nabhik Matrimonial Happy Marriages";
       description = "Read inspiring success stories and matrimonial matches made through Nabhik Matrimonial. Celebrating happy Nabhik couples.";
       keywords = "matrimonial success stories, Nabhik marriage stories, happy couples, matrimonial matches";
       break;
-    case '#/events':
+    case '/events':
       title = "Community Events & News | Nabhik Matrimonial";
       description = "Stay updated on Nabhik community events, offline introductions, matrimonial meets, and cultural news.";
       keywords = "Nabhik events, community matchmaking meets, matrimonial introduction events";
       break;
-    case '#/blogs':
+    case '/blogs':
       title = "Marriage Tips & Articles | Nabhik Matrimonial Blog";
       description = "Discover relationship tips, community values, pre-marriage guidance, and matrimonial advice on Nabhik Matrimonial Blog.";
       keywords = "matrimonial blog, marriage advice, relationship tips, community family values";
       break;
-    case '#/contact':
+    case '/contact':
       title = "Contact KY Tech Services | IT & Web Design Company India";
       description = "Contact KY Tech Services: Leading Web Design Company in India providing Software Development Services, Digital Marketing, and Business IT solutions. Contact us for technical support.";
       keywords = "Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India";
       break;
-    case '#/policy':
+    case '/policy':
       title = "Privacy Policy | Data Protection | Nabhik Matrimonial";
       description = "Read Nabhik Matrimonial privacy policy to understand how we encrypt user data, safeguard uploaded files, and protect candidate details.";
       keywords = "privacy policy, matrimonial security, data protection rules, member safety guidelines";
       break;
-    case '#/terms':
+    case '/terms':
       title = "Terms of Service & Rules | Nabhik Matrimonial";
       description = "Review Nabhik Matrimonial terms, platform regulations, verification guidelines, and rules for a safe matchmaking experience.";
       keywords = "terms and conditions, user agreement, matrimonial portal regulations";
       break;
-    case '#/admin':
+    case '/admin':
       title = "Platform Admin Panel | Nabhik Matrimonial Administration";
       description = "Nabhik Matrimonial platform management control panel for profile verifications, blocking, and revenue analytics reporting.";
       keywords = "admin dashboard, profile approvals, platform analytics, verification portal";
       break;
-    case '#/help':
+    case '/help':
       title = "Help & Support | Nabhik Matrimonial Service Center";
       description = "Need help? Search FAQs or submit queries to the Nabhik Matrimonial support team for fast troubleshooting help.";
       keywords = "customer support, matrimonial FAQs, submit support ticket, help desk";
