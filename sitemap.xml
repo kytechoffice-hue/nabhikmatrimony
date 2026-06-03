@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Primary Landing Page -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
   <url>
     <loc>https://nabhikmatrimony.com</loc>
     <lastmod>2026-06-03</lastmod>
@@ -12,9 +11,7 @@
     <lastmod>2026-06-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>
-  
-  <!-- Main Public Subpages -->
+  </url> 
   <url>
     <loc>https://nabhikmatrimony.com/about</loc>
     <lastmod>2026-06-03</lastmod>
@@ -38,9 +35,7 @@
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  
-  <!-- Premium Membership & Plan Specifics -->
+  </url> 
   <url>
     <loc>https://nabhikmatrimony.com/membership</loc>
     <lastmod>2026-06-03</lastmod>
@@ -76,9 +71,7 @@
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  
-  <!-- Community & Social Sections -->
+  </url> 
   <url>
     <loc>https://nabhikmatrimony.com/stories</loc>
     <lastmod>2026-06-03</lastmod>
@@ -96,9 +89,7 @@
     <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  
-  <!-- Support & Policies -->
+  </url> 
   <url>
     <loc>https://nabhikmatrimony.com/contact</loc>
     <lastmod>2026-06-03</lastmod>
