@@ -1,4 +1,16 @@
 User-agent: *
 Allow: /
 
+# Disallow administrative, user dashboard, and private profile areas (not in sitemap)
+Disallow: /admin/
+Disallow: /admin
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /profile
+
+# Disallow dynamic search query parameters to avoid duplicate content indexing
+Disallow: /*?*
+
 Sitemap: https://nabhikmatrimony.com/sitemap.xml
+

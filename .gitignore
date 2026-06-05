@@ -1,0 +1,7 @@
+# Local portable Git directory
+git/
+
+# System and logs
+*.log
+.DS_Store
+Thumbs.db
