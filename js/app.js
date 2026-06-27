@@ -3,6 +3,39 @@
 // SECTION 1: DATABASE & ACTIONS (formerly data.js)
 // Nabhik Matrimonial Mock Database & State Management
 
+// Multi-language translation helpers
+window.t = function(enText, mrText) {
+  const currentLang = localStorage.getItem('app_lang') || 'mr';
+  return currentLang === 'mr' ? mrText : enText;
+};
+
+window.changeLanguage = function(lang) {
+  localStorage.setItem('app_lang', lang);
+  
+  // Keep select dropdown values in sync
+  const selectEl = document.getElementById('lang-select');
+  if (selectEl) {
+    selectEl.value = lang;
+  }
+  
+  // Re-render UI
+  updateHeaderAuth();
+  initRouter();
+  translateStaticDOM();
+};
+
+window.translateStaticDOM = function() {
+  document.querySelectorAll('[data-en][data-mr]').forEach(el => {
+    const isMr = (localStorage.getItem('app_lang') || 'mr') === 'mr';
+    const text = isMr ? el.getAttribute('data-mr') : el.getAttribute('data-en');
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = text;
+    } else {
+      el.innerHTML = text;
+    }
+  });
+};
+
 // Symmetrical chat thread composite key generator
 function getChatKey(id1, id2) {
   const a = Math.min(id1, id2);
@@ -641,7 +674,7 @@ const initialPlans = [
     badgeIcon: '🥇',
     tagline: 'Best balance of affordability and value.',
     features: [
-      'Unlimited Profile Views',
+      'View 30 Profiles',
       'Direct Contact Access',
       'Unlimited Chat',
       'Advanced Search Filters',
@@ -661,6 +694,7 @@ const initialPlans = [
     badgeIcon: '💎',
     tagline: 'Best for serious users.',
     features: [
+      'View 85 Profiles',
       'All Gold Features',
       'Featured Profile on Homepage',
       'Profile Verification Badge',
@@ -741,6 +775,27 @@ const initialAds = [
   { id: 1, title: 'Summer Vivah Offer', banner: '/images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
   { id: 2, title: 'Premium Assisted Services', banner: '/images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
+
+// Force update plans in localStorage if they don't match initialPlans features (to handle version transitions)
+try {
+  const storedPlans = localStorage.getItem('nabhik_matrimonial_plans');
+  if (storedPlans) {
+    const parsedPlans = JSON.parse(storedPlans);
+    const needsReset = !Array.isArray(parsedPlans) || 
+                       parsedPlans.length !== initialPlans.length || 
+                       parsedPlans.some((p, idx) => {
+                         const expected = initialPlans[idx];
+                         return !expected || 
+                                p.features.join(',') !== expected.features.join(',') || 
+                                p.price !== expected.price;
+                       });
+    if (needsReset) {
+      localStorage.removeItem('nabhik_matrimonial_plans');
+    }
+  }
+} catch (e) {
+  console.error("Failed to check or clear localStorage plans", e);
+}
 
 const state = {
   profiles: (storage.get('profiles', initialProfiles) || []).filter(p => p && typeof p === 'object'),
@@ -1345,6 +1400,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize App
   initRouter();
   
+  // Set initial dropdown value
+  const storedLang = localStorage.getItem('app_lang') || 'mr';
+  const selectEl = document.getElementById('lang-select');
+  if (selectEl) {
+    selectEl.value = storedLang;
+  }
+  
+  // Translate static elements on load
+  translateStaticDOM();
+  
   // Update header auth visual state
   updateHeaderAuth();
   
@@ -1369,13 +1434,13 @@ function updateHeaderAuth() {
       <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px;">
         👤 ${state.currentUser.name} ${isPremium ? `👑 ${state.currentUser.membership}` : ''}
       </span>
-      <a href="/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">Dashboard</a>
-      <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">Logout</button>
+      <a href="/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">${t('Dashboard', 'डॅशबोर्ड')}</a>
+      <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">${t('Logout', 'लॉग आउट')}</button>
     `;
   } else {
     authContainer.innerHTML = `
-      <a href="/login" class="btn-login">Login</a>
-      <a href="/register" class="btn-register">Register</a>
+      <a href="/login" class="btn-login">${t('Login', 'लॉग इन')}</a>
+      <a href="/register" class="btn-register">${t('Register', 'नोंदणी करा')}</a>
     `;
   }
   
@@ -1410,28 +1475,28 @@ function updateNavigation() {
     if (isAdmin) {
       // Admins only see Admin Dashboard menu link
       navContainer.innerHTML = `
-        ${makeLink('/admin', 'Admin Dashboard', 'color: var(--color-gold-light); font-weight: 600;')}
+        ${makeLink('/admin', t('Admin Dashboard', 'अ‍ॅडमीन डॅशबोर्ड'), 'color: var(--color-gold-light); font-weight: 600;')}
       `;
     } else {
       // Show full menu when logged in for normal members
       navContainer.innerHTML = `
-        ${makeLink('/', 'Home')}
-        ${makeLink('/dashboard', 'Dashboard')}
-        ${makeLink('/search', 'Search Profiles')}
-        ${makeLink('/membership', 'Membership')}
-        ${makeLink('/stories', 'Success Stories')}
-        ${makeLink('/contact', 'Contact Us')}
-        ${makeLink('/help', 'Help')}
+        ${makeLink('/', t('Home', 'मुख्यपृष्ठ'))}
+        ${makeLink('/dashboard', t('Dashboard', 'डॅशबोर्ड'))}
+        ${makeLink('/search', t('Search Profiles', 'जोडीदार शोधा'))}
+        ${makeLink('/membership', t('Membership', 'सभासदत्व'))}
+        ${makeLink('/stories', t('Success Stories', 'यशस्वी कथा'))}
+        ${makeLink('/contact', t('Contact Us', 'संपर्क साधा'))}
+        ${makeLink('/help', t('Help', 'मदत'))}
       `;
     }
   } else {
     // Show Home, About Us, Membership, Contact Us, and Help when not logged in
     navContainer.innerHTML = `
-      ${makeLink('/', 'Home')}
-      ${makeLink('/about', 'About Us')}
-      ${makeLink('/membership', 'Membership')}
-      ${makeLink('/contact', 'Contact Us')}
-      ${makeLink('/help', 'Help')}
+      ${makeLink('/', t('Home', 'मुख्यपृष्ठ'))}
+      ${makeLink('/about', t('About Us', 'आमच्याबद्दल'))}
+      ${makeLink('/membership', t('Membership', 'सभासदत्व'))}
+      ${makeLink('/contact', t('Contact Us', 'संपर्क साधा'))}
+      ${makeLink('/help', t('Help', 'मदत'))}
     `;
   }
 }
@@ -1640,10 +1705,8 @@ function renderHome(container) {
       
       <div class="container hero-grid">
         <div class="hero-content">
-          <h1>Where Tradition<br>Meets <span class="text-gold">Perfect Match</span></h1>
-          <p>Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.</p>
-
-
+          <h1>${t('Where Tradition<br>Meets <span class="text-gold">Perfect Match</span>', 'जिथे परंपरा मिळवते<br><span class="text-gold">परिपूर्ण जोडीदार</span>')}</h1>
+          <p>${t('Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.', 'नाभिक मॅट्रिमोनी – समजूतदारपणावर आधारित खऱ्या, सुरक्षित आणि सुसंगत नातेसंबंधांसाठी हजारो नाभिक कुटुंबांचा विश्वास.')}</p>
         </div>
         <div class="hero-image-container">
           <div class="hero-image-frame">
@@ -1654,34 +1717,35 @@ function renderHome(container) {
       </div>
     </section>
 
-
     <!-- Why Choose Us -->
-    <section class="section-padding container">
-      <div class="traditional-header">
-        <h2>Why Choose Nabhik Matrimonial?</h2>
-        <div class="traditional-divider"><span class="icon">✦</span></div>
-      </div>
-      
-      <div class="why-choose-grid">
-        <div class="why-card">
-          <div class="why-icon-container">🛡️</div>
-          <h3>Verified Profiles</h3>
-          <p>Every profile is manually verified with contact checks for your safety and security.</p>
+    <section class="section-padding">
+      <div class="container">
+        <div class="traditional-header">
+          <h2>${t('Why Choose Nabhik Matrimonial?', 'नाभिक मॅट्रिमोनी का निवडावी?')}</h2>
+          <div class="traditional-divider"><span class="icon">✦</span></div>
         </div>
-        <div class="why-card">
-          <div class="why-icon-container">👥</div>
-          <h3>Trusted Community</h3>
-          <p>Dedicated exclusive platform matching values, custom for Nabhik society families.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon-container">🔒</div>
-          <h3>Privacy Protection</h3>
-          <p>Your details and photos are protected. Control who views your contact information.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon-container">❤️</div>
-          <h3>Smart Matchmaking</h3>
-          <p>Advanced filters let you narrow matches by height, education, location, and habits.</p>
+        
+        <div class="why-choose-grid">
+          <div class="why-card">
+            <div class="why-icon-container">🛡️</div>
+            <h3>${t('Verified Profiles', 'सत्यापित प्रोफाइल्स')}</h3>
+            <p>${t('Every profile is manually verified with contact checks for your safety and security.', 'तुमच्या सुरक्षेसाठी प्रत्येक प्रोफाइलचे संपर्क तपशील मॅन्युअली तपासले जातात.')}</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-container">👥</div>
+            <h3>${t('Trusted Community', 'विश्वासू समुदाय')}</h3>
+            <p>${t('Dedicated exclusive platform matching values, custom for Nabhik society families.', 'नाभिक समाजातील कुटुंबांच्या मूल्यांशी सुसंगत असलेले खास समर्पित व्यासपीठ.')}</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-container">🔒</div>
+            <h3>${t('Privacy Protection', 'गोपनीयता संरक्षण')}</h3>
+            <p>${t('Your details and photos are protected. Control who views your contact information.', 'तुमचे तपशील आणि फोटो सुरक्षित आहेत. माहिती कोण पाहू शकते यावर नियंत्रण आहे.')}</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon-container">❤️</div>
+            <h3>${t('Smart Matchmaking', 'स्मार्ट विवाह जुळवणी')}</h3>
+            <p>${t('Advanced filters let you narrow matches by height, education, location, and habits.', 'प्रगत फिल्टर्समुळे तुम्ही उंची, शिक्षण, ठिकाण आणि सवयींनुसार जोडीदार शोधू शकता.')}</p>
+          </div>
         </div>
       </div>
     </section>
@@ -1691,7 +1755,7 @@ function renderHome(container) {
       <div class="container">
         <div class="featured-header-row">
           <div class="traditional-header">
-            <h2>Featured Profiles</h2>
+            <h2>${t('Featured Profiles', 'निवडक प्रोफाइल्स')}</h2>
             <div class="traditional-divider"><span class="icon">✦</span></div>
           </div>
         </div>
@@ -1706,16 +1770,15 @@ function renderHome(container) {
       </div>
     </section>
 
-
     <!-- Success Stories -->
     <section class="section-padding bg-maroon-section">
       <div class="container">
         <div class="featured-header-row">
           <div class="traditional-header">
-            <h2>Success Stories</h2>
+            <h2>${t('Success Stories', 'यशस्वी कथा')}</h2>
             <div class="traditional-divider"><span class="icon">✦</span></div>
           </div>
-          <a href="/stories" class="btn btn-outline">View All Stories</a>
+          <a href="/stories" class="btn btn-outline">${t('View All Stories', 'सर्व कथा पहा')}</a>
         </div>
         
         <div class="success-slider-container">
@@ -1731,34 +1794,32 @@ function renderHome(container) {
       </div>
     </section>
 
-
-
     <!-- Call to Action -->
     <section class="cta-section">
       <div class="container">
-        <h2>Ready to Find Your Life Partner?</h2>
-        <p>Join Nabhik Matrimonial today to connect with matching verified profiles in our community. Registration is free and takes only a few minutes.</p>
-        <a href="/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Register Now</a>
+        <h2>${t('Ready to Find Your Life Partner?', 'जोडीदार शोधण्यास तयार आहात का?')}</h2>
+        <p>${t('Join Nabhik Matrimonial today to connect with matching verified profiles in our community. Registration is free and takes only a few minutes.', 'आमच्या समुदायातील सत्यापित प्रोफाइल्सशी जोडले जाण्यासाठी आजच नाभिक मॅट्रिमोनीमध्ये सामील व्हा. नोंदणी विनामूल्य आहे.')}</p>
+        <a href="/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">${t('Register Now', 'आता नोंदणी करा')}</a>
       </div>
     </section>
 
     <!-- App Promo Section -->
     <section class="app-promo-section">
       <div class="container app-promo-content">
-        <h2>Matrimony App Coming Soon</h2>
-        <p>Stay connected on the go. Mobile applications for Android and iOS devices are in development.</p>
+        <h2>${t('Matrimony App Coming Soon', 'मॅट्रिमोनी ॲप लवकरच येत आहे')}</h2>
+        <p>${t('Stay connected on the go. Mobile applications for Android and iOS devices are in development.', 'जाता जाता जोडलेले रहा. अँड्रॉइड आणि आयओएस उपकरणांसाठी मोबाईल ॲप्स विकसित केले जात आहेत.')}</p>
         <div class="app-badges">
           <div class="app-badge-btn">
             <span class="icon">🤖</span>
             <div>
-              <span>Get it on</span>
+              <span>${t('Get it on', 'मिळवा')}</span>
               <strong>Google Play</strong>
             </div>
           </div>
           <div class="app-badge-btn">
             <span class="icon">🍎</span>
             <div>
-              <span>Download on the</span>
+              <span>${t('Download on the', 'डाउनलोड करा')}</span>
               <strong>App Store</strong>
             </div>
           </div>
@@ -1786,16 +1847,16 @@ function renderAbout(container) {
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>About Us</h1>
+        <h1>${t('About Us', 'आमच्याबद्दल')}</h1>
       </div>
     </div>
     
     <div class="container section-padding">
       <div class="about-grid">
         <div class="about-text">
-          <h2>About Nabhik Matrimonial</h2>
-          <p>Nabhik Matrimonial is a dedicated matrimonial platform created specifically for the Nabhik community. Our mission is to help individuals and families find suitable, compatible life partners with trust, privacy, and simplicity.</p>
-          <p>We believe marriage is a sacred bond built on understanding, tradition, and compatibility. Our platform makes matchmaking easier with advanced search filters, verified profiles, and secure communication tools, allowing families to connect seamlessly across different regions.</p>
+          <h2>${t('About Nabhik Matrimonial', 'नाभिक मॅट्रिमोनीबद्दल')}</h2>
+          <p>${t('Nabhik Matrimonial is a dedicated matrimonial platform created specifically for the Nabhik community. Our mission is to help individuals and families find suitable, compatible life partners with trust, privacy, and simplicity.', 'नाभिक मॅट्रिमोनी हे खास नाभिक समाजासाठी तयार केलेले एक समर्पित विवाह जुळवणीचे व्यासपीठ आहे. आमचे उद्दिष्ट व्यक्ती आणि कुटुंबांना विश्वास, गोपनीयता आणि सोपेपणासह योग्य आणि सुसंगत जीवनसाथी शोधण्यात मदत करणे हे आहे.')}</p>
+          <p>${t('We believe marriage is a sacred bond built on understanding, tradition, and compatibility. Our platform makes matchmaking easier with advanced search filters, verified profiles, and secure communication tools, allowing families to connect seamlessly across different regions.', 'आम्ही मानतो की विवाह हा समजूतदारपणा, परंपरा आणि सुसंगतता यावर आधारलेला एक पवित्र बंधन आहे. आमचे व्यासपीठ प्रगत शोध फिल्टर्स, सत्यापित प्रोफाइल्स आणि सुरक्षित संवाद साधनांद्वारे विवाह जुळवणी सोपी करते, ज्यामुळे कुटुंबांना वेगवेगळ्या प्रदेशांमधून सहजपणे कनेक्ट होता येते.')}</p>
         </div>
         <div class="about-image">
           <!-- Stylized Indian traditional mandala illustration -->
@@ -1810,12 +1871,12 @@ function renderAbout(container) {
       
       <div class="vision-mission-row">
         <div class="vm-card">
-          <h3>Our Vision</h3>
-          <p>To become the most trusted and preferred matrimonial platform for the Nabhik community across India, bringing families together while preserving our traditional social values and cultural heritage.</p>
+          <h3>${t('Our Vision', 'आमचे ध्येय (Vision)')}</h3>
+          <p>${t('To become the most trusted and preferred matrimonial platform for the Nabhik community across India, bringing families together while preserving our traditional social values and cultural heritage.', 'भारतभरातील नाभिक समुदायासाठी सर्वात विश्वासार्ह आणि पसंतीचे विवाह जुळवणी व्यासपीठ बनणे, आपल्या पारंपारिक सामाजिक मूल्यांचे आणि सांस्कृतिक वारशाचे जतन करून कुटुंबांना एकत्र आणणे.')}</p>
         </div>
         <div class="vm-card">
-          <h3>Our Mission</h3>
-          <p>We aim to build trusted community connections, simplify the partner search process, maintain strict privacy and safety regulations, and support Nabhik families in finding genuine, verified matches.</p>
+          <h3>${t('Our Mission', 'आमचे ध्येय (Mission)')}</h3>
+          <p>${t('We aim to build trusted community connections, simplify the partner search process, maintain strict privacy and safety regulations, and support Nabhik families in finding genuine, verified matches.', 'विश्वासू सामाजिक संबंध निर्माण करणे, जोडीदार शोधण्याची प्रक्रिया सोपी करणे, कडक गोपनीयता आणि सुरक्षा नियमांचे पालन करणे आणि नाभिक कुटुंबांना अस्सल, सत्यापित जोडीदार शोधण्यात मदत करणे हे आमचे ध्येय आहे.')}</p>
         </div>
       </div>
     </div>
@@ -1827,7 +1888,7 @@ function renderHelp(container) {
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>Help & Support</h1>
+        <h1>${t('Help & Support', 'मदत आणि समर्थन')}</h1>
       </div>
     </div>
     
@@ -1837,48 +1898,48 @@ function renderHelp(container) {
         <!-- FAQs Section -->
         <div class="faq-section">
           <div class="traditional-header" style="text-align: left; margin-bottom: 24px;">
-            <h2>Frequently Asked Questions</h2>
+            <h2>${t('Frequently Asked Questions', 'वारंवार विचारले जाणारे प्रश्न')}</h2>
             <div class="traditional-divider" style="margin-left: 0;"><span class="icon">✦</span></div>
           </div>
           
           <div class="faq-list">
             <details class="faq-item">
               <summary>
-                How do I register on Nabhik Matrimonial?
+                ${t('How do I register on Nabhik Matrimonial?', 'मी नाभिक मॅट्रिमोनीवर नोंदणी कशी करू?')}
                 <span class="faq-arrow">▼</span>
               </summary>
               <p>
-                Click on the "Register" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.
+                ${t('Click on the "Register" button on the top right. Fill out your details (Personal Info, Education, Location, etc.) and complete the registration. After registration, we will send an OTP via SMS to verify your mobile number. Once verified, you can log in and find matches.', 'वरच्या उजव्या बाजूला असलेल्या "नोंदणी करा" बटणावर क्लिक करा. तुमचे तपशील (वैयक्तिक माहिती, शिक्षण, पत्ता इ.) भरा आणि नोंदणी पूर्ण करा. नोंदणीनंतर, तुमच्या मोबाईल नंबरचे सत्यापन करण्यासाठी आम्ही एसएमएसद्वारे ओटीपी पाठवू. सत्यापित झाल्यावर तुम्ही लॉग इन करून जोडीदार शोधू शकता.')}
               </p>
             </details>
             
             <details class="faq-item">
               <summary>
-                How does the profile verification work?
+                ${t('How does the profile verification work?', 'प्रोफाइल सत्यापन कसे कार्य करते?')}
                 <span class="faq-arrow">▼</span>
               </summary>
               <p>
-                To keep our community safe, every registered profile is reviewed by our administration team. You may be requested to upload an identity document. Approved profiles receive a gold "✔ Verified" badge.
+                ${t('To keep our community safe, every registered profile is reviewed by our administration team. You may be requested to upload an identity document. Approved profiles receive a gold "✔ Verified" badge.', 'आमचा समुदाय सुरक्षित ठेवण्यासाठी, प्रत्येक नोंदणीकृत प्रोफाइलचे आमच्या अ‍ॅडमीन टीमद्वारे पुनरावलोकन केले जाते. तुम्हाला ओळख दस्तऐवज अपलोड करण्याची विनंती केली जाऊ शकते. मंजूर प्रोफाइलला सोन्याचे "✔ Verified" बॅज मिळते.')}
               </p>
             </details>
             
             <details class="faq-item">
               <summary>
-                Is my personal information and contact number secure?
+                ${t('Is my personal information and contact number secure?', 'माझी वैयक्तिक माहिती आणि संपर्क क्रमांक सुरक्षित आहे का?')}
                 <span class="faq-arrow">▼</span>
               </summary>
               <p>
-                Yes, absolutely. We prioritize your privacy. Your contact details are only shared with premium members if you choose to accept their interest, or you can manage this from your privacy settings in the dashboard.
+                ${t('Yes, absolutely. We prioritize your privacy. Your contact details are only shared with premium members if you choose to accept their interest, or you can manage this from your privacy settings in the dashboard.', 'होय, नक्कीच. आम्ही तुमच्या गोपनीयतेला प्राधान्य देतो. तुमचे संपर्क तपशील केवळ प्रीमियम सदस्यांसह सामायिक केले जातात, तेही तुम्ही त्यांची विनंती स्वीकारल्यास. किंवा तुम्ही डॅशबोर्डमधील गोपनीयतेमधून हे नियंत्रित करू शकता.')}
               </p>
             </details>
             
             <details class="faq-item">
               <summary>
-                What are the benefits of Membership Plans?
+                ${t('What are the benefits of Membership Plans?', 'सभासदत्व योजनांचे काय फायदे आहेत?')}
                 <span class="faq-arrow">▼</span>
               </summary>
               <p>
-                Premium members get benefits like viewing direct phone numbers, unlimited chat messages, sending highlighted interests, and getting higher priority in searches. Check out our Membership page for details.
+                ${t('Premium members get benefits like viewing direct phone numbers, unlimited chat messages, sending highlighted interests, and getting higher priority in searches. Check out our Membership page for details.', 'प्रीमियम सदस्यांना थेट फोन नंबर पाहणे, अमर्यादित चॅट संदेश, हायलाइट केलेले स्वारस्य पाठवणे आणि शोधामध्ये उच्च प्राधान्य मिळणे यासारखे फायदे मिळतात. तपशीलांसाठी आमचे सभासदत्व पृष्ठ पहा.')}
               </p>
             </details>
           </div>
@@ -1887,8 +1948,8 @@ function renderHelp(container) {
         <!-- Support Ticket / Contact Sidebar -->
         <div class="support-sidebar">
           <div class="contact-card">
-            <h3>Contact Support</h3>
-            <p class="contact-desc">We are available to help you find your perfect match.</p>
+            <h3>${t('Contact Support', 'संपर्कासाठी मदत')}</h3>
+            <p class="contact-desc">${t('We are available to help you find your perfect match.', 'आम्ही तुमचा परिपूर्ण जोडीदार शोधण्यात मदत करण्यास सदैव उपलब्ध आहोत.')}</p>
             <div class="contact-details-row">
               <div class="contact-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1904,22 +1965,22 @@ function renderHelp(container) {
                 <span>+91 98765 43210</span>
               </div>
             </div>
-            <p class="contact-address">Nabhik Society Office, Mumbai, Maharashtra</p>
+            <p class="contact-address">${t('Nabhik Society Office, Mumbai, Maharashtra', 'नाभिक समाज कार्यालय, मुंबई, महाराष्ट्र')}</p>
           </div>
           
           <div class="ticket-card">
-            <h4>Submit a Query</h4>
+            <h4>${t('Submit a Query', 'तुमचा प्रश्न पाठवा')}</h4>
             <form class="ticket-form" onsubmit="handleTicketSubmit(event)">
               <div>
-                <input type="text" id="ticket-name" placeholder="Full Name" required autocomplete="off">
+                <input type="text" id="ticket-name" placeholder="${t('Full Name', 'पूर्ण नाव')}" required autocomplete="off">
               </div>
               <div>
-                <input type="email" id="ticket-email" placeholder="Email Address" required autocomplete="off">
+                <input type="email" id="ticket-email" placeholder="${t('Email Address', 'ईमेल पत्ता')}" required autocomplete="off">
               </div>
               <div>
-                <textarea id="ticket-query" placeholder="How can we help you?" rows="4" required></textarea>
+                <textarea id="ticket-query" placeholder="${t('How can we help you?', 'आम्ही तुमची काय मदत करू शकतो?')}" rows="4" required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Ticket</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">${t('Submit Ticket', 'प्रश्न सबमिट करा')}</button>
             </form>
           </div>
         </div>
@@ -2384,63 +2445,63 @@ function renderRegister(container) {
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>Register</h1>
+        <h1>${t('Register', 'नोंदणी करा')}</h1>
       </div>
     </div>
     
     <div class="container" style="max-width: 720px; padding: 60px 24px;">
       <div class="page-container" style="margin-top: 0;">
         <div class="traditional-header" style="margin-bottom: 24px;">
-          <h2>Join Nabhik Matrimonial</h2>
-          <p style="font-size: 0.9rem; color: var(--color-text-muted);">Create your profile and start searching for life partner matches today.</p>
+          <h2>${t('Join Nabhik Matrimonial', 'नाभिक मॅट्रिमोनीमध्ये सामील व्हा')}</h2>
+          <p style="font-size: 0.9rem; color: var(--color-text-muted);">${t('Create your profile and start searching for life partner matches today.', 'तुमचे प्रोफाइल तयार करा आणि आजच योग्य जोडीदार शोधण्यास सुरवात करा.')}</p>
         </div>
         
         <form onsubmit="handleRegistrationSubmit(event)">
           <div class="form-row-2">
             <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="reg-name" required placeholder="Enter full name">
+              <label>${t('Full Name', 'पूर्ण नाव')}</label>
+              <input type="text" id="reg-name" required placeholder="${t('Enter full name', 'पूर्ण नाव प्रविष्ट करा')}">
             </div>
             <div class="form-group">
-              <label>Gender</label>
+              <label>${t('Gender', 'लिंग')}</label>
               <select id="reg-gender">
-                <option value="Female">Bride</option>
-                <option value="Male">Groom</option>
+                <option value="Female">${t('Bride', 'वधू')}</option>
+                <option value="Male">${t('Groom', 'वर')}</option>
               </select>
             </div>
           </div>
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>Date of Birth</label>
+              <label>${t('Date of Birth', 'जन्मतारीख')}</label>
               <input type="date" id="reg-dob" required>
             </div>
             <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="tel" id="reg-mobile" required placeholder="Enter 10-digit number">
+              <label>${t('Mobile Number', 'मोबाईल नंबर')}</label>
+              <input type="tel" id="reg-mobile" required placeholder="${t('Enter 10-digit number', '१०-अंकी मोबाईल नंबर प्रविष्ट करा')}">
             </div>
           </div>
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>Email ID</label>
+              <label>${t('Email ID', 'ईमेल आयडी')}</label>
               <input type="email" id="reg-email" required placeholder="info@example.com">
             </div>
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="reg-pass" required placeholder="Password">
+              <label>${t('Password', 'पासवर्ड')}</label>
+              <input type="password" id="reg-pass" required placeholder="${t('Password', 'पासवर्ड')}">
             </div>
           </div>
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>State</label>
+              <label>${t('State', 'राज्य')}</label>
               <select id="reg-state">
                 <option value="Maharashtra">Maharashtra</option>
               </select>
             </div>
             <div class="form-group">
-              <label>City</label>
+              <label>${t('City', 'शहर')}</label>
               <input type="text" id="reg-city" list="reg-cities-list" required placeholder="e.g. Pune">
               <datalist id="reg-cities-list">
                 <option value="Ahmednagar">
@@ -2499,29 +2560,29 @@ function renderRegister(container) {
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>Education</label>
+              <label>${t('Education', 'शिक्षण')}</label>
               <input type="text" id="reg-education" required placeholder="e.g. B.Tech / MBA">
             </div>
             <div class="form-group">
-              <label>Profession / Job</label>
+              <label>${t('Profession / Job', 'व्यवसाय / नोकरी')}</label>
               <input type="text" id="reg-profession" required placeholder="e.g. Software Developer">
             </div>
           </div>
           
-          <h3 style="font-size: 1.1rem; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px; margin: 24px 0 16px 0;">Upload Profiles & Biodata</h3>
+          <h3 style="font-size: 1.1rem; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px; margin: 24px 0 16px 0;">${t('Upload Profiles & Biodata', 'फोटो आणि बायोडाटा अपलोड करा')}</h3>
           
           <div class="form-row-2">
             <div class="form-group">
-              <label>Profile Photo</label>
+              <label>${t('Profile Photo', 'प्रोफाइल फोटो')}</label>
               <input type="file" accept="image/*" id="reg-photo">
             </div>
             <div class="form-group">
-              <label>Biodata PDF (Optional)</label>
+              <label>${t('Biodata PDF (Optional)', 'बायोडाटा पीडीएफ (पर्यायी)')}</label>
               <input type="file" accept=".pdf" id="reg-biodata">
             </div>
           </div>
           
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 1.05rem; padding: 14px;">Register Account</button>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 1.05rem; padding: 14px;">${t('Register Account', 'खाते नोंदणी करा')}</button>
         </form>
       </div>
     </div>
@@ -2537,43 +2598,43 @@ function openLoginModal() {
     <div class="modal-content" style="max-width: 440px;">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
       <div class="traditional-header" style="margin-bottom: 24px; text-align: center;">
-        <h2>Welcome Back</h2>
+        <h2>${t('Welcome Back', 'पुन्हा आपले स्वागत आहे')}</h2>
         <div class="traditional-divider"><span class="icon">✦</span></div>
       </div>
       
       <!-- Toggle login options -->
       <div style="display: flex; justify-content: center; gap: 12px; border-bottom: 1px solid var(--color-border); margin-bottom: 24px; padding-bottom: 8px;">
-        <button id="tab-login-email" onclick="toggleLoginTabs('email')" style="font-weight: 600; color: var(--color-maroon); background: none; border: none; cursor: pointer;" class="text-gold">Email Login</button>
+        <button id="tab-login-email" onclick="toggleLoginTabs('email')" style="font-weight: 600; color: var(--color-maroon); background: none; border: none; cursor: pointer;" class="text-gold">${t('Email Login', 'ईमेल लॉग इन')}</button>
         <span style="color: var(--color-border);">|</span>
-        <button id="tab-login-otp" onclick="toggleLoginTabs('otp')" style="font-weight: 500; color: var(--color-text-muted); background: none; border: none; cursor: pointer;">Mobile OTP Login</button>
+        <button id="tab-login-otp" onclick="toggleLoginTabs('otp')" style="font-weight: 500; color: var(--color-text-muted); background: none; border: none; cursor: pointer;">${t('Mobile OTP Login', 'मोबाईल OTP लॉग इन')}</button>
       </div>
       
       <!-- Email Form -->
       <form id="login-email-form" onsubmit="handleEmailLogin(event)">
         <div class="form-group">
-          <label>Email ID or Username</label>
-          <input type="text" id="login-email" required placeholder="Enter Email ID or Username">
+          <label>${t('Email ID or Username', 'ईमेल आयडी किंवा युझरनेम')}</label>
+          <input type="text" id="login-email" required placeholder="${t('Enter Email ID or Username', 'ईमेल आयडी किंवा युझरनेम प्रविष्ट करा')}">
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" required placeholder="Enter password">
+          <label>${t('Password', 'पासवर्ड')}</label>
+          <input type="password" id="login-password" required placeholder="${t('Enter password', 'पासवर्ड प्रविष्ट करा')}">
         </div>
         
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">${t('Login', 'लॉग इन करा')}</button>
       </form>
       
       <!-- OTP Form (Hidden initially) -->
       <form id="login-otp-form" onsubmit="handleOtpLoginRequest(event)" style="display: none;">
         <div class="form-group">
-          <label>Mobile Number</label>
-          <input type="tel" id="login-mobile" required placeholder="Enter 10-digit mobile number">
+          <label>${t('Mobile Number', 'मोबाईल नंबर')}</label>
+          <input type="tel" id="login-mobile" required placeholder="${t('Enter 10-digit mobile number', '१०-अंकी मोबाईल नंबर प्रविष्ट करा')}">
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Send OTP Code</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">${t('Send OTP Code', 'ओटीपी कोड पाठवा')}</button>
       </form>
       
       <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
-        <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">Forgot Password?</a>
-        <p style="margin-top: 12px;">Don't have an account? <a href="/register" onclick="closeModal()" style="color: var(--color-maroon); font-weight: 600;">Register</a></p>
+        <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">${t('Forgot Password?', 'पासवर्ड विसरलात?')}</a>
+        <p style="margin-top: 12px;">${t("Don't have an account? <a href=\"/register\" onclick=\"closeModal()\" style=\"color: var(--color-maroon); font-weight: 600;\">Register</a>", "खाते नाही का? <a href=\"/register\" onclick=\"closeModal()\" style=\"color: var(--color-maroon); font-weight: 600;\">नोंदणी करा</a>")}</p>
       </div>
     </div>
   `;
@@ -3452,15 +3513,15 @@ function renderContact(container) {
   container.innerHTML = `
     <div class="page-banner">
       <div class="container">
-        <h1>Contact Us</h1>
+        <h1>${t('Contact Us', 'संपर्क साधा')}</h1>
       </div>
     </div>
     
     <div class="container section-padding">
       <div class="page-container contact-grid" style="margin-top: 0;">
         <div class="contact-info">
-          <h3>Get In Touch</h3>
-          <p>Feel free to reach out to us regarding queries, membership details, offline registration centers, or support.</p>
+          <h3>${t('Get In Touch', 'आमच्याशी संपर्क साधा')}</h3>
+          <p>${t('Feel free to reach out to us regarding queries, membership details, offline registration centers, or support.', 'शंका, सभासदत्व तपशील, ऑफलाइन नोंदणी केंद्रे किंवा मदतीसाठी आमच्याशी मोकळेपणाने संपर्क साधा.')}</p>
           
           <ul class="contact-info-list">
             <li><span class="icon">✉</span> info@nabhikmatrimonial.com</li>
@@ -3483,24 +3544,24 @@ function renderContact(container) {
             
             <div class="form-row-2">
               <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" required placeholder="Your Name">
+                <label>${t('Full Name', 'पूर्ण नाव')}</label>
+                <input type="text" required placeholder="${t('Your Name', 'तुमचे नाव')}">
               </div>
               <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" required placeholder="Your Email">
+                <label>${t('Email Address', 'ईमेल पत्ता')}</label>
+                <input type="email" required placeholder="${t('Your Email', 'तुमचा ईमेल')}">
               </div>
             </div>
 
             <div class="form-row-2">
               <div class="form-group">
-                <label>Subject</label>
-                <input type="text" required placeholder="Subject">
+                <label>${t('Subject', 'विषय')}</label>
+                <input type="text" required placeholder="${t('Subject', 'विषय')}">
               </div>
               <div class="form-group">
-                <label>Inquiry Type (Service Area)</label>
+                <label>${t('Inquiry Type (Service Area)', 'चौकशीचा प्रकार')}</label>
                 <select required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff; font-family: inherit; font-size: 0.9rem; color: var(--color-text);">
-                  <option value="" disabled selected>Select service focus...</option>
+                  <option value="" disabled selected>${t('Select service focus...', 'चौकशीचा प्रकार निवडा...')}</option>
                   <option value="KY Tech Services">Contact KY Tech Services</option>
                   <option value="IT Company Contact">IT Company Contact</option>
                   <option value="Website Development Contact">Website Development Contact</option>
@@ -3514,11 +3575,11 @@ function renderContact(container) {
             </div>
 
             <div class="form-group">
-              <label>Message</label>
-              <textarea rows="4" required placeholder="Type your message here..."></textarea>
+              <label>${t('Message', 'संदेश')}</label>
+              <textarea rows="4" required placeholder="${t('Type your message here...', 'तुमचा संदेश येथे लिहा...')}"></textarea>
             </div>
             
-            <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">Send Message</button>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">${t('Send Message', 'संदेश पाठवा')}</button>
           </form>
         </div>
       </div>
@@ -6012,8 +6073,8 @@ function renderGoldPlanDetails(container) {
             <div class="benefit-card">
               <div class="benefit-icon-wrapper">🖼️</div>
               <div>
-                <h3>Unlimited Profile Views</h3>
-                <p>Browse and explore unlimited verified profiles without any restrictions. Find suitable matches based on your preferences and compatibility.</p>
+                <h3>View 30 Profiles</h3>
+                <p>Browse and explore up to 30 verified profiles during your membership. Find suitable matches based on your preferences and compatibility.</p>
               </div>
             </div>
             
@@ -6059,7 +6120,7 @@ function renderGoldPlanDetails(container) {
             <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹599<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 6 Months</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Most Popular Membership Plan</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
-              <li style="color: #fff;">Unlimited Profile Views</li>
+              <li style="color: #fff;">View 30 Profiles</li>
               <li style="color: #fff;">Direct Contact Access</li>
               <li style="color: #fff;">Unlimited Chat Features</li>
               <li style="color: #fff;">Premium Profile Visibility</li>
@@ -6148,8 +6209,8 @@ function renderPlatinumPlanDetails(container) {
             <div class="benefit-card">
               <div class="benefit-icon-wrapper">👁️‍🗨️</div>
               <div>
-                <h3>Unrestricted Premium Profile Viewing</h3>
-                <p>Browse an unlimited number of verified bride and groom profiles without limitations, and connect with the most fitting matches based on your specific criteria.</p>
+                <h3>View 85 Profiles</h3>
+                <p>Browse and explore up to 85 verified bride and groom profiles during your membership, and connect with the most fitting matches based on your specific criteria.</p>
               </div>
             </div>
             
@@ -6195,7 +6256,7 @@ function renderPlatinumPlanDetails(container) {
             <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹1199<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 12 Months</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Comprehensive Premium Matchmaking Experience</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
-              <li style="color: #fff;">✔ Unlimited Profile Access</li>
+              <li style="color: #fff;">✔ View 85 Profiles</li>
               <li style="color: #fff;">✔ Direct Contact Information</li>
               <li style="color: #fff;">✔ Unlimited Chat Features</li>
               <li style="color: #fff;">✔ Featured Premium Profile</li>

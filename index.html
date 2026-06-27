@@ -192,7 +192,7 @@
         <!-- Site Brand Logo Image -->
         <img class="logo-icon" src="/images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;">
         <div>
-          <h1 class="brand-name">Nabhik<span class="brand-sub">MATRIMONIAL</span></h1>
+          <h1 class="brand-name"><span data-en="Nabhik" data-mr="नाभिक">Nabhik</span><span class="brand-sub" data-en="MATRIMONIAL" data-mr="मॅट्रिमोनिअल">MATRIMONIAL</span></h1>
         </div>
       </a>
       
@@ -207,10 +207,18 @@
         </ul>
       </nav>
       
-      <!-- Right Auth Session buttons (Dynamic) -->
-      <div class="auth-buttons" id="header-auth-container">
-        <a href="/login" class="btn-login">Login</a>
-        <a href="/register" class="btn-register">Register</a>
+      <!-- Language Selector and Right Auth Session buttons (Dynamic) -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="lang-selector-wrapper">
+          <select id="lang-select" class="lang-select" aria-label="Select Language" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="mr">मराठी</option>
+          </select>
+        </div>
+        <div class="auth-buttons" id="header-auth-container">
+          <a href="/login" class="btn-login">Login</a>
+          <a href="/register" class="btn-register">Register</a>
+        </div>
       </div>
     </div>
   </header>
@@ -226,8 +234,8 @@
       
       <div class="container hero-grid">
         <div class="hero-content">
-          <h1>Where Tradition<br>Meets <span class="text-gold">Perfect Match</span></h1>
-          <p>Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.</p>
+          <h1 data-en="Where Tradition Meets Perfect Match" data-mr="जिथे परंपरा मिळवते परिपूर्ण जोडीदार">Where Tradition<br>Meets <span class="text-gold">Perfect Match</span></h1>
+          <p data-en="Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding." data-mr="नाभिक मॅट्रिमोनी – समजूतदारपणावर आधारित खऱ्या, सुरक्षित आणि सुसंगत नातेसंबंधांसाठी हजारो नाभिक कुटुंबांचा विश्वास.">Nabhik Matrimonial – trusted by thousands of Nabhik families for genuine, secure, and compatible relationships built on understanding.</p>
         </div>
         <div class="hero-image-container">
           <div class="hero-image-frame">
@@ -252,9 +260,9 @@
         <div class="footer-brand">
           <div class="logo-container" style="margin-bottom: 16px;">
             <img class="logo-icon" src="/images/logo.jpg" alt="Nabhik Matrimonial Logo" width="44" height="44" style="border-radius: 6px; object-fit: cover;" loading="lazy">
-            <h3>Nabhik Matrimonial</h3>
+            <h3 data-en="Nabhik Matrimonial" data-mr="नाभिक मॅट्रिमोनिअल">Nabhik Matrimonial</h3>
           </div>
-          <p>Nabhik Matrimonial is a trusted community platform dedicated to helping Nabhik society families find suitable partners with privacy, safety, and respect for traditions.</p>
+          <p data-en="Nabhik Matrimonial is a trusted community platform dedicated to helping Nabhik society families find suitable partners with privacy, safety, and respect for traditions." data-mr="नाभिक मॅट्रिमोनी हे एक विश्वासार्ह सामाजिक व्यासपीठ आहे जे नाभिक समाजातील कुटुंबांना गोपनीयता, सुरक्षितता आणि परंपरांचा आदर राखून योग्य जोडीदार शोधण्यात मदत करण्यासाठी समर्पित आहे.">Nabhik Matrimonial is a trusted community platform dedicated to helping Nabhik society families find suitable partners with privacy, safety, and respect for traditions.</p>
           <div class="footer-social-icons">
             <a href="javascript:showToast('Shared on Facebook')" class="social-icon-btn">FB</a>
             <a href="javascript:showToast('Shared on Instagram')" class="social-icon-btn">IG</a>
@@ -265,33 +273,33 @@
         
         <!-- Quick Links -->
         <div class="footer-column">
-          <h4>Quick Links</h4>
+          <h4 data-en="Quick Links" data-mr="महत्वाच्या लिंक्स">Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/search">Search Profiles</a></li>
-            <li><a href="/membership">Membership Plans</a></li>
-            <li><a href="/stories">Success Stories</a></li>
-            <li><a href="/events">Events & News</a></li>
-            <li><a href="/blogs">Blogs</a></li>
-            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/" data-en="Home" data-mr="मुख्यपृष्ठ">Home</a></li>
+            <li><a href="/about" data-en="About Us" data-mr="आमच्याबद्दल">About Us</a></li>
+            <li><a href="/search" data-en="Search Profiles" data-mr="जोडीदार शोधा">Search Profiles</a></li>
+            <li><a href="/membership" data-en="Membership Plans" data-mr="सभासदत्व योजना">Membership Plans</a></li>
+            <li><a href="/stories" data-en="Success Stories" data-mr="यशस्वी कथा">Success Stories</a></li>
+            <li><a href="/events" data-en="Events & News" data-mr="कार्यक्रम आणि बातम्या">Events & News</a></li>
+            <li><a href="/blogs" data-en="Blogs" data-mr="ब्लॉग्स">Blogs</a></li>
+            <li><a href="/contact" data-en="Contact Us" data-mr="संपर्क साधा">Contact Us</a></li>
           </ul>
         </div>
         
         <!-- Legal & Support -->
         <div class="footer-column">
-          <h4>Support & Legal</h4>
+          <h4 data-en="Support & Legal" data-mr="मदत आणि कायदेशीर">Support & Legal</h4>
           <ul class="footer-links">
-            <li><a href="/policy">Privacy Policy</a></li>
-            <li><a href="/terms">Terms & Conditions</a></li>
-            <li><a href="/help">Help & FAQs</a></li>
-            <li><a href="/blogs">Blogs</a></li>
+            <li><a href="/policy" data-en="Privacy Policy" data-mr="गोपनीयता धोरण">Privacy Policy</a></li>
+            <li><a href="/terms" data-en="Terms & Conditions" data-mr="अटी आणि शर्ती">Terms & Conditions</a></li>
+            <li><a href="/help" data-en="Help & FAQs" data-mr="मदत आणि प्रश्नोत्तरे">Help & FAQs</a></li>
+            <li><a href="/blogs" data-en="Blogs" data-mr="ब्लॉग्स">Blogs</a></li>
           </ul>
         </div>
         
         <!-- Find us on & App Download -->
         <div class="footer-column footer-find-us">
-          <h4>Find us on:</h4>
+          <h4 data-en="Find us on:" data-mr="आमच्याशी येथे जोडा:">Find us on:</h4>
           <div class="footer-social-row">
             <a href="https://facebook.com" target="_blank" class="social-box" aria-label="Facebook">
               <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A9.996 9.996 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
@@ -310,7 +318,7 @@
             </a>
           </div>
           
-          <h4 style="margin-top: 24px;">Get the Nabhik Matrimonial App</h4>
+          <h4 style="margin-top: 24px;" data-en="Get the Nabhik Matrimonial App" data-mr="नाभिक मॅट्रिमोनी ॲप डाउनलोड करा">Get the Nabhik Matrimonial App</h4>
           <div class="footer-app-badges">
             <a href="https://apps.apple.com" target="_blank" class="app-store-badge" aria-label="Download on the App Store">
               <svg viewBox="0 0 135 40" width="135" height="40" xmlns="http://www.w3.org/2000/svg">
@@ -339,7 +347,7 @@
       
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <p>© 2026 Nabhik Matrimonial. All Rights Reserved. Crafted for Nabhik Samaj Matchmaking.</p>
+        <p data-en="© 2026 Nabhik Matrimonial. All Rights Reserved. Crafted for Nabhik Samaj Matchmaking." data-mr="© २०२६ नाभिक मॅट्रिमोनी. सर्व हक्क राखीव. नाभिक समाज विवाह जुळवणीसाठी समर्पित.">© 2026 Nabhik Matrimonial. All Rights Reserved. Crafted for Nabhik Samaj Matchmaking.</p>
       </div>
     </div>
     

@@ -619,7 +619,7 @@ const initialPlans = [
     badgeIcon: '🥈',
     tagline: 'Best low-cost starter plan.',
     features: [
-      'View 50 Profiles',
+      'View 10 Profiles',
       'Send Unlimited Interests',
       'Basic Chat Access',
       'Priority Profile Visibility',
@@ -638,7 +638,7 @@ const initialPlans = [
     badgeIcon: '🥇',
     tagline: 'Best balance of affordability and value.',
     features: [
-      'Unlimited Profile Views',
+      'View 30 Profiles',
       'Direct Contact Access',
       'Unlimited Chat',
       'Advanced Search Filters',
@@ -658,6 +658,7 @@ const initialPlans = [
     badgeIcon: '💎',
     tagline: 'Best for serious users.',
     features: [
+      'View 85 Profiles',
       'All Gold Features',
       'Featured Profile on Homepage',
       'Profile Verification Badge',

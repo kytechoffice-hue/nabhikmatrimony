@@ -288,6 +288,52 @@ img {
   gap: 12px;
 }
 
+/* Custom Language Selector Dropdown */
+.lang-selector-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.lang-select {
+  background-color: transparent;
+  color: var(--color-text-light);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 28px;
+}
+.lang-select:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.lang-selector-wrapper::after {
+  content: '▼';
+  font-size: 0.6rem;
+  color: var(--color-text-light);
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+.lang-selector-wrapper:hover::after {
+  color: var(--color-gold);
+}
+.lang-select option {
+  background-color: var(--color-maroon-dark);
+  color: var(--color-text-light);
+  border: none;
+  padding: 8px;
+}
+
 .btn-login {
   color: var(--color-text-light);
   border: 1px solid rgba(255, 255, 255, 0.3);
