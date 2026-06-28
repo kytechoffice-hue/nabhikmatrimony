@@ -1897,35 +1897,6 @@ function renderHome(container) {
         </div>
       </div>
     </section>
-
-    <!-- Advertising Carousel Section -->
-    <section class="ad-carousel-section">
-      <div class="container">
-        <div class="ad-carousel-wrapper">
-          <div class="ad-carousel-slides">
-            ${(state.ads || []).filter(a => a.active).map((ad, idx) => `
-              <div class="ad-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
-                <a href="${ad.link}" onclick="handleAdClick(${ad.id})">
-                  <img src="${ad.banner}" alt="${ad.title}" class="ad-banner-img">
-                  <div class="ad-banner-caption">
-                    <h3>${ad.title}</h3>
-                  </div>
-                </a>
-              </div>
-            `).join('')}
-          </div>
-          <!-- Navigation Arrows -->
-          <button class="ad-carousel-arrow prev" onclick="prevAdSlide()">&#10094;</button>
-          <button class="ad-carousel-arrow next" onclick="nextAdSlide()">&#10095;</button>
-          <!-- Indicator Dots -->
-          <div class="ad-carousel-dots">
-            ${(state.ads || []).filter(a => a.active).map((ad, idx) => `
-              <span class="ad-dot ${idx === 0 ? 'active' : ''}" onclick="setAdSlide(${idx})"></span>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    </section>
   `;
 }
 
