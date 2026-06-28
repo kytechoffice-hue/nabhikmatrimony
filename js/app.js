@@ -5024,12 +5024,23 @@ function handleContactSubmit(e) {
   const inquiry = document.getElementById('contact-inquiry').value;
   const message = document.getElementById('contact-message').value;
   
+  // Format message details for both channels
+  const formattedDetails = `Name: ${name}\nEmail: ${email}\nInquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`;
+  
+  // 1. WhatsApp redirection (open in new tab)
+  const whatsappUrl = `https://wa.me/919137822376?text=${encodeURIComponent(formattedDetails)}`;
+  window.open(whatsappUrl, '_blank');
+  
+  // 2. Mailto redirection (open in current window/client)
   const mailtoBody = `Name: ${name}\nEmail: ${email}\nInquiry Type: ${inquiry}\n\nMessage:\n${message}`;
   const mailtoUrl = `mailto:support@nabhikmatrimony.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailtoBody)}`;
   
-  window.location.href = mailtoUrl;
+  // Delay mailto slightly so window.open is processed first cleanly
+  setTimeout(() => {
+    window.location.href = mailtoUrl;
+  }, 150);
   
-  showToast('Opening your email client to send the message...');
+  showToast('Opening WhatsApp and Email client to send your message...');
   e.target.reset();
 }
 
