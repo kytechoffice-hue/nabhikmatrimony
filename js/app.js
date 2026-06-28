@@ -772,8 +772,8 @@ const initialEmailTemplates = {
 
 // Seed Advertisement Banners
 const initialAds = [
-  { id: 1, title: 'Summer Vivah Offer', banner: '/images/hero.webp', link: '/membership', weight: 10, clicks: 142, active: true },
-  { id: 2, title: 'Premium Assisted Services', banner: '/images/logo.jpg', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
+  { id: 1, title: 'Summer Vivah Special Offer', banner: '/images/ad_banner1.png', link: '/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Exclusive Assisted Matchmaking', banner: '/images/ad_banner2.png', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
 ];
 
 // Force update plans in localStorage if they don't match initialPlans features (to handle version transitions)
@@ -795,6 +795,25 @@ try {
   }
 } catch (e) {
   console.error("Failed to check or clear localStorage plans", e);
+}
+
+// Force update ads in localStorage if they don't match initialAds banners (to handle version transitions)
+try {
+  const storedAds = localStorage.getItem('nabhik_matrimonial_ads');
+  if (storedAds) {
+    const parsedAds = JSON.parse(storedAds);
+    const needsReset = !Array.isArray(parsedAds) || 
+                       parsedAds.length !== initialAds.length || 
+                       parsedAds.some((a, idx) => {
+                         const expected = initialAds[idx];
+                         return !expected || a.banner !== expected.banner;
+                       });
+    if (needsReset) {
+      localStorage.removeItem('nabhik_matrimonial_ads');
+    }
+  }
+} catch (e) {
+  console.error("Failed to check or clear localStorage ads", e);
 }
 
 const state = {
@@ -1586,10 +1605,18 @@ function initRouter() {
     }
   });
 
+  // Stop ad auto-play on route change
+  if (typeof stopAdAutoPlay === 'function') {
+    stopAdAutoPlay();
+  }
+
   // Render view
   switch (path) {
     case '/':
       renderHome(appView);
+      if (typeof startAdAutoPlay === 'function') {
+        startAdAutoPlay();
+      }
       break;
     case '/about':
       renderAbout(appView);
@@ -1803,25 +1830,30 @@ function renderHome(container) {
       </div>
     </section>
 
-    <!-- App Promo Section -->
-    <section class="app-promo-section">
-      <div class="container app-promo-content">
-        <h2>${t('Matrimony App Coming Soon', 'मॅट्रिमोनी ॲप लवकरच येत आहे')}</h2>
-        <p>${t('Stay connected on the go. Mobile applications for Android and iOS devices are in development.', 'जाता जाता जोडलेले रहा. अँड्रॉइड आणि आयओएस उपकरणांसाठी मोबाईल ॲप्स विकसित केले जात आहेत.')}</p>
-        <div class="app-badges">
-          <div class="app-badge-btn">
-            <span class="icon">🤖</span>
-            <div>
-              <span>${t('Get it on', 'मिळवा')}</span>
-              <strong>Google Play</strong>
-            </div>
+    <!-- Advertising Carousel Section -->
+    <section class="ad-carousel-section">
+      <div class="container">
+        <div class="ad-carousel-wrapper">
+          <div class="ad-carousel-slides">
+            ${(state.ads || []).filter(a => a.active).map((ad, idx) => `
+              <div class="ad-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                <a href="${ad.link}" onclick="handleAdClick(${ad.id})">
+                  <img src="${ad.banner}" alt="${ad.title}" class="ad-banner-img">
+                  <div class="ad-banner-caption">
+                    <h3>${ad.title}</h3>
+                  </div>
+                </a>
+              </div>
+            `).join('')}
           </div>
-          <div class="app-badge-btn">
-            <span class="icon">🍎</span>
-            <div>
-              <span>${t('Download on the', 'डाउनलोड करा')}</span>
-              <strong>App Store</strong>
-            </div>
+          <!-- Navigation Arrows -->
+          <button class="ad-carousel-arrow prev" onclick="prevAdSlide()">&#10094;</button>
+          <button class="ad-carousel-arrow next" onclick="nextAdSlide()">&#10095;</button>
+          <!-- Indicator Dots -->
+          <div class="ad-carousel-dots">
+            ${(state.ads || []).filter(a => a.active).map((ad, idx) => `
+              <span class="ad-dot ${idx === 0 ? 'active' : ''}" onclick="setAdSlide(${idx})"></span>
+            `).join('')}
           </div>
         </div>
       </div>
@@ -1841,6 +1873,82 @@ function scrollFeatured(direction) {
     }
   }
 }
+
+// Advertisement Carousel Controls & State
+let adTimer = null;
+let currentAdIndex = 0;
+
+window.nextAdSlide = function() {
+  const slides = document.querySelectorAll('.ad-slide');
+  const dots = document.querySelectorAll('.ad-dot');
+  if (slides.length <= 1) return;
+  
+  slides[currentAdIndex].classList.remove('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.remove('active');
+  
+  currentAdIndex = (currentAdIndex + 1) % slides.length;
+  
+  slides[currentAdIndex].classList.add('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.add('active');
+};
+
+window.prevAdSlide = function() {
+  const slides = document.querySelectorAll('.ad-slide');
+  const dots = document.querySelectorAll('.ad-dot');
+  if (slides.length <= 1) return;
+  
+  slides[currentAdIndex].classList.remove('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.remove('active');
+  
+  currentAdIndex = (currentAdIndex - 1 + slides.length) % slides.length;
+  
+  slides[currentAdIndex].classList.add('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.add('active');
+};
+
+window.setAdSlide = function(idx) {
+  const slides = document.querySelectorAll('.ad-slide');
+  const dots = document.querySelectorAll('.ad-dot');
+  if (slides.length <= idx || idx < 0) return;
+  
+  slides[currentAdIndex].classList.remove('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.remove('active');
+  
+  currentAdIndex = idx;
+  
+  slides[currentAdIndex].classList.add('active');
+  if (dots[currentAdIndex]) dots[currentAdIndex].classList.add('active');
+  
+  // Reset auto-play timer on manual interaction
+  startAdAutoPlay();
+};
+
+window.startAdAutoPlay = function() {
+  window.stopAdAutoPlay();
+  const slides = document.querySelectorAll('.ad-slide');
+  if (slides.length <= 1) return;
+  
+  adTimer = setInterval(() => {
+    nextAdSlide();
+  }, 4000); // Change slide every 4 seconds
+};
+
+window.stopAdAutoPlay = function() {
+  if (adTimer) {
+    clearInterval(adTimer);
+    adTimer = null;
+  }
+};
+
+window.handleAdClick = function(adId) {
+  if (typeof state !== 'undefined' && state.ads) {
+    const ad = state.ads.find(a => a.id === adId);
+    if (ad) {
+      ad.clicks = (ad.clicks || 0) + 1;
+      storage.set('ads', state.ads);
+    }
+  }
+};
 
 // 2. ABOUT US VIEW
 function renderAbout(container) {

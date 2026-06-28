@@ -3170,5 +3170,148 @@ body.app-loaded .footer-wrapper {
   }
 }
 
+/* Advertisement Carousel Styles */
+.ad-carousel-section {
+  padding: 40px 0;
+  background-color: var(--color-cream-dark);
+  border-top: 1.5px solid var(--color-border);
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.ad-carousel-wrapper {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-gold);
+}
+
+.ad-carousel-slides {
+  position: relative;
+  height: 350px;
+  background-color: var(--color-maroon-dark);
+}
+
+.ad-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+  z-index: 1;
+}
+
+.ad-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+.ad-slide a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+}
+
+.ad-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ad-banner-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  color: #fff;
+  padding: 24px 32px;
+  z-index: 3;
+}
+
+.ad-banner-caption h3 {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: var(--color-gold);
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.ad-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(74, 10, 16, 0.6);
+  color: var(--color-gold);
+  border: none;
+  font-size: 1.5rem;
+  padding: 12px 16px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.ad-carousel-arrow:hover {
+  background-color: rgba(74, 10, 16, 0.9);
+}
+
+.ad-carousel-arrow.prev {
+  left: 20px;
+}
+
+.ad-carousel-arrow.next {
+  right: 20px;
+}
+
+.ad-carousel-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.ad-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ad-dot.active, .ad-dot:hover {
+  background-color: var(--color-gold);
+}
+
+@media (max-width: 768px) {
+  .ad-carousel-slides {
+    height: 200px;
+  }
+  .ad-banner-caption {
+    padding: 12px 16px;
+  }
+  .ad-banner-caption h3 {
+    font-size: 1.1rem;
+  }
+  .ad-carousel-arrow {
+    padding: 8px 12px;
+    font-size: 1.1rem;
+  }
+}
+
 
 
