@@ -2836,12 +2836,176 @@ function openLoginModal() {
       </form>
       
       <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
-        <a href="javascript:showToast('Password reset link sent to email')" style="color: var(--color-text-muted);">${t('Forgot Password?', 'पासवर्ड विसरलात?')}</a>
+        <a href="javascript:openForgotPasswordModal()" style="color: var(--color-text-muted);">${t('Forgot Password?', 'पासवर्ड विसरलात?')}</a>
         <p style="margin-top: 12px;">${t("Don't have an account? <a href=\"/register\" onclick=\"closeModal()\" style=\"color: var(--color-maroon); font-weight: 600;\">Register</a>", "खाते नाही का? <a href=\"/register\" onclick=\"closeModal()\" style=\"color: var(--color-maroon); font-weight: 600;\">नोंदणी करा</a>")}</p>
       </div>
     </div>
   `;
   overlay.classList.add('active');
+}
+
+// Open Forgot Password Modal
+function openForgotPasswordModal() {
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 440px; padding: 35px 25px;">
+      <button class="modal-close-btn" onclick="closeModal()">×</button>
+      <div class="traditional-header" style="margin-bottom: 24px; text-align: center;">
+        <h2>${t('Reset Password', 'पासवर्ड रिसेट करा')}</h2>
+        <div class="traditional-divider"><span class="icon">✦</span></div>
+      </div>
+      
+      <p style="font-size: 0.92rem; color: var(--color-text-muted); text-align: center; margin-bottom: 20px; line-height: 1.5;">
+        ${t('Enter your registered email address to receive password reset instructions.', 'पासवर्ड रिसेट सूचना प्राप्त करण्यासाठी तुमचा नोंदणीकृत ईमेल पत्ता प्रविष्ट करा.')}
+      </p>
+      
+      <form onsubmit="handleForgotPasswordSubmit(event)">
+        <div class="form-group">
+          <label>${t('Email ID', 'ईमेल आयडी')}</label>
+          <input type="email" id="forgot-email" required placeholder="${t('Enter your email id', 'तुमचा ईमेल आयडी प्रविष्ट करा')}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px; padding: 12px;">${t('Send Request', 'विनंती पाठवा')}</button>
+      </form>
+      
+      <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
+        <a href="javascript:openLoginModal()" style="color: var(--color-maroon); font-weight: 600;">${t('Back to Login', 'लॉग इनवर परत जा')}</a>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+// Handle Forgot Password Submit
+function handleForgotPasswordSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('forgot-email').value;
+  
+  // Close the input modal
+  closeModal();
+  
+  // Create a loading status modal
+  const modal = document.createElement('div');
+  modal.id = 'status-popup-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '10000';
+  modal.style.backdropFilter = 'blur(5px)';
+  modal.style.transition = 'all 0.3s ease';
+
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.border = '2px solid var(--color-gold)';
+  content.style.borderRadius = '12px';
+  content.style.padding = '35px 25px';
+  content.style.width = '90%';
+  content.style.maxWidth = '450px';
+  content.style.textAlign = 'center';
+  content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
+  content.style.position = 'relative';
+
+  content.innerHTML = `
+    <div id="modal-spinner-section">
+      <svg class="animate-spin" viewBox="0 0 50 50" style="width: 55px; height: 55px; margin: 0 auto 20px; display: block; animation: spin 1s linear infinite;">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(212, 175, 55, 0.1)" stroke-width="4"></circle>
+        <path d="M25,5 A20,20 0 0,1 45,25" fill="none" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round"></path>
+      </svg>
+      <h3 style="color: var(--color-gold); font-family: var(--font-serif); margin-bottom: 10px; font-size: 1.35rem;">Processing Request...</h3>
+      <p style="color: var(--color-text); font-size: 0.95rem; line-height: 1.5; opacity: 0.95;">Submitting password reset request to support Division...</p>
+    </div>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Use FormSubmit AJAX API to send the email directly in the background
+  fetch('https://formsubmit.co/ajax/kytechoffice@gmail.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Matrimony System",
+      email: "help@kytechserv.com",
+      message: `Password Reset Request received from the Matrimony Login Portal.\n\nUser's Registered Email ID: ${email}`,
+      _subject: `[Password Reset Request] ${email}`,
+      _honey: "", // Honeypot spam prevention
+      _template: "table"
+    })
+  })
+  .then(response => {
+    modal.remove();
+    showForgotPasswordSuccessModal();
+  })
+  .catch(error => {
+    console.error('Error submitting forgot password request:', error);
+    modal.remove();
+    showForgotPasswordSuccessModal(); // Fallback success modal so user always gets the visual feedback
+  });
+}
+
+// Show Forgot Password Success Modal
+function showForgotPasswordSuccessModal() {
+  const modal = document.createElement('div');
+  modal.id = 'status-popup-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '10000';
+  modal.style.backdropFilter = 'blur(5px)';
+  modal.style.transition = 'all 0.3s ease';
+
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.border = '2px solid var(--color-gold)';
+  content.style.borderRadius = '12px';
+  content.style.padding = '35px 25px';
+  content.style.width = '90%';
+  content.style.maxWidth = '450px';
+  content.style.textAlign = 'center';
+  content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
+  content.style.position = 'relative';
+
+  content.innerHTML = `
+    <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    
+    <div style="font-family: var(--font-serif); font-size: 1.1rem; line-height: 1.6; color: var(--color-text); margin-bottom: 24px;">
+      <strong>Thanks to Connect,</strong><br>
+      We will review your request and send update password.
+    </div>
+    
+    <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  document.getElementById('close-status-modal-btn').addEventListener('click', () => {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.remove();
+    }, 200);
+  });
 }
 
 // 6. LOGIN VIEW
