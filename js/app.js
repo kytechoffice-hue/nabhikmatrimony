@@ -3773,8 +3773,8 @@ function renderContact(container) {
 
             <div class="form-row-2">
               <div class="form-group">
-                <label>${t('Subject', 'विषय')}</label>
-                <input type="text" id="contact-subject" required placeholder="${t('Subject', 'विषय')}">
+                <label>${t('Mobile Number', 'मोबाईल नंबर')}</label>
+                <input type="tel" id="contact-mobile" required placeholder="${t('Your Mobile', 'तुमचा मोबाईल नंबर')}" pattern="[0-9]{10}">
               </div>
               <div class="form-group">
                 <label>${t('Inquiry Type', 'चौकशीचा प्रकार')}</label>
@@ -3788,6 +3788,11 @@ function renderContact(container) {
                   <option value="Feedback">${t('Feedback & Suggestions', 'अभिप्राय आणि सूचना')}</option>
                 </select>
               </div>
+            </div>
+
+            <div class="form-group">
+              <label>${t('Subject', 'विषय')}</label>
+              <input type="text" id="contact-subject" required placeholder="${t('Subject', 'विषय')}">
             </div>
 
             <div class="form-group">
@@ -5128,7 +5133,7 @@ function showErrorStatusModal(errorMessage) {
 }
 
 // Dynamic Background Sending Status Modal Popup
-function showSendingStatusModal(name, email, subject, inquiry, message) {
+function showSendingStatusModal(name, email, mobile, subject, inquiry, message, ticketSubjectName) {
   // Create modal element
   const modal = document.createElement('div');
   modal.id = 'status-popup-modal';
@@ -5189,7 +5194,7 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
     stateActions.addTicket({
       name: name,
       email: email,
-      query: `[Inquiry: ${inquiry}] [Subject: ${subject}] - ${message}`
+      query: `[Mobile: ${mobile}] [Inquiry: ${inquiry}] [Subject: ${subject}] - ${message}`
     });
   }
 
@@ -5203,8 +5208,8 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
     body: JSON.stringify({
       name: name,
       email: "help@kytechserv.com",
-      message: `User's Email: ${email}\nInquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`,
-      _subject: `[Contact Form] ${subject}`,
+      message: `User's Email: ${email}\nUser's Mobile: ${mobile}\nInquiry Type: ${inquiry}\nOriginal Subject: ${subject}\n\nMessage:\n${message}`,
+      _subject: ticketSubjectName,
       _honey: "", // Honeypot spam prevention
       _template: "table"
     })
@@ -5240,12 +5245,21 @@ function handleContactSubmit(e) {
   
   const name = document.getElementById('contact-name').value;
   const email = document.getElementById('contact-email').value;
+  const mobile = document.getElementById('contact-mobile').value;
   const subject = document.getElementById('contact-subject').value;
   const inquiry = document.getElementById('contact-inquiry').value;
   const message = document.getElementById('contact-message').value;
   
+  // Get and increment ticket number
+  let ticketNumber = localStorage.getItem('last_ticket_number') || 0;
+  ticketNumber = parseInt(ticketNumber) + 1;
+  localStorage.setItem('last_ticket_number', ticketNumber);
+  const paddedTicketNumber = String(ticketNumber).padStart(4, '0');
+  
+  const ticketSubjectName = `Ticket No : ${paddedTicketNumber} - ${inquiry}`;
+  
   // Show the background sending status popup modal
-  showSendingStatusModal(name, email, subject, inquiry, message);
+  showSendingStatusModal(name, email, mobile, subject, inquiry, message, ticketSubjectName);
   
   e.target.reset();
 }
