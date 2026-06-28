@@ -3313,5 +3313,235 @@ body.app-loaded .footer-wrapper {
   }
 }
 
+/* Khushi Beauty Parlour Carousel Styles */
+.parlour-carousel-section {
+  padding: 60px 0;
+  background-color: var(--color-cream);
+  border-top: 1.5px solid var(--color-border);
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.parlour-carousel-wrapper {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: var(--border-radius, 12px);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(74, 10, 16, 0.08);
+  border: 1px solid var(--color-border-gold);
+  background-color: var(--color-cream-dark);
+}
+
+.parlour-carousel-slides {
+  position: relative;
+  min-height: 480px;
+}
+
+.parlour-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parlour-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+  position: relative;
+}
+
+.parlour-banner-img {
+  width: 100%;
+  height: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  display: block;
+  background-color: #000;
+}
+
+.parlour-slide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.parlour-slide-img-container {
+  height: 480px;
+  overflow: hidden;
+}
+
+.parlour-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.parlour-slide:hover .parlour-slide-img {
+  transform: scale(1.03);
+}
+
+.parlour-slide-content {
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: var(--color-cream-dark);
+}
+
+.parlour-slide-content .badge {
+  background-color: var(--color-gold-trans);
+  color: var(--color-maroon);
+  border: 1px solid var(--color-gold);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.parlour-slide-content h3 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: var(--color-maroon-dark);
+  line-height: 1.3;
+}
+
+.parlour-slide-content p {
+  color: var(--color-text-dark);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.parlour-feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.parlour-feature-list li {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-maroon-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parlour-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(74, 10, 16, 0.8);
+  border: 1px solid var(--color-gold);
+  color: var(--color-text-light);
+  padding: 12px 18px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+}
+
+.parlour-carousel-arrow:hover {
+  background-color: var(--color-gold);
+  color: var(--color-maroon-dark);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.parlour-carousel-arrow.prev {
+  left: 20px;
+}
+
+.parlour-carousel-arrow.next {
+  right: 20px;
+}
+
+.parlour-carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.parlour-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(74, 10, 16, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.parlour-dot.active, .parlour-dot:hover {
+  background-color: var(--color-gold);
+  transform: scale(1.2);
+  border-color: var(--color-maroon);
+}
+
+@media (max-width: 991px) {
+  .parlour-slide-grid {
+    grid-template-columns: 1fr;
+  }
+  .parlour-slide-img-container {
+    height: 250px;
+  }
+  .parlour-slide-content {
+    padding: 30px;
+  }
+  .parlour-carousel-slides {
+    min-height: auto;
+  }
+  .parlour-slide.active {
+    position: relative;
+  }
+  .parlour-slide {
+    position: absolute;
+  }
+}
+
+@media (max-width: 768px) {
+  .parlour-slide-content h3 {
+    font-size: 1.5rem;
+  }
+  .parlour-carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .parlour-carousel-arrow.prev {
+    left: 10px;
+  }
+  .parlour-carousel-arrow.next {
+    right: 10px;
+  }
+}
+
 
 

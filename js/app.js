@@ -1605,9 +1605,12 @@ function initRouter() {
     }
   });
 
-  // Stop ad auto-play on route change
+  // Stop ad auto-play and parlour auto-play on route change
   if (typeof stopAdAutoPlay === 'function') {
     stopAdAutoPlay();
+  }
+  if (typeof stopParlourAutoPlay === 'function') {
+    stopParlourAutoPlay();
   }
 
   // Render view
@@ -1616,6 +1619,9 @@ function initRouter() {
       renderHome(appView);
       if (typeof startAdAutoPlay === 'function') {
         startAdAutoPlay();
+      }
+      if (typeof startParlourAutoPlay === 'function') {
+        startParlourAutoPlay();
       }
       break;
     case '/about':
@@ -1821,12 +1827,74 @@ function renderHome(container) {
       </div>
     </section>
 
-    <!-- Call to Action -->
-    <section class="cta-section">
+    <!-- Khushi Beauty Parlour Carousel Section -->
+    <section class="parlour-carousel-section">
       <div class="container">
-        <h2>${t('Ready to Find Your Life Partner?', 'जोडीदार शोधण्यास तयार आहात का?')}</h2>
-        <p>${t('Join Nabhik Matrimonial today to connect with matching verified profiles in our community. Registration is free and takes only a few minutes.', 'आमच्या समुदायातील सत्यापित प्रोफाइल्सशी जोडले जाण्यासाठी आजच नाभिक मॅट्रिमोनीमध्ये सामील व्हा. नोंदणी विनामूल्य आहे.')}</p>
-        <a href="/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">${t('Register Now', 'आता नोंदणी करा')}</a>
+        <div class="traditional-header" style="margin-bottom: 30px;">
+          <h2>${t('Our Featured Partner: Khushi Beauty Parlour', 'आमचे वैशिष्ट्यीकृत भागीदार: खुशी ब्युटी पार्लर')}</h2>
+          <div class="traditional-divider"><span class="icon">✦</span></div>
+        </div>
+        <div class="parlour-carousel-wrapper">
+          <div class="parlour-carousel-slides">
+            <!-- Slide 1: Main Banner -->
+            <div class="parlour-slide active" data-index="0">
+              <img src="/images/khushi_parlour.png" alt="Khushi Beauty Parlour Banner" class="parlour-banner-img">
+            </div>
+
+            <!-- Slide 2: Bridal Showcase -->
+            <div class="parlour-slide" data-index="1">
+              <div class="parlour-slide-grid">
+                <div class="parlour-slide-img-container">
+                  <img src="/images/parlour_bridal.png" alt="Bridal Makeup Services" class="parlour-slide-img">
+                </div>
+                <div class="parlour-slide-content">
+                  <span class="badge">${t('Special Service', 'विशेष सेवा')}</span>
+                  <h3>${t('Premium Bridal & Groom Makeup', 'प्रिमियम ब्राईडल आणि ग्रूम मेकअप')}</h3>
+                  <p>${t('Make your special day unforgettable with our professional bridal makeup services tailored to match your tradition and attire.', 'तुमच्या परंपरेनुसार आणि पोशाखाला साजेसा मेकअप करून तुमचा लग्नाचा दिवस संस्मरणीय बनवा.')}</p>
+                  <ul class="parlour-feature-list">
+                    <li>✨ ${t('HD & Airbrush Makeup', 'एचडी आणि एअरब्रश मेकअप')}</li>
+                    <li>✨ ${t('Pre-Bridal Grooming Packages', 'प्री-ब्राईडल ग्रुमिंग पॅकेजेस')}</li>
+                    <li>✨ ${t('Traditional & Modern Styling', 'पारंपारिक आणि आधुनिक हेअर स्टाईल')}</li>
+                  </ul>
+                  <a href="https://wa.me/918766986968" target="_blank" class="btn btn-primary" style="margin-top: 16px;">
+                    💬 ${t('Inquire / Book Now', 'चौकशी / बुकिंग करा')}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Hair Services Showcase -->
+            <div class="parlour-slide" data-index="2">
+              <div class="parlour-slide-grid">
+                <div class="parlour-slide-img-container">
+                  <img src="/images/parlour_hair.png" alt="Hair Styling Services" class="parlour-slide-img">
+                </div>
+                <div class="parlour-slide-content">
+                  <span class="badge">${t('Trendsetting Styles', 'ट्रेंडिंग हेअर स्टाईल')}</span>
+                  <h3>${t('Hair Styling & Treatment Experts', 'हेअर स्टायलिंग आणि ट्रीटमेंट एक्सपर्ट्स')}</h3>
+                  <p>${t('Transform your hair with our experts. We offer smooth blowouts, hair treatments, and coloring designed to keep your hair healthy and radiant.', 'आमच्या तज्ञांद्वारे तुमच्या केसांचे सौंदर्य वाढवा. आम्ही केस निरोगी आणि चमकदार ठेवण्यासाठी योग्य ट्रीटमेंट करतो.')}</p>
+                  <ul class="parlour-feature-list">
+                    <li>💇‍♀️ ${t('Keratin & Botox Treatments', 'केराटिन आणि बोटॉक्स ट्रीटमेंट्स')}</li>
+                    <li>💇‍♀️ ${t('Advanced Hair Coloring', 'प्रगत हेअर कलरिंग')}</li>
+                    <li>💇‍♀️ ${t('Stylish Hair Cuts & Spa', 'स्टायलिश हेअर कट आणि स्पा')}</li>
+                  </ul>
+                  <a href="https://wa.me/918766986968" target="_blank" class="btn btn-primary" style="margin-top: 16px;">
+                    💬 ${t('Inquire / Book Now', 'चौकशी / बुकिंग करा')}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Navigation Arrows -->
+          <button class="parlour-carousel-arrow prev" onclick="prevParlourSlide()">&#10094;</button>
+          <button class="parlour-carousel-arrow next" onclick="nextParlourSlide()">&#10095;</button>
+          <!-- Indicator Dots -->
+          <div class="parlour-carousel-dots">
+            <span class="parlour-dot active" onclick="setParlourSlide(0)"></span>
+            <span class="parlour-dot" onclick="setParlourSlide(1)"></span>
+            <span class="parlour-dot" onclick="setParlourSlide(2)"></span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1947,6 +2015,72 @@ window.handleAdClick = function(adId) {
       ad.clicks = (ad.clicks || 0) + 1;
       storage.set('ads', state.ads);
     }
+  }
+};
+
+// Khushi Parlour Carousel Controls & State
+let parlourTimer = null;
+let currentParlourIndex = 0;
+
+window.nextParlourSlide = function() {
+  const slides = document.querySelectorAll('.parlour-slide');
+  const dots = document.querySelectorAll('.parlour-dot');
+  if (slides.length <= 1) return;
+  
+  slides[currentParlourIndex].classList.remove('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.remove('active');
+  
+  currentParlourIndex = (currentParlourIndex + 1) % slides.length;
+  
+  slides[currentParlourIndex].classList.add('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.add('active');
+};
+
+window.prevParlourSlide = function() {
+  const slides = document.querySelectorAll('.parlour-slide');
+  const dots = document.querySelectorAll('.parlour-dot');
+  if (slides.length <= 1) return;
+  
+  slides[currentParlourIndex].classList.remove('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.remove('active');
+  
+  currentParlourIndex = (currentParlourIndex - 1 + slides.length) % slides.length;
+  
+  slides[currentParlourIndex].classList.add('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.add('active');
+};
+
+window.setParlourSlide = function(idx) {
+  const slides = document.querySelectorAll('.parlour-slide');
+  const dots = document.querySelectorAll('.parlour-dot');
+  if (slides.length <= idx || idx < 0) return;
+  
+  slides[currentParlourIndex].classList.remove('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.remove('active');
+  
+  currentParlourIndex = idx;
+  
+  slides[currentParlourIndex].classList.add('active');
+  if (dots[currentParlourIndex]) dots[currentParlourIndex].classList.add('active');
+  
+  // Reset auto-play timer on manual interaction
+  startParlourAutoPlay();
+};
+
+window.startParlourAutoPlay = function() {
+  window.stopParlourAutoPlay();
+  const slides = document.querySelectorAll('.parlour-slide');
+  if (slides.length <= 1) return;
+  
+  parlourTimer = setInterval(() => {
+    nextParlourSlide();
+  }, 5000); // Change parlour slide every 5 seconds
+};
+
+window.stopParlourAutoPlay = function() {
+  if (parlourTimer) {
+    clearInterval(parlourTimer);
+    parlourTimer = null;
   }
 };
 
