@@ -2821,13 +2821,6 @@ function openLoginModal() {
         <div class="traditional-divider"><span class="icon">✦</span></div>
       </div>
       
-      <!-- Toggle login options -->
-      <div style="display: flex; justify-content: center; gap: 12px; border-bottom: 1px solid var(--color-border); margin-bottom: 24px; padding-bottom: 8px;">
-        <button id="tab-login-email" onclick="toggleLoginTabs('email')" style="font-weight: 600; color: var(--color-maroon); background: none; border: none; cursor: pointer;" class="text-gold">${t('Email Login', 'ईमेल लॉग इन')}</button>
-        <span style="color: var(--color-border);">|</span>
-        <button id="tab-login-otp" onclick="toggleLoginTabs('otp')" style="font-weight: 500; color: var(--color-text-muted); background: none; border: none; cursor: pointer;">${t('Mobile OTP Login', 'मोबाईल OTP लॉग इन')}</button>
-      </div>
-      
       <!-- Email Form -->
       <form id="login-email-form" onsubmit="handleEmailLogin(event)">
         <div class="form-group">
@@ -2840,15 +2833,6 @@ function openLoginModal() {
         </div>
         
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">${t('Login', 'लॉग इन करा')}</button>
-      </form>
-      
-      <!-- OTP Form (Hidden initially) -->
-      <form id="login-otp-form" onsubmit="handleOtpLoginRequest(event)" style="display: none;">
-        <div class="form-group">
-          <label>${t('Mobile Number', 'मोबाईल नंबर')}</label>
-          <input type="tel" id="login-mobile" required placeholder="${t('Enter 10-digit mobile number', '१०-अंकी मोबाईल नंबर प्रविष्ट करा')}">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">${t('Send OTP Code', 'ओटीपी कोड पाठवा')}</button>
       </form>
       
       <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
