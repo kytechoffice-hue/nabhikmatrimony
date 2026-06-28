@@ -128,266 +128,6 @@ const initialProfiles = [
   {
     id: 1,
     gender: 'Male',
-    name: 'Rahul Patil',
-    emailId: 'rahul@gmail.com',
-    mobile: '9823450001',
-    password: 'password123',
-    age: 27,
-    height: "5'9\"",
-    education: 'B.Tech, Software Engineer',
-    profession: 'Software Engineer',
-    location: 'Pune, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹12,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Rajesh Patil',
-    motherName: 'Sunita Patil',
-    nativePlace: 'Satara, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Reading, Cricket, Coding',
-    verified: true,
-    featured: true,
-    photo: '/images/member1.webp'
-  },
-  {
-    id: 2,
-    gender: 'Female',
-    name: 'Priya Deshmukh',
-    emailId: 'priya@gmail.com',
-    mobile: '9823450002',
-    password: 'password123',
-    age: 25,
-    height: "5'3\"",
-    education: 'MBA, HR Manager',
-    profession: 'HR Manager',
-    location: 'Nagpur, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹8,000,000 / Year',
-    familyType: 'Nuclear Family',
-    fatherName: 'Sanjay Deshmukh',
-    motherName: 'Lata Deshmukh',
-    nativePlace: 'Amravati, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Classical Dance, Painting, Cooking',
-    verified: true,
-    featured: true,
-    photo: '/images/member3.webp'
-  },
-  {
-    id: 3,
-    gender: 'Male',
-    name: 'Sandeep Shinde',
-    emailId: 'sandeep@gmail.com',
-    mobile: '9823450003',
-    password: 'password123',
-    age: 29,
-    height: "5'6\"",
-    education: 'MCA, Senior Developer',
-    profession: 'Senior Developer',
-    location: 'Mumbai, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹15,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Vikas Shinde',
-    motherName: 'Rekha Shinde',
-    nativePlace: 'Nashik, Maharashtra',
-    foodPreference: 'Non-Vegetarian (Occasional)',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Trekking, Photography, Music',
-    verified: true,
-    featured: true,
-    photo: '/images/member2.webp'
-  },
-  {
-    id: 4,
-    gender: 'Female',
-    name: 'Ankita Pawar',
-    emailId: 'ankita@gmail.com',
-    mobile: '9823450004',
-    password: 'password123',
-    age: 24,
-    height: "5'3\"",
-    education: 'B.Com, Accountant',
-    profession: 'Accountant',
-    location: 'Aurangabad, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹5,000,000 / Year',
-    familyType: 'Nuclear Family',
-    fatherName: 'Anil Pawar',
-    motherName: 'Jyoti Pawar',
-    nativePlace: 'Jalna, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Gardening, Reading, Travel',
-    verified: true,
-    featured: true,
-    photo: '/images/member4.webp'
-  },
-  {
-    id: 5,
-    gender: 'Male',
-    name: 'Vikram More',
-    emailId: 'vikram@gmail.com',
-    mobile: '9823450005',
-    password: 'password123',
-    age: 30,
-    height: "5'10\"",
-    education: 'Business Owner',
-    profession: 'Business Owner',
-    location: 'Nashik, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹20,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Harish More',
-    motherName: 'Meena More',
-    nativePlace: 'Sangli, Maharashtra',
-    foodPreference: 'Non-Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Gym, Traveling, Driving',
-    verified: true,
-    featured: true,
-    photo: '/images/member5.webp'
-  },
-  {
-    id: 6,
-    gender: 'Female',
-    name: 'Snehal Kadam',
-    emailId: 'snehal@gmail.com',
-    mobile: '9823450006',
-    password: 'password123',
-    age: 26,
-    height: "5'4\"",
-    education: 'M.Tech, Assistant Professor',
-    profession: 'Professor',
-    location: 'Pune, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹7,000,000 / Year',
-    familyType: 'Nuclear Family',
-    fatherName: 'Dilip Kadam',
-    motherName: 'Chhaya Kadam',
-    nativePlace: 'Kolhapur, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Writing, Yoga, Music',
-    verified: false, // Pending verification (admin test case)
-    featured: false,
-    photo: '/images/member8.webp'
-  },
-  {
-    id: 7,
-    gender: 'Male',
-    name: 'Amit Chavan',
-    emailId: 'amit@gmail.com',
-    mobile: '9823450007',
-    password: 'password123',
-    age: 28,
-    height: "5'8\"",
-    education: 'B.Sc, Government Officer',
-    profession: 'Government Officer',
-    location: 'Nagpur, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹9,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Pradip Chavan',
-    motherName: 'Seema Chavan',
-    nativePlace: 'Chandrapur, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'News, Badminton, Public Service',
-    verified: true,
-    featured: false,
-    photo: '/images/member7.webp'
-  },
-  {
-    id: 8,
-    gender: 'Female',
-    name: 'Neha Joshi',
-    emailId: 'neha@gmail.com',
-    mobile: '9823450008',
-    password: 'password123',
-    age: 27,
-    height: "5'2\"",
-    education: 'MBBS, Doctor',
-    profession: 'Doctor',
-    location: 'Mumbai, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹18,000,000 / Year',
-    familyType: 'Nuclear Family',
-    fatherName: 'Dr. Ramesh Joshi',
-    motherName: 'Dr. Mangal Joshi',
-    nativePlace: 'Pune, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Social Work, Reading, Flute',
-    verified: true,
-    featured: false,
-    photo: '/images/member9.webp'
-  },
-  {
-    id: 9,
-    gender: 'Male',
-    name: 'Ganesh Kulkarni',
-    emailId: 'ganesh@gmail.com',
-    mobile: '9823450009',
-    password: 'password123',
-    age: 31,
-    height: "5'7\"",
-    education: 'B.Arch, Architect',
-    profession: 'Architect',
-    location: 'Thane, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹14,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Shankar Kulkarni',
-    motherName: 'Shaila Kulkarni',
-    nativePlace: 'Ratnagiri, Maharashtra',
-    foodPreference: 'Non-Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Designing, Sketching, Traveling',
-    verified: false, // Pending verification (admin test case)
-    featured: false,
-    photo: '/images/member6.webp'
-  },
-  {
-    id: 10,
-    gender: 'Female',
-    name: 'Pooja Salunkhe',
-    emailId: 'pooja@gmail.com',
-    mobile: '9823450010',
-    password: 'password123',
-    age: 23,
-    height: "5'1\"",
-    education: 'B.Sc Nursing, Nurse',
-    profession: 'Nurse',
-    location: 'Kolhapur, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹4,000,000 / Year',
-    familyType: 'Joint Family',
-    fatherName: 'Balaji Salunkhe',
-    motherName: 'Sarika Salunkhe',
-    nativePlace: 'Satara, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Cooking, Caring, Cinema',
-    verified: true,
-    featured: false,
-    photo: '/images/member3.webp'
-  },
-  {
-    id: 11,
-    gender: 'Male',
     name: 'NMAdmin',
     emailId: 'nmadmin',
     mobile: '9999999999',
@@ -416,124 +156,13 @@ const initialProfiles = [
 ];
 
 // Seed success stories
-const initialStories = [
-  {
-    id: 1,
-    couple: 'Aditya & Gauri',
-    date: '14 Jan 2024',
-    photo: '/images/story1.jpg',
-    quote: 'Finding Aditya on Nabhik Matrimonial was a blessing. From our very first conversation, we felt a deep connection. Our families met and instantly clicked. Thank you for helping us find our forever!'
-  },
-  {
-    id: 2,
-    couple: 'Rahul & Snehal',
-    date: '28 Dec 2023',
-    photo: '/images/story2.jpg',
-    quote: 'Nabhik Matrimonial made it incredibly easy to connect with someone who shares the same values and lifestyle. We are happily married now and highly recommend this platform to everyone searching for a genuine partner.'
-  },
-  {
-    id: 3,
-    couple: 'Siddharth & Priya',
-    date: '12 Nov 2023',
-    photo: '/images/story3.jpg',
-    quote: 'The holy fire witnessed our union, but it was Nabhik Matrimonial that lit the spark. We found deep compatibility, mutual respect, and pure love. It truly brings two families together beautifully.'
-  },
-  {
-    id: 4,
-    couple: 'Vikram & Ankita',
-    date: '05 Mar 2024',
-    photo: '/images/story4.jpg',
-    quote: 'Our wedding was like a dream, and it all started with a simple interest request on this portal. The platform is highly secure, reliable, and verified profiles make the search stress-free.'
-  },
-  {
-    id: 5,
-    couple: 'Sameer & Pooja',
-    date: '18 Apr 2024',
-    photo: '/images/story5.jpg',
-    quote: 'We wanted a partner who loves nature and traveling as much as we do. Through the advanced search filters, we found each other. Everyday has been an adventure since then!'
-  },
-  {
-    id: 6,
-    couple: 'Karan & Divya',
-    date: '09 Jan 2025',
-    photo: '/images/story6.jpg',
-    quote: 'Holding hands under the sunset, we knew we were meant to be. Nabhik Matrimonial helped us bridge the gap and start our beautiful journey of love and togetherness.'
-  },
-  {
-    id: 7,
-    couple: 'Abhishek & Riya',
-    date: '15 Feb 2025',
-    photo: '/images/story7.jpg',
-    quote: 'From matching profiles to looking into each other\'s eyes on our wedding day, Nabhik Matrimonial made the search magical. We found our soulmates here!'
-  },
-  {
-    id: 8,
-    couple: 'Harish & Pallavi',
-    date: '20 Mar 2025',
-    photo: '/images/story8.jpg',
-    quote: 'We love long walks and sharing laughter. Finding someone who complements your spirit perfectly is rare, but this portal made it happen for us.'
-  }
-];
+const initialStories = [];
 
 // Seed Events & Announcements
-const initialEvents = [
-  {
-    id: 1,
-    title: 'Nabhik Samaj Sammelan 2024',
-    date: '15 June 2024',
-    location: 'Nagpur, Maharashtra',
-    summary: 'Grand gathering for Nabhik community families to connect and discuss traditional matchmaking.'
-  },
-  {
-    id: 2,
-    title: 'Samuhik Vivah Sohala',
-    date: '21 July 2024',
-    location: 'Pune, Maharashtra',
-    summary: 'Annual mass marriage ceremony organized by the Nabhik Trust to support families.'
-  },
-  {
-    id: 3,
-    title: 'Yuva Melava 2024',
-    date: '12 August 2024',
-    location: 'Mumbai, Maharashtra',
-    summary: 'Youth interaction event for educated grooms and brides to interact directly and express views.'
-  },
-  {
-    id: 4,
-    title: 'Samaj Seva Abhiyan',
-    date: '25 August 2024',
-    location: 'Aurangabad, Maharashtra',
-    summary: 'Community education and career guidance program for youths organized by regional members.'
-  }
-];
+const initialEvents = [];
 
 // Seed Blogs
-const initialBlogs = [
-  {
-    id: 1,
-    title: '5 Key Tips for a Successful Matrimonial Search',
-    category: 'Relationship Advice',
-    date: '26 May 2026',
-    author: 'Admin',
-    excerpt: 'Navigating matrimonial databases requires patience and strategy. Read our top tips to make your search smooth, secure, and fruitful.'
-  },
-  {
-    id: 2,
-    title: 'Traditional Nabhik Wedding Rituals Explained',
-    category: 'Community Traditions',
-    date: '18 May 2026',
-    author: 'Samaj Pandit',
-    excerpt: 'Explore the rich history, meanings, and procedures of traditional rituals that define the sacred bond in a Nabhik marriage.'
-  },
-  {
-    id: 3,
-    title: 'How Families Align on Compatibility in 2026',
-    category: 'Family Values',
-    date: '10 May 2026',
-    author: 'Counselor Anjali',
-    excerpt: 'Modern matchmaking requires balancing tradition with individual aspirations. Discover how families find common ground.'
-  }
-];
+const initialBlogs = [];
 
 // LocalStorage Helper to ensure state persistence
 const storage = {
@@ -555,12 +184,12 @@ const storage = {
   }
 };
 
-// Force update profiles in localStorage if they don't have the photo field or contain old Nabhik surnames
+// Force update profiles in localStorage if they don't have the admin user or contain old initial profiles
 try {
   const stored = localStorage.getItem('nabhik_matrimonial_profiles');
   if (stored) {
     const parsed = JSON.parse(stored);
-    const needsReset = parsed && (parsed.length < 11 || !parsed[9].photo || parsed.some(p => p.name && p.name.includes('Nabhik')));
+    const needsReset = !Array.isArray(parsed) || !parsed.some(p => p.isAdmin) || parsed.some(p => p.name === 'Rahul Patil');
     if (needsReset) {
       localStorage.removeItem('nabhik_matrimonial_profiles');
       localStorage.removeItem('nabhik_matrimonial_currentUser');
@@ -693,19 +322,10 @@ const initialPlans = [
 ];
 
 // Seed Support Tickets
-const initialTickets = [
-  { id: 1, name: 'Sandeep Shinde', email: 'sandeep@gmail.com', query: 'I am unable to upload my Kundali PDF. It shows an invalid format error.', date: '30 May 2026', status: 'Open', response: '', assignedTo: 'Support Agent A' },
-  { id: 2, name: 'Neha Joshi', email: 'neha@gmail.com', query: 'Can I hide my phone number from unverified members? Please help.', date: '31 May 2026', status: 'In Progress', response: '', assignedTo: 'Support Agent B' },
-  { id: 3, name: 'Amit Chavan', email: 'amit@gmail.com', query: 'Payment successful for Gold Plan but my profile still shows Free Plan status.', date: '01 June 2026', status: 'Resolved', response: 'Thank you for reaching out. The transaction was verified and your profile has been upgraded to Gold.', assignedTo: 'Support Agent A' }
-];
+const initialTickets = [];
 
 // Seed Payment History Logs
-const initialPayments = [
-  { id: 'TXN-98402', name: 'Rahul Patil', plan: 'Gold Plan', amount: 599, date: '28 May 2026', gateway: 'Razorpay', status: 'Success' },
-  { id: 'TXN-98403', name: 'Priya Deshmukh', plan: 'Silver Plan', amount: 299, date: '29 May 2026', gateway: 'UPI', status: 'Success' },
-  { id: 'TXN-98404', name: 'Sandeep Shinde', plan: 'Platinum Plan', amount: 1199, date: '30 May 2026', gateway: 'Stripe', status: 'Success' },
-  { id: 'TXN-98405', name: 'Ankita Pawar', plan: 'Gold Plan', amount: 599, date: '31 May 2026', gateway: 'Paytm', status: 'Failed' }
-];
+const initialPayments = [];
 
 // Seed Gateway Settings
 const initialGateways = { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
@@ -748,21 +368,15 @@ const state = {
   
   currentUser: storage.get('currentUser', null), // logged-in user object
   interestsSent: storage.get('interestsSent', []), // array of profile IDs user sent interest to
-  interestsReceived: storage.get('interestsReceived', [1, 3]), // dummy received interests
+  interestsReceived: storage.get('interestsReceived', []), // dummy received interests
   shortlisted: storage.get('shortlisted', []), // array of shortlisted profile IDs
-  activeChats: storage.get('activeChats', {
-    // Symmetrical chat thread composite key ("1_2" representing chat between Rahul Patil [1] and Priya Deshmukh [2])
-    "1_2": [
-      { senderId: 1, text: 'Namaskar, I saw your profile and found it matching. Can we speak?', timestamp: '10:30 AM' },
-      { senderId: 2, text: 'Namaskar, thank you for reaching out. Yes, we can connect.', timestamp: '10:32 AM' }
-    ]
-  }),
+  activeChats: storage.get('activeChats', {}),
   
   // Simulated admin analytics
   revenueReport: storage.get('revenueReport', {
-    totalRevenue: 24988,
-    activePlans: { Silver: 12, Gold: 8, Platinum: 4, 'Premium Assisted': 2 },
-    extraFeatures: { 'Profile Boost': 15, 'Horoscope Match': 24, 'Profile Verification': 8, 'Homepage Featured Profile': 5 }
+    totalRevenue: 0,
+    activePlans: { Silver: 0, Gold: 0, Platinum: 0, 'Premium Assisted': 0 },
+    extraFeatures: { 'Profile Boost': 0, 'Horoscope Match': 0, 'Profile Verification': 0, 'Homepage Featured Profile': 0 }
   }),
   
   plans: storage.get('plans', initialPlans),
