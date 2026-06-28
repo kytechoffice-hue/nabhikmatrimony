@@ -2875,6 +2875,7 @@ body.app-loaded .footer-wrapper {
   font-size: 0.95rem;
   color: #ffffff;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .contact-item svg {

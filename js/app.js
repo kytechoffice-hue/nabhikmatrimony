@@ -1703,7 +1703,7 @@ function initRouter() {
 
   // If redirected from FormSubmit after successful submission
   if (window.location.search.includes('submitted=true')) {
-    showToast('Success! Query sent to support@nabhikmatrimony.com');
+    showToast('Success! Query sent to kytechoffice@gmail.com');
     // Remove query parameter from path without triggering a routing event
     window.history.replaceState(null, null, path);
   }
@@ -2169,19 +2169,19 @@ function renderHelp(container) {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                   <polyline points="22,6 12,13 2,6"/>
                 </svg>
-                <span>support@nabhikmatrimony.com</span>
+                <span>kytechoffice@gmail.com</span>
               </div>
               <div class="contact-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                 </svg>
-                <a href="tel:+919137822376" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="tel:+919834319658" style="color: inherit; text-decoration: none;">9834319658</a>
+                <a href="tel:+919137822376" style="color: inherit; text-decoration: none;">+91 91378 22376</a>
               </div>
               <div class="contact-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #25D366;">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                <svg viewBox="0 0 24 24" fill="currentColor" style="color: #25D366; width: 24px; height: 24px; flex-shrink: 0;">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.451 5.485.002 9.948-4.469 9.95-9.953.002-2.657-1.02-5.155-2.877-7.015-1.856-1.859-4.35-2.883-6.993-2.884-5.49-.001-9.953 4.47-9.956 9.956-.001 1.913.499 3.778 1.448 5.377L1.933 22.067l6.214-1.63zM16.8 13.91c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.66.85-.81 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.78-.7-1.3-1.57-1.45-1.83-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.79-1.91-.21-.5-.41-.43-.58-.44-.15-.01-.33-.01-.51-.01-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.28 0 1.35.98 2.66 1.12 2.85.14.19 1.92 2.93 4.66 4.12.65.28 1.16.45 1.56.57.66.21 1.25.18 1.73.11.53-.08 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.25-.17-.51-.3z"/>
                 </svg>
-                <a href="https://wa.me/919137822376" target="_blank" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="https://wa.me/919834319658" target="_blank" style="color: inherit; text-decoration: none;">9834319658</a>&nbsp;<span style="opacity: 0.8; font-size: 0.85rem;">(WhatsApp)</span>
+                <a href="https://wa.me/919137822376" target="_blank" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="https://wa.me/919834319658" target="_blank" style="color: inherit; text-decoration: none;">9834319658</a>
               </div>
             </div>
             <p class="contact-address">${t('Nabhik Society Office, Mumbai, Maharashtra', 'नाभिक समाज कार्यालय, मुंबई, महाराष्ट्र')}</p>
@@ -2310,12 +2310,12 @@ Thank you.
 Best Regards,
  ${name} 
 
-Sent this email on support@nabhikmatrimony.com`;
+Sent this email on kytechoffice@gmail.com`;
 
   showToast('Sending query to support...');
 
   // Use FormSubmit AJAX API to send the email directly in the background
-  fetch('https://formsubmit.co/ajax/support@nabhikmatrimony.com', {
+  fetch('https://formsubmit.co/ajax/kytechoffice@gmail.com', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -2342,9 +2342,9 @@ Sent this email on support@nabhikmatrimony.com`;
     if (!isSuccess || isActivation) {
       console.warn('FormSubmit needs activation:', data);
       showToast('First submit: Activation required.');
-      openActivationModal('support@nabhikmatrimony.com');
+      openActivationModal('kytechoffice@gmail.com');
     } else {
-      showToast('Success! Query sent to support@nabhikmatrimony.com');
+      showToast('Success! Query sent to kytechoffice@gmail.com');
     }
     e.target.reset();
   })
@@ -2354,7 +2354,7 @@ Sent this email on support@nabhikmatrimony.com`;
     
     // Construct and submit standard form programmatically to bypass CORS/adblockers
     const form = document.createElement('form');
-    form.action = 'https://formsubmit.co/support@nabhikmatrimony.com';
+    form.action = 'https://formsubmit.co/kytechoffice@gmail.com';
     form.method = 'POST';
     form.style.display = 'none';
     
@@ -3743,10 +3743,10 @@ function renderContact(container) {
           <p>${t('Feel free to reach out to us regarding queries, membership details, offline registration centers, or support.', 'शंका, सभासदत्व तपशील, ऑफलाइन नोंदणी केंद्रे किंवा मदतीसाठी आमच्याशी मोकळेपणाने संपर्क साधा.')}</p>
           
           <ul class="contact-info-list">
-            <li><span class="icon">✉</span> <a href="mailto:support@nabhikmatrimony.com" style="color: inherit; text-decoration: none;">support@nabhikmatrimony.com</a></li>
-            <li><span class="icon">📞</span> <a href="tel:+919137822376" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="tel:+919834319658" style="color: inherit; text-decoration: none;">9834319658</a></li>
-            <li><span class="icon">💬</span> <a href="https://wa.me/919137822376" target="_blank" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="https://wa.me/919834319658" target="_blank" style="color: inherit; text-decoration: none;">9834319658</a>&nbsp;<span style="opacity: 0.8; font-size: 0.88rem;">(WhatsApp)</span></li>
-            <li><span class="icon">🌐</span> <a href="https://nabhikmatrimony.com" target="_blank" style="color: inherit; text-decoration: none;">www.nabhikmatrimony.com</a></li>
+            <li style="white-space: nowrap;"><span class="icon">✉</span> <a href="mailto:kytechoffice@gmail.com" style="color: inherit; text-decoration: none;">kytechoffice@gmail.com</a></li>
+            <li style="white-space: nowrap;"><span class="icon">📞</span> <a href="tel:+919137822376" style="color: inherit; text-decoration: none;">+91 91378 22376</a></li>
+            <li style="white-space: nowrap;"><span class="icon" style="display: inline-flex; align-items: center; justify-content: center; width: 1.25rem; height: 1.25rem;"><svg viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem; fill: #25D366;"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.451 5.485.002 9.948-4.469 9.95-9.953.002-2.657-1.02-5.155-2.877-7.015-1.856-1.859-4.35-2.883-6.993-2.884-5.49-.001-9.953 4.47-9.956 9.956-.001 1.913.499 3.778 1.448 5.377L1.933 22.067l6.214-1.63zM16.8 13.91c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.66.85-.81 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.41-2.1-1.3-.78-.7-1.3-1.57-1.45-1.83-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.79-1.91-.21-.5-.41-.43-.58-.44-.15-.01-.33-.01-.51-.01-.18 0-.47.07-.72.34-.25.27-.95.93-.95 2.28 0 1.35.98 2.66 1.12 2.85.14.19 1.92 2.93 4.66 4.12.65.28 1.16.45 1.56.57.66.21 1.25.18 1.73.11.53-.08 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.25-.17-.51-.3z"/></svg></span> <a href="https://wa.me/919137822376" target="_blank" style="color: inherit; text-decoration: none;">+91 91378 22376</a> / <a href="https://wa.me/919834319658" target="_blank" style="color: inherit; text-decoration: none;">9834319658</a></li>
+            <li style="white-space: nowrap;"><span class="icon">🌐</span> <a href="https://nabhikmatrimony.com" target="_blank" style="color: inherit; text-decoration: none;">www.nabhikmatrimony.com</a></li>
           </ul>
 
           <h4 style="margin-top: 24px; color: var(--color-gold); font-family: var(--font-serif); font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 6px;">KY Tech Services IT Divisions</h4>
@@ -5052,12 +5052,68 @@ function showSuccessStatusModal() {
     
     <div style="text-align: left; background: rgba(0, 0, 0, 0.03); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 22px; font-size: 0.92rem; line-height: 1.6;">
       <strong style="color: var(--color-gold); display: block; margin-bottom: 6px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Status Report:</strong>
-      <span style="color: #25D366; font-weight: bold;">✓</span> Sent to support@nabhikmatrimony.com<br>
+      <span style="color: #25D366; font-weight: bold;">✓</span> Sent to kytechoffice@gmail.com<br>
       <span style="color: #25D366; font-weight: bold;">✓</span> Routed to WhatsApp (+91 91378 22376 / 9834319658)<br>
       <span style="color: #25D366; font-weight: bold;">✓</span> Support ticket generated in Database
     </div>
     
     <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  document.getElementById('close-status-modal-btn').addEventListener('click', () => {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.remove();
+    }, 200);
+  });
+}
+
+// Dynamic Error Status Modal Popup
+function showErrorStatusModal(errorMessage) {
+  const modal = document.createElement('div');
+  modal.id = 'status-popup-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '10000';
+  modal.style.backdropFilter = 'blur(5px)';
+  modal.style.transition = 'all 0.3s ease';
+
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.border = '2px solid #ff4d4d';
+  content.style.borderRadius = '12px';
+  content.style.padding = '35px 25px';
+  content.style.width = '90%';
+  content.style.maxWidth = '450px';
+  content.style.textAlign = 'center';
+  content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
+  content.style.position = 'relative';
+
+  content.innerHTML = `
+    <div style="width: 55px; height: 55px; background: rgba(255, 77, 77, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <h3 style="color: #ff4d4d; font-family: var(--font-serif); margin-bottom: 12px; font-size: 1.4rem;">Delivery Failed!</h3>
+    
+    <div style="text-align: left; background: rgba(255, 77, 77, 0.03); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 22px; font-size: 0.92rem; line-height: 1.6;">
+      <strong style="color: #ff4d4d; display: block; margin-bottom: 6px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Error Details:</strong>
+      <span style="color: var(--color-text);">${errorMessage || 'Unknown error occurred while sending email.'}</span>
+    </div>
+    
+    <button id="close-status-modal-btn" class="btn" style="background: #ff4d4d; color: white; border: none; padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
   `;
 
   modal.appendChild(content);
@@ -5108,7 +5164,7 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
         <path d="M25,5 A20,20 0 0,1 45,25" fill="none" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round"></path>
       </svg>
       <h3 style="color: var(--color-gold); font-family: var(--font-serif); margin-bottom: 10px; font-size: 1.35rem;">Sending Message...</h3>
-      <p style="color: var(--color-text); font-size: 0.95rem; line-height: 1.5; opacity: 0.95;">Transmitting your inquiry in the background to support@nabhikmatrimony.com & WhatsApp lines...</p>
+      <p style="color: var(--color-text); font-size: 0.95rem; line-height: 1.5; opacity: 0.95;">Transmitting your inquiry in the background to kytechoffice@gmail.com & WhatsApp lines...</p>
     </div>
   `;
 
@@ -5138,7 +5194,7 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
   }
 
   // Use FormSubmit AJAX API to send the email directly in the background
-  fetch('https://formsubmit.co/ajax/support@nabhikmatrimony.com', {
+  fetch('https://formsubmit.co/ajax/kytechoffice@gmail.com', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -5146,8 +5202,8 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
     },
     body: JSON.stringify({
       name: name,
-      email: email,
-      message: `Inquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`,
+      email: "help@kytechserv.com",
+      message: `User's Email: ${email}\nInquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`,
       _subject: `[Contact Form] ${subject}`,
       _honey: "", // Honeypot spam prevention
       _template: "table"
@@ -5166,7 +5222,7 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
 
     if (!isSuccess || isActivation) {
       console.warn('FormSubmit needs activation:', data);
-      openActivationModal('support@nabhikmatrimony.com');
+      openActivationModal('kytechoffice@gmail.com');
     } else {
       showSuccessStatusModal();
     }
@@ -5174,7 +5230,7 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
   .catch(error => {
     console.error('Error sending message:', error);
     modal.remove();
-    showSuccessStatusModal(); // Fallback success screen
+    showErrorStatusModal(error.message || 'API delivery failed. Please check your internet connection and try again.');
   });
 }
 
