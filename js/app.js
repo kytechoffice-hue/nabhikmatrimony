@@ -3760,28 +3760,25 @@ function renderContact(container) {
         
         <div>
           <form onsubmit="handleContactSubmit(event)">
-            <!-- Form metadata reference -->
-            <input type="hidden" name="form_metadata" value="Contact KY Tech Services, IT Company Contact, Website Development Contact, Digital Marketing Company Contact, Software Development Services, Technical Support Contact, Business IT Solutions, Web Design Company India">
-            
             <div class="form-row-2">
               <div class="form-group">
                 <label>${t('Full Name', 'पूर्ण नाव')}</label>
-                <input type="text" required placeholder="${t('Your Name', 'तुमचे नाव')}">
+                <input type="text" id="contact-name" required placeholder="${t('Your Name', 'तुमचे नाव')}">
               </div>
               <div class="form-group">
                 <label>${t('Email Address', 'ईमेल पत्ता')}</label>
-                <input type="email" required placeholder="${t('Your Email', 'तुमचा ईमेल')}">
+                <input type="email" id="contact-email" required placeholder="${t('Your Email', 'तुमचा ईमेल')}">
               </div>
             </div>
 
             <div class="form-row-2">
               <div class="form-group">
                 <label>${t('Subject', 'विषय')}</label>
-                <input type="text" required placeholder="${t('Subject', 'विषय')}">
+                <input type="text" id="contact-subject" required placeholder="${t('Subject', 'विषय')}">
               </div>
               <div class="form-group">
                 <label>${t('Inquiry Type', 'चौकशीचा प्रकार')}</label>
-                <select required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff; font-family: inherit; font-size: 0.9rem; color: var(--color-text);">
+                <select id="contact-inquiry" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff; font-family: inherit; font-size: 0.9rem; color: var(--color-text);">
                   <option value="" disabled selected>${t('Select inquiry type...', 'चौकशीचा प्रकार निवडा...')}</option>
                   <option value="General Inquiry">${t('General Inquiry', 'सामान्य चौकशी')}</option>
                   <option value="Profile Verification">${t('Profile Verification Support', 'प्रोफाईल पडताळणी मदत')}</option>
@@ -3795,7 +3792,7 @@ function renderContact(container) {
 
             <div class="form-group">
               <label>${t('Message', 'संदेश')}</label>
-              <textarea rows="4" required placeholder="${t('Type your message here...', 'तुमचा संदेश येथे लिहा...')}"></textarea>
+              <textarea id="contact-message" rows="4" required placeholder="${t('Type your message here...', 'तुमचा संदेश येथे लिहा...')}"></textarea>
             </div>
             
             <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.95rem;">${t('Send Message', 'संदेश पाठवा')}</button>
@@ -5020,7 +5017,19 @@ function handleReportProfile(id) {
 // Contact form submission
 function handleContactSubmit(e) {
   e.preventDefault();
-  showToast('Thank you! Your message has been sent. We will reply within 24 hours.');
+  
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const subject = document.getElementById('contact-subject').value;
+  const inquiry = document.getElementById('contact-inquiry').value;
+  const message = document.getElementById('contact-message').value;
+  
+  const mailtoBody = `Name: ${name}\nEmail: ${email}\nInquiry Type: ${inquiry}\n\nMessage:\n${message}`;
+  const mailtoUrl = `mailto:support@nabhikmatrimony.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailtoBody)}`;
+  
+  window.location.href = mailtoUrl;
+  
+  showToast('Opening your email client to send the message...');
   e.target.reset();
 }
 
