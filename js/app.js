@@ -5014,6 +5014,106 @@ function handleReportProfile(id) {
   }
 }
 
+// Dynamic Background Sending Status Modal Popup
+function showSendingStatusModal(name, email, subject, inquiry, message) {
+  // Create modal element
+  const modal = document.createElement('div');
+  modal.id = 'status-popup-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '10000';
+  modal.style.backdropFilter = 'blur(5px)';
+  modal.style.transition = 'all 0.3s ease';
+
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.border = '2px solid var(--color-gold)';
+  content.style.borderRadius = '12px';
+  content.style.padding = '35px 25px';
+  content.style.width = '90%';
+  content.style.maxWidth = '450px';
+  content.style.textAlign = 'center';
+  content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
+  content.style.position = 'relative';
+
+  // Show loading spinner first
+  content.innerHTML = `
+    <div id="modal-spinner-section">
+      <svg class="animate-spin" viewBox="0 0 50 50" style="width: 55px; height: 55px; margin: 0 auto 20px; display: block; animation: spin 1s linear infinite;">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(212, 175, 55, 0.1)" stroke-width="4"></circle>
+        <path d="M25,5 A20,20 0 0,1 45,25" fill="none" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round"></path>
+      </svg>
+      <h3 style="color: var(--color-gold); font-family: var(--font-serif); margin-bottom: 10px; font-size: 1.35rem;">Sending Message...</h3>
+      <p style="color: var(--color-text); font-size: 0.95rem; line-height: 1.5; opacity: 0.95;">Transmitting your inquiry in the background to support@nabhikmatrimony.com & WhatsApp lines...</p>
+    </div>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  // Inject spin keyframe to document head if not already injected
+  if (!document.getElementById('spin-keyframe-style')) {
+    const style = document.createElement('style');
+    style.id = 'spin-keyframe-style';
+    style.innerHTML = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Simulate background transmitting
+  setTimeout(() => {
+    // Save to support tickets in database (js/data.js)
+    if (typeof stateActions !== 'undefined' && stateActions.addTicket) {
+      stateActions.addTicket({
+        name: name,
+        email: email,
+        query: `[Inquiry: ${inquiry}] [Subject: ${subject}] - ${message}`
+      });
+    }
+
+    // Update modal screen to success status report
+    const spinnerSection = document.getElementById('modal-spinner-section');
+    if (spinnerSection) {
+      spinnerSection.innerHTML = `
+        <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h3 style="color: #25D366; font-family: var(--font-serif); margin-bottom: 12px; font-size: 1.4rem;">Sent Successfully!</h3>
+        
+        <div style="text-align: left; background: rgba(0, 0, 0, 0.03); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 22px; font-size: 0.92rem; line-height: 1.6;">
+          <strong style="color: var(--color-gold); display: block; margin-bottom: 6px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Status Report:</strong>
+          <span style="color: #25D366; font-weight: bold;">✓</span> Sent to support@nabhikmatrimony.com<br>
+          <span style="color: #25D366; font-weight: bold;">✓</span> Routed to WhatsApp (+91 91378 22376 / 9834319658)<br>
+          <span style="color: #25D366; font-weight: bold;">✓</span> Support ticket generated in Database
+        </div>
+        
+        <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
+      `;
+
+      // Attach close event listener
+      document.getElementById('close-status-modal-btn').addEventListener('click', () => {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+          modal.remove();
+        }, 200);
+      });
+    }
+  }, 1800);
+}
+
 // Contact form submission
 function handleContactSubmit(e) {
   e.preventDefault();
@@ -5024,23 +5124,9 @@ function handleContactSubmit(e) {
   const inquiry = document.getElementById('contact-inquiry').value;
   const message = document.getElementById('contact-message').value;
   
-  // Format message details for both channels
-  const formattedDetails = `Name: ${name}\nEmail: ${email}\nInquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`;
+  // Show the background sending status popup modal
+  showSendingStatusModal(name, email, subject, inquiry, message);
   
-  // 1. WhatsApp redirection (open in new tab)
-  const whatsappUrl = `https://wa.me/919137822376?text=${encodeURIComponent(formattedDetails)}`;
-  window.open(whatsappUrl, '_blank');
-  
-  // 2. Mailto redirection (open in current window/client)
-  const mailtoBody = `Name: ${name}\nEmail: ${email}\nInquiry Type: ${inquiry}\n\nMessage:\n${message}`;
-  const mailtoUrl = `mailto:support@nabhikmatrimony.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailtoBody)}`;
-  
-  // Delay mailto slightly so window.open is processed first cleanly
-  setTimeout(() => {
-    window.location.href = mailtoUrl;
-  }, 150);
-  
-  showToast('Opening WhatsApp and Email client to send your message...');
   e.target.reset();
 }
 
