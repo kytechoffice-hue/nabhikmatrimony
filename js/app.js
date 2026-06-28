@@ -3743,8 +3743,10 @@ function renderContact(container) {
           <p>${t('Feel free to reach out to us regarding queries, membership details, offline registration centers, or support.', 'शंका, सभासदत्व तपशील, ऑफलाइन नोंदणी केंद्रे किंवा मदतीसाठी आमच्याशी मोकळेपणाने संपर्क साधा.')}</p>
           
           <ul class="contact-info-list">
-            <li><span class="icon">✉</span> info@nabhikmatrimonial.com</li>
-            <li><span class="icon">🌐</span> www.nabhikmatrimonial.com</li>
+            <li><span class="icon">✉</span> <a href="mailto:support@nabhikmatrimony.com" style="color: inherit; text-decoration: none;">support@nabhikmatrimony.com</a></li>
+            <li><span class="icon">📞</span> <a href="tel:+919137822376" style="color: inherit; text-decoration: none;">+91 91378 22376</a></li>
+            <li><span class="icon">💬</span> <a href="https://wa.me/919137822376" target="_blank" style="color: inherit; text-decoration: none;">+91 91378 22376 (WhatsApp)</a></li>
+            <li><span class="icon">🌐</span> <a href="https://nabhikmatrimony.com" target="_blank" style="color: inherit; text-decoration: none;">www.nabhikmatrimony.com</a></li>
           </ul>
 
           <h4 style="margin-top: 24px; color: var(--color-gold); font-family: var(--font-serif); font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 6px;">KY Tech Services IT Divisions</h4>
