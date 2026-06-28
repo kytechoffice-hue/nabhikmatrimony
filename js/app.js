@@ -3780,17 +3780,15 @@ function renderContact(container) {
                 <input type="text" required placeholder="${t('Subject', 'विषय')}">
               </div>
               <div class="form-group">
-                <label>${t('Inquiry Type (Service Area)', 'चौकशीचा प्रकार')}</label>
+                <label>${t('Inquiry Type', 'चौकशीचा प्रकार')}</label>
                 <select required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff; font-family: inherit; font-size: 0.9rem; color: var(--color-text);">
-                  <option value="" disabled selected>${t('Select service focus...', 'चौकशीचा प्रकार निवडा...')}</option>
-                  <option value="KY Tech Services">Contact KY Tech Services</option>
-                  <option value="IT Company Contact">IT Company Contact</option>
-                  <option value="Website Development Contact">Website Development Contact</option>
-                  <option value="Digital Marketing Company Contact">Digital Marketing Company Contact</option>
-                  <option value="Software Development Services">Software Development Services</option>
-                  <option value="Technical Support Contact">Technical Support Contact</option>
-                  <option value="Business IT Solutions">Business IT Solutions</option>
-                  <option value="Web Design Company India">Web Design Company India</option>
+                  <option value="" disabled selected>${t('Select inquiry type...', 'चौकशीचा प्रकार निवडा...')}</option>
+                  <option value="General Inquiry">${t('General Inquiry', 'सामान्य चौकशी')}</option>
+                  <option value="Profile Verification">${t('Profile Verification Support', 'प्रोफाईल पडताळणी मदत')}</option>
+                  <option value="Membership Query">${t('Membership Plan Query', 'सभासदत्व योजना चौकशी')}</option>
+                  <option value="Technical Support">${t('Technical Support / Issue', 'तांत्रिक मदत / अडचण')}</option>
+                  <option value="Success Story">${t('Success Story Submission', 'यशोगाथा पाठवणे')}</option>
+                  <option value="Feedback">${t('Feedback & Suggestions', 'अभिप्राय आणि सूचना')}</option>
                 </select>
               </div>
             </div>
