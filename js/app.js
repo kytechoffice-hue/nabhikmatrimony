@@ -2972,29 +2972,48 @@ function showForgotPasswordSuccessModal() {
   modal.style.transition = 'all 0.3s ease';
 
   const content = document.createElement('div');
-  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.backgroundColor = '#ffffff';
   content.style.border = '2px solid var(--color-gold)';
   content.style.borderRadius = '12px';
-  content.style.padding = '35px 25px';
+  content.style.padding = '40px 30px';
   content.style.width = '90%';
-  content.style.maxWidth = '450px';
+  content.style.maxWidth = '460px';
   content.style.textAlign = 'center';
   content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
   content.style.position = 'relative';
 
   content.innerHTML = `
-    <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+    <!-- Green Checkmark Icon in Circle -->
+    <div style="width: 65px; height: 65px; background: #e8f7ed; border: 2px solid #a8e5bc; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px;">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
     </div>
     
-    <div style="font-family: var(--font-serif); font-size: 1.1rem; line-height: 1.6; color: var(--color-text); margin-bottom: 24px;">
-      <strong>Thanks to Connect,</strong><br>
-      We will review your request and send update password.
+    <!-- Title -->
+    <h3 style="color: var(--color-text, #2c3e50); font-family: var(--font-serif); font-size: 2.1rem; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Thank You!</h3>
+    
+    <!-- Top Divider -->
+    <div class="traditional-divider" style="margin: 15px auto 20px; width: 70%;"><span class="icon">✦</span></div>
+    
+    <!-- Message Content -->
+    <div style="font-family: inherit; font-size: 1.15rem; line-height: 1.7; color: var(--color-text-muted); margin-bottom: 24px; text-align: center;">
+      <p style="margin-bottom: 12px; font-weight: 500; color: #2c3e50;">Thanks for connecting with us.</p>
+      <p style="margin-bottom: 0;">We will review your request and<br><span style="color: var(--color-gold); font-weight: 600;">send you an updated password</span> shortly.</p>
     </div>
     
-    <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
+    <!-- Bottom Divider -->
+    <div class="traditional-divider" style="margin: 20px auto 25px; width: 70%;"><span class="icon">✦</span></div>
+    
+    <!-- Close Button with Lock Icon -->
+    <button id="close-status-modal-btn" class="btn btn-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 40px; font-size: 1.05rem; cursor: pointer; border-radius: 6px; font-weight: 600; min-width: 160px; box-shadow: 0 4px 10px rgba(179, 143, 0, 0.2);">
+      <!-- Padlock Icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      Close
+    </button>
   `;
 
   modal.appendChild(content);
