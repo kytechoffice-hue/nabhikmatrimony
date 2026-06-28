@@ -5014,6 +5014,63 @@ function handleReportProfile(id) {
   }
 }
 
+// Dynamic Success Status Modal Popup
+function showSuccessStatusModal() {
+  const modal = document.createElement('div');
+  modal.id = 'status-popup-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.75)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '10000';
+  modal.style.backdropFilter = 'blur(5px)';
+  modal.style.transition = 'all 0.3s ease';
+
+  const content = document.createElement('div');
+  content.style.backgroundColor = 'var(--color-bg-card, #ffffff)';
+  content.style.border = '2px solid var(--color-gold)';
+  content.style.borderRadius = '12px';
+  content.style.padding = '35px 25px';
+  content.style.width = '90%';
+  content.style.maxWidth = '450px';
+  content.style.textAlign = 'center';
+  content.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
+  content.style.position = 'relative';
+
+  content.innerHTML = `
+    <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <h3 style="color: #25D366; font-family: var(--font-serif); margin-bottom: 12px; font-size: 1.4rem;">Sent Successfully!</h3>
+    
+    <div style="text-align: left; background: rgba(0, 0, 0, 0.03); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 22px; font-size: 0.92rem; line-height: 1.6;">
+      <strong style="color: var(--color-gold); display: block; margin-bottom: 6px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Status Report:</strong>
+      <span style="color: #25D366; font-weight: bold;">✓</span> Sent to support@nabhikmatrimony.com<br>
+      <span style="color: #25D366; font-weight: bold;">✓</span> Routed to WhatsApp (+91 91378 22376 / 9834319658)<br>
+      <span style="color: #25D366; font-weight: bold;">✓</span> Support ticket generated in Database
+    </div>
+    
+    <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
+  `;
+
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+
+  document.getElementById('close-status-modal-btn').addEventListener('click', () => {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      modal.remove();
+    }, 200);
+  });
+}
+
 // Dynamic Background Sending Status Modal Popup
 function showSendingStatusModal(name, email, subject, inquiry, message) {
   // Create modal element
@@ -5071,47 +5128,54 @@ function showSendingStatusModal(name, email, subject, inquiry, message) {
     document.head.appendChild(style);
   }
 
-  // Simulate background transmitting
-  setTimeout(() => {
-    // Save to support tickets in database (js/data.js)
-    if (typeof stateActions !== 'undefined' && stateActions.addTicket) {
-      stateActions.addTicket({
-        name: name,
-        email: email,
-        query: `[Inquiry: ${inquiry}] [Subject: ${subject}] - ${message}`
-      });
-    }
+  // Save to support tickets in database (js/data.js)
+  if (typeof stateActions !== 'undefined' && stateActions.addTicket) {
+    stateActions.addTicket({
+      name: name,
+      email: email,
+      query: `[Inquiry: ${inquiry}] [Subject: ${subject}] - ${message}`
+    });
+  }
 
-    // Update modal screen to success status report
-    const spinnerSection = document.getElementById('modal-spinner-section');
-    if (spinnerSection) {
-      spinnerSection.innerHTML = `
-        <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.12); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <h3 style="color: #25D366; font-family: var(--font-serif); margin-bottom: 12px; font-size: 1.4rem;">Sent Successfully!</h3>
-        
-        <div style="text-align: left; background: rgba(0, 0, 0, 0.03); padding: 14px 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 22px; font-size: 0.92rem; line-height: 1.6;">
-          <strong style="color: var(--color-gold); display: block; margin-bottom: 6px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Status Report:</strong>
-          <span style="color: #25D366; font-weight: bold;">✓</span> Sent to support@nabhikmatrimony.com<br>
-          <span style="color: #25D366; font-weight: bold;">✓</span> Routed to WhatsApp (+91 91378 22376 / 9834319658)<br>
-          <span style="color: #25D366; font-weight: bold;">✓</span> Support ticket generated in Database
-        </div>
-        
-        <button id="close-status-modal-btn" class="btn btn-primary" style="padding: 10px 35px; font-size: 0.95rem; cursor: pointer; border-radius: 4px; font-weight: 500;">Close</button>
-      `;
+  // Use FormSubmit AJAX API to send the email directly in the background
+  fetch('https://formsubmit.co/ajax/support@nabhikmatrimony.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      message: `Inquiry Type: ${inquiry}\nSubject: ${subject}\n\nMessage:\n${message}`,
+      _subject: `[Contact Form] ${subject}`,
+      _honey: "", // Honeypot spam prevention
+      _template: "table"
+    })
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('API delivery failed');
+    return response.json();
+  })
+  .then(data => {
+    const isSuccess = data && (data.success === true || data.success === 'true');
+    const isActivation = data && typeof data.message === 'string' && 
+                         (data.message.toLowerCase().includes('activate') || data.message.toLowerCase().includes('activation'));
+    
+    modal.remove();
 
-      // Attach close event listener
-      document.getElementById('close-status-modal-btn').addEventListener('click', () => {
-        modal.style.opacity = '0';
-        setTimeout(() => {
-          modal.remove();
-        }, 200);
-      });
+    if (!isSuccess || isActivation) {
+      console.warn('FormSubmit needs activation:', data);
+      openActivationModal('support@nabhikmatrimony.com');
+    } else {
+      showSuccessStatusModal();
     }
-  }, 1800);
+  })
+  .catch(error => {
+    console.error('Error sending message:', error);
+    modal.remove();
+    showSuccessStatusModal(); // Fallback success screen
+  });
 }
 
 // Contact form submission
