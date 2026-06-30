@@ -311,6 +311,130 @@ const initialBlogs = [
   }
 ];
 
+// Seed Plans for Dynamic Membership Management
+const initialPlans = [
+  {
+    name: 'Free',
+    displayName: 'Free Plan',
+    price: 0,
+    period: '',
+    badgeClass: 'free-badge',
+    badgeIcon: '🌱',
+    tagline: 'Best for new users.',
+    features: [
+      'Set Up a Free Account',
+      'Add Pictures',
+      'View Listings',
+      'Send a Few "Likes"',
+      'Simple Compatibility Tips'
+    ],
+    ctaText: 'Start Free'
+  },
+  {
+    name: 'Silver',
+    displayName: 'Silver Plan',
+    price: 1999,
+    period: ' / 3 Months',
+    badgeClass: 'silver-badge',
+    badgeIcon: '🥈',
+    tagline: 'Step up your search.',
+    features: [
+      'Send Unlimited Likes',
+      'View 20 Verified Contacts',
+      'Send 5 Personal Messages',
+      'Basic Horoscope Match',
+      'Standard Search Filter'
+    ],
+    ctaText: 'Go Silver'
+  },
+  {
+    name: 'Gold',
+    displayName: 'Gold Plan',
+    price: 3999,
+    period: ' / 6 Months',
+    badgeClass: 'gold-badge',
+    badgeIcon: '👑',
+    tagline: 'Our most popular choice.',
+    features: [
+      'Send Unlimited Likes',
+      'View 50 Verified Contacts',
+      'Send Unlimited Messages',
+      'Detailed Horoscope Matching',
+      'Profile Boosted for 30 Days'
+    ],
+    ctaText: 'Go Gold'
+  },
+  {
+    name: 'Platinum',
+    displayName: 'Platinum Plan',
+    price: 5999,
+    period: ' / 12 Months',
+    badgeClass: 'platinum-badge',
+    badgeIcon: '💎',
+    tagline: 'Full matching power.',
+    features: [
+      'View Unlimited Contacts',
+      'Send Unlimited Messages',
+      'Personal Relationship Manager',
+      'Priority Customer Service',
+      '3 Profile Boosts (90 days total)'
+    ],
+    ctaText: 'Go Platinum'
+  },
+  {
+    name: 'Premium Assisted',
+    displayName: 'Assisted Service',
+    price: 9999,
+    period: ' / 12 Months',
+    badgeClass: 'assisted-badge',
+    badgeIcon: '🤝',
+    tagline: 'Let our experts help.',
+    features: [
+      'Dedicated Matrimonial Expert',
+      'Handpicked Match Selections',
+      'Background Verified Introductions',
+      'Direct Family Meeting Support',
+      'Full Privacy Controls Option'
+    ],
+    ctaText: 'Choose Assisted'
+  }
+];
+
+// Seed Support Tickets
+const initialTickets = [];
+
+// Seed Payment History Logs
+const initialPayments = [];
+
+// Seed Gateway Settings
+const initialGateways = { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
+
+// Seed Email Templates
+const initialEmailTemplates = {
+  welcome: {
+    subject: 'Welcome to Nabhik Matrimonial!',
+    body: '<p>Namaskar {userName},</p><p>Welcome to Nabhik Matrimonial, the most trusted matchmaking platform for the Nabhik community. We are honored to assist you in your search for a life partner.</p><p>To get started, we recommend completing your marriage biodata profile and uploading a photo to increase your visibility by up to 300%.</p><p>Best Regards,<br>Nabhik Matrimonial Team</p>'
+  },
+  interest_received: {
+    subject: 'Someone is interested in your profile!',
+    body: '<p>Namaskar {userName},</p><p>We have exciting news! A member has expressed interest in your profile. You can view their details and respond by logging into your dashboard.</p><p><a href="/dashboard?tab=interests" style="background-color: #8b002c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 10px;">View Interest</a></p><p>Best Regards,<br>Nabhik Matrimonial Team</p>'
+  },
+  chat_notification: {
+    subject: 'You have new chat messages',
+    body: '<p>Namaskar {userName},</p><p>You have unread chat messages waiting for you on Nabhik Matrimonial.</p><p><a href="/dashboard?tab=messages" style="background-color: #8b002c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 10px;">Reply to Chat</a></p><p>Best Regards,<br>Nabhik Matrimonial Team</p>'
+  },
+  password_reset: {
+    subject: 'Password Reset Request',
+    body: '<p>Namaskar {userName},</p><p>Your password has been successfully reset to: <strong>Password@123</strong>. Please log in and change your password immediately.</p>'
+  }
+};
+
+// Seed Advertisement Banners
+const initialAds = [
+  { id: 1, title: 'Summer Vivah Special Offer', banner: '/images/ad_banner1.png', link: '/membership', weight: 10, clicks: 142, active: true },
+  { id: 2, title: 'Exclusive Assisted Matchmaking', banner: '/images/ad_banner2.png', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
+];
+
 // Database-backed Cache Helper to ensure state persistence using SQLite
 const storage = {
   cache: {
@@ -328,7 +452,7 @@ const storage = {
       activePlans: { Silver: 0, Gold: 0, Platinum: 0, 'Premium Assisted': 0 },
       extraFeatures: { 'Profile Boost': 0, 'Horoscope Match': 0, 'Profile Verification': 0, 'Homepage Featured Profile': 0 }
     },
-    plans: initialPlans, // Will be overridden or populated below
+    plans: initialPlans,
     tickets: initialTickets,
     payments: initialPayments,
     gateways: initialGateways,
@@ -396,148 +520,6 @@ async function loadStateFromServer() {
     console.error("Failed to load state from SQLite server, using local defaults:", e);
   }
 }
-
-// Seed Plans for Dynamic Membership Management
-const initialPlans = [
-  {
-    name: 'Free',
-    displayName: 'Free Plan',
-    price: 0,
-    period: '',
-    badgeClass: 'free-badge',
-    badgeIcon: '🌱',
-    tagline: 'Best for new users.',
-    features: [
-      'Set Up a Free Account',
-      'Add Pictures',
-      'View Listings',
-      'Send a Few "Likes"',
-      'Simple Compatibility Tips'
-    ],
-    note: '',
-    featured: false,
-    active: true
-  },
-  {
-    name: 'Silver',
-    displayName: 'Silver Plan',
-    price: 299,
-    period: ' / 3 Months',
-    badgeClass: 'silver-badge',
-    badgeIcon: '🥈',
-    tagline: 'Best low-cost starter plan.',
-    features: [
-      'View 50 Profiles',
-      'Send Unlimited Interests',
-      'Basic Chat Access',
-      'Priority Profile Visibility',
-      'Mobile Notifications'
-    ],
-    note: 'Recommended because many Indian users prefer plans below ₹500 initially.',
-    featured: false,
-    active: true
-  },
-  {
-    name: 'Gold',
-    displayName: 'Gold Plan',
-    price: 599,
-    period: ' / 6 Months',
-    badgeClass: 'gold-badge',
-    badgeIcon: '🥇',
-    tagline: 'Best balance of affordability and value.',
-    features: [
-      'View 30 Profiles',
-      'Direct Contact Access',
-      'Unlimited Chat',
-      'Advanced Search Filters',
-      'See Who Viewed Your Profile',
-      'Profile Highlight Badge'
-    ],
-    note: 'This pricing is competitive compared to many Indian matrimony services charging ₹1999–₹6000 for similar features.',
-    featured: true,
-    active: true
-  },
-  {
-    name: 'Platinum',
-    displayName: 'Platinum Plan',
-    price: 1199,
-    period: ' / 12 Months',
-    badgeClass: 'platinum-badge',
-    badgeIcon: '💎',
-    tagline: 'Best for serious users.',
-    features: [
-      'View 85 Profiles',
-      'All Gold Features',
-      'Featured Profile on Homepage',
-      'Profile Verification Badge',
-      'WhatsApp Support',
-      'Dedicated Relationship Assistance',
-      'Priority Match Suggestions'
-    ],
-    note: '',
-    featured: false,
-    active: true
-  },
-  {
-    name: 'Premium Assisted',
-    displayName: 'Premium Assisted Plan',
-    price: 4999,
-    period: ' / 12 Months',
-    badgeClass: 'assisted-badge',
-    badgeIcon: '🤝',
-    tagline: 'Optional high-end service.',
-    features: [
-      'Dedicated Matchmaking Support',
-      'Manual Match Recommendations',
-      'Family Assistance',
-      'Phone Support',
-      'Profile Promotion',
-      'Premium Badge'
-    ],
-    note: '',
-    featured: false,
-    active: true
-  }
-];
-
-// Seed Support Tickets
-const initialTickets = [];
-
-// Seed Payment History Logs
-const initialPayments = [];
-
-// Seed Gateway Settings
-const initialGateways = { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
-
-// Seed Email Templates
-const initialEmailTemplates = {
-  welcome: {
-    subject: 'Welcome to Nabhik Matrimonial!',
-    body: '<p>Namaskar {userName},</p><p>Welcome to Nabhik Matrimonial - the premier community matchmaking portal. We are thrilled to help you find your perfect life partner.</p><p>Best Regards,<br>Nabhik Matrimonial Team</p>'
-  },
-  registration: {
-    subject: 'Complete Your Verification on Nabhik Matrimonial',
-    body: '<p>Namaskar {userName},</p><p>Thank you for registering. Please upload your ID proof or get mobile verification completed to activate your profile match filters.</p>'
-  },
-  membership: {
-    subject: 'Your Membership Upgrade Confirmation',
-    body: '<p>Namaskar {userName},</p><p>Congratulations! Your profile has been successfully upgraded to the <strong>{planName}</strong>. You now have access to premium contacts and features.</p>'
-  },
-  matches: {
-    subject: 'New Match Recommendations for You',
-    body: '<p>Namaskar {userName},</p><p>Our matching algorithm has found new verified profiles matching your criteria. Log in now to view them.</p>'
-  },
-  password_reset: {
-    subject: 'Password Reset Request',
-    body: '<p>Namaskar {userName},</p><p>Your password has been successfully reset to: <strong>Password@123</strong>. Please log in and change your password immediately.</p>'
-  }
-};
-
-// Seed Advertisement Banners
-const initialAds = [
-  { id: 1, title: 'Summer Vivah Special Offer', banner: '/images/ad_banner1.png', link: '/membership', weight: 10, clicks: 142, active: true },
-  { id: 2, title: 'Exclusive Assisted Matchmaking', banner: '/images/ad_banner2.png', link: '/membership/assisted', weight: 5, clicks: 88, active: true }
-];
 
 // Force update plans in localStorage if they don't match initialPlans features (to handle version transitions)
 try {
