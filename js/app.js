@@ -1529,7 +1529,7 @@ function renderHome(container) {
       <div class="container">
         <div class="featured-header-row">
           <div class="traditional-header">
-            <h2>${t('Featured Profiles', 'निवडक प्रोफाइल्स')}</h2>
+            <h2>${t('Find Your Perfect Match', 'तुमचा परिपूर्ण जोडीदार शोधा')}</h2>
             <div class="traditional-divider"><span class="icon">✦</span></div>
           </div>
         </div>
