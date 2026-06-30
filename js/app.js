@@ -311,58 +311,90 @@ const initialBlogs = [
   }
 ];
 
-// LocalStorage Helper to ensure state persistence
+// Database-backed Cache Helper to ensure state persistence using SQLite
 const storage = {
+  cache: {
+    profiles: initialProfiles,
+    stories: initialStories,
+    events: initialEvents,
+    blogs: initialBlogs,
+    currentUser: null,
+    interestsSent: [],
+    interestsReceived: [],
+    shortlisted: [],
+    activeChats: {},
+    revenueReport: {
+      totalRevenue: 0,
+      activePlans: { Silver: 0, Gold: 0, Platinum: 0, 'Premium Assisted': 0 },
+      extraFeatures: { 'Profile Boost': 0, 'Horoscope Match': 0, 'Profile Verification': 0, 'Homepage Featured Profile': 0 }
+    },
+    plans: initialPlans, // Will be overridden or populated below
+    tickets: initialTickets,
+    payments: initialPayments,
+    gateways: initialGateways,
+    emailTemplates: initialEmailTemplates,
+    ads: initialAds
+  },
   get(key, defaultValue) {
-    try {
-      const data = localStorage.getItem('nabhik_matrimonial_' + key);
-      return data ? JSON.parse(data) : defaultValue;
-    } catch (e) {
-      console.warn("localStorage.getItem failed, using default value.", e);
-      return defaultValue;
-    }
+    return this.cache[key] !== undefined ? this.cache[key] : defaultValue;
   },
   set(key, value) {
-    try {
-      localStorage.setItem('nabhik_matrimonial_' + key, JSON.stringify(value));
-    } catch (e) {
-      console.warn("localStorage.setItem failed, state will persist in-memory only.", e);
-    }
+    this.cache[key] = value;
+    saveStateToServer();
   }
 };
 
-// Force update profiles in localStorage if they don't have the photo field or contain old Nabhik surnames
-try {
-  const stored = localStorage.getItem('nabhik_matrimonial_profiles');
-  if (stored) {
-    const parsed = JSON.parse(stored);
-    const needsReset = parsed && (parsed.length < 11 || !parsed[9].photo || parsed.some(p => p.name && p.name.includes('Nabhik')));
-    if (needsReset) {
-      localStorage.removeItem('nabhik_matrimonial_profiles');
-      localStorage.removeItem('nabhik_matrimonial_currentUser');
-    }
+let saveTimeout = null;
+function saveStateToServer() {
+  // Populate cache from current state
+  if (typeof state !== 'undefined') {
+    Object.keys(state).forEach(key => {
+      storage.cache[key] = state[key];
+    });
   }
-} catch (e) {
-  console.error("Failed to check or clear localStorage profiles", e);
+  
+  return new Promise((resolve) => {
+    if (saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(storage.cache)
+        });
+        resolve(await res.json());
+      } catch (e) {
+        console.error("Failed to save state to SQLite database:", e);
+        resolve({ error: e.message });
+      }
+    }, 100);
+  });
 }
 
-// Force update stories in localStorage if they don't match initialStories photos (to handle version transitions)
-try {
-  const storedStories = localStorage.getItem('nabhik_matrimonial_stories');
-  if (storedStories) {
-    const parsedStories = JSON.parse(storedStories);
-    const needsReset = !Array.isArray(parsedStories) || 
-                       parsedStories.length !== initialStories.length || 
-                       parsedStories.some((s, idx) => {
-                         const expected = initialStories[idx];
-                         return !expected || s.photo !== expected.photo;
-                       });
-    if (needsReset) {
-      localStorage.removeItem('nabhik_matrimonial_stories');
+async function loadStateFromServer() {
+  try {
+    const res = await fetch('/api/state');
+    const serverState = await res.json();
+    if (!serverState || Object.keys(serverState).length === 0) {
+      // First time initialization: save seed state to server
+      await saveStateToServer();
+    } else {
+      // Load state from server
+      Object.entries(serverState).forEach(([key, val]) => {
+        storage.cache[key] = val;
+      });
+      // Copy loaded values into state object
+      if (typeof state !== 'undefined') {
+        Object.keys(state).forEach(key => {
+          if (storage.cache[key] !== undefined) {
+            state[key] = storage.cache[key];
+          }
+        });
+      }
     }
+  } catch (e) {
+    console.error("Failed to load state from SQLite server, using local defaults:", e);
   }
-} catch (e) {
-  console.error("Failed to check or clear localStorage stories", e);
 }
 
 // Seed Plans for Dynamic Membership Management
