@@ -2788,17 +2788,11 @@ function renderRegister(container) {
             </div>
           </div>
           
-          <h3 style="font-size: 1.1rem; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px; margin: 24px 0 16px 0;">${t('Upload Profiles & Biodata', 'फोटो आणि बायोडाटा अपलोड करा')}</h3>
+          <h3 style="font-size: 1.1rem; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px; margin: 24px 0 16px 0;">${t('Upload Profile Photo', 'प्रोफाइल फोटो अपलोड करा')}</h3>
           
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>${t('Profile Photo', 'प्रोफाइल फोटो')}</label>
-              <input type="file" accept="image/*" id="reg-photo">
-            </div>
-            <div class="form-group">
-              <label>${t('Biodata PDF (Optional)', 'बायोडाटा पीडीएफ (पर्यायी)')}</label>
-              <input type="file" accept=".pdf" id="reg-biodata">
-            </div>
+          <div class="form-group">
+            <label>${t('Profile Photo', 'प्रोफाइल फोटो')}</label>
+            <input type="file" accept="image/*" id="reg-photo">
           </div>
           
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 1.05rem; padding: 14px;">${t('Register Account', 'खाते नोंदणी करा')}</button>
