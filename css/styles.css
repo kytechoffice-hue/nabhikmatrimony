@@ -1273,6 +1273,7 @@ img {
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   margin-top: 48px;
+  margin-bottom: 80px;
 }
 
 .vm-card {
