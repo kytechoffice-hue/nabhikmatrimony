@@ -324,9 +324,7 @@ const initialPlans = [
     features: [
       { text: 'Create Profile', included: true },
       { text: 'Search Profiles', included: true },
-      { text: 'Send Interest', included: true },
-      { text: 'View Contact Details', included: false },
-      { text: 'Chat with Members', included: false }
+      { text: 'Send Interest', included: true }
     ],
     ctaText: 'Register Free',
     active: true
