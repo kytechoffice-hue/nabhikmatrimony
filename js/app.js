@@ -1150,6 +1150,19 @@ window.calculateAge = function(dobString) {
   return age;
 };
 
+// Global accordion toggle helper for forms
+window.toggleAccordionSection = function(header) {
+  const content = header.nextElementSibling;
+  const icon = header.querySelector('.accordion-icon');
+  if (content.classList.contains('active')) {
+    content.classList.remove('active');
+    if (icon) icon.textContent = '▼';
+  } else {
+    content.classList.add('active');
+    if (icon) icon.textContent = '▲';
+  }
+};
+
 // Global navigation helper
 window.navigateTo = function(path) {
   if (window.location.pathname + window.location.search === path) return;
