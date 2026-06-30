@@ -5398,12 +5398,15 @@ function handleSelectPlan(planName, price) {
     return;
   }
   
+  // Automatically purchase membership in the background to mock the backend update
+  stateActions.purchaseMembership(planName, price);
+  
   const overlay = document.getElementById('modal-system-overlay');
   if (!overlay) return;
   
   overlay.innerHTML = `
     <div class="modal-content" style="max-width: 440px; border-radius: 20px; padding: 32px;">
-      <button class="modal-close-btn" onclick="closeModal()">×</button>
+      <button class="modal-close-btn" onclick="closeModal(); initRouter();">×</button>
       <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif); text-align: center; margin-bottom: 4px;">Premium Checkout</h3>
       <p style="font-size: 0.85rem; color: var(--color-text-muted); text-align: center; margin-bottom: 20px;">Scan QR to pay for ${planName} Plan</p>
       
@@ -5471,46 +5474,14 @@ function handleSelectPlan(planName, price) {
           <li>Scan the QR code above with Google Pay, PhonePe, Paytm, or BHIM.</li>
           <li>Enter exact amount: <strong style="color: var(--color-maroon); font-size: 0.95rem;">₹${price}</strong></li>
           <li>Verify payment to account: <strong style="color: #2e7d32;">Nabhik Matrimony</strong></li>
-          <li>Once paid successfully, click the button below to submit request.</li>
         </ul>
       </div>
       
-      <form onsubmit="handleUPIPaymentSubmit(event, '${planName}', ${price})">
-        <button type="submit" class="plan-action-btn btn-gold-solid" style="width: 100%; border-radius: 10px; font-weight: 700; font-size: 1.0rem;">I Have Done Payment</button>
-      </form>
-    </div>
-  `;
-  overlay.classList.add('active');
-}
-
-// Complete payment verification submit
-function handleUPIPaymentSubmit(e, planName, price) {
-  e.preventDefault();
-  closeModal(true);
-  
-  // Apply membership status to user state
-  stateActions.purchaseMembership(planName, price);
-  
-  // Show successful submit confirmation message
-  showPaymentSuccessModal(planName, price);
-}
-
-// Show post-payment receipt message
-function showPaymentSuccessModal(planName, price) {
-  const overlay = document.getElementById('modal-system-overlay');
-  if (!overlay) return;
-  
-  overlay.innerHTML = `
-    <div class="modal-content" style="max-width: 440px; text-align: center; padding: 40px 32px; border-radius: 20px;">
-      <div style="width: 72px; height: 72px; border-radius: 50%; background-color: #ebfbee; color: #2b8a3e; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; font-size: 2.2rem; box-shadow: 0 4px 10px rgba(43,138,62,0.15); font-weight: bold;">
-        ✓
+      <div style="text-align: center; font-size: 1.0rem; font-weight: 700; color: #b28d15; padding: 14px; border-radius: 10px; border: 1.5px solid #d4af37; background-color: #fffdf4; margin-bottom: 16px; line-height: 1.4;">
+        Wait for 30 min we will update all details
       </div>
-      <h3 style="font-size: 1.4rem; color: var(--color-maroon-dark); font-family: var(--font-serif); margin-bottom: 12px; font-weight: 700;">Payment Done Successfully!</h3>
-      <p style="font-size: 0.9rem; color: #444444; line-height: 1.6; margin-bottom: 24px;">
-        Thank you! Your payment of <strong>₹${price}</strong> for the <strong>${planName}</strong> plan has been submitted successfully. 
-        Our administration will verify the transaction and activate your premium status shortly.
-      </p>
-      <button class="plan-action-btn btn-gold-solid" onclick="closeModal(); initRouter();" style="width: 100%; font-weight: 700; border-radius: 10px;">OK, Got It</button>
+      
+      <button onclick="closeModal(); initRouter();" class="plan-action-btn btn-gold-solid" style="width: 100%; border-radius: 10px; font-weight: 700;">Close</button>
     </div>
   `;
   overlay.classList.add('active');
