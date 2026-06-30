@@ -1,0 +1,25 @@
+{
+  "name": "nm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kytechoffice-hue/nabhikmatrimony.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kytechoffice-hue/nabhikmatrimony/issues"
+  },
+  "homepage": "https://github.com/kytechoffice-hue/nabhikmatrimony#readme",
+  "dependencies": {
+    "sqlite3": "^6.0.1"
+  }
+}

@@ -5,3 +5,9 @@ git/
 *.log
 .DS_Store
 Thumbs.db
+
+# Dependency directory
+node_modules/
+
+# Local databases
+*.db

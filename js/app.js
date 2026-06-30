@@ -1406,10 +1406,26 @@ window.navigateTo = function(path) {
   initRouter();
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Listen for popstate changes (History API)
   window.addEventListener('popstate', initRouter);
   
+  // Clear any legacy client data in localStorage to comply with SQLite-only directive
+  try {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('nabhik_matrimonial_') || key === 'last_ticket_number') {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch (e) {
+    console.warn("localStorage clear failed:", e);
+  }
+
+  // Load state from backend SQLite DB before first route render
+  if (typeof loadStateFromServer !== 'undefined') {
+    await loadStateFromServer();
+  }
+
   // Redirect old hash routes to clean path URLs for backwards compatibility
   if (window.location.hash.startsWith('#/')) {
     const cleanPath = window.location.hash.substring(2) || '/';
@@ -5486,10 +5502,8 @@ function handleContactSubmit(e) {
   const inquiry = document.getElementById('contact-inquiry').value;
   const message = document.getElementById('contact-message').value;
   
-  // Get and increment ticket number
-  let ticketNumber = localStorage.getItem('last_ticket_number') || 0;
-  ticketNumber = parseInt(ticketNumber) + 1;
-  localStorage.setItem('last_ticket_number', ticketNumber);
+  // Get and increment ticket number from state
+  const ticketNumber = (state.tickets.length ? Math.max(...state.tickets.map(t => t.id)) : 0) + 1;
   const paddedTicketNumber = String(ticketNumber).padStart(4, '0');
   
   const ticketSubjectName = `Ticket No : ${paddedTicketNumber} - ${inquiry}`;
