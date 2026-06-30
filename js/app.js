@@ -1457,10 +1457,9 @@ function initRouter() {
    VIEW RENDERERS
    ========================================================================== */
 
-// 1. HOME VIEW
 function renderHome(container) {
-  // Grab featured profiles for homepage slider
-  const featured = state.profiles.filter(p => p.featured && (!state.currentUser || p.id !== state.currentUser.id));
+  // Grab featured profiles for homepage slider (only verified, non-current-user profiles)
+  const featured = state.profiles.filter(p => p.featured && p.verified && (!state.currentUser || p.id !== state.currentUser.id));
   const featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
@@ -1524,6 +1523,7 @@ function renderHome(container) {
       </div>
     </section>
 
+    ${featured.length > 0 ? `
     <!-- Featured Profiles Section -->
     <section class="section-padding bg-maroon-section">
       <div class="container">
@@ -1543,6 +1543,7 @@ function renderHome(container) {
         </div>
       </div>
     </section>
+    ` : ''}
 
     <!-- Success Stories -->
     <section class="section-padding bg-maroon-section" style="border-top: 8px solid #ffffff;">
