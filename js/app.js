@@ -5402,72 +5402,118 @@ function handleSelectPlan(planName, price) {
   if (!overlay) return;
   
   overlay.innerHTML = `
-    <div class="modal-content" style="max-width: 440px;">
+    <div class="modal-content" style="max-width: 440px; border-radius: 20px; padding: 32px;">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
       <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif); text-align: center; margin-bottom: 4px;">Premium Checkout</h3>
-      <p style="font-size: 0.85rem; color: var(--color-text-muted); text-align: center; margin-bottom: 20px;">Upgrading to ${planName} Plan for ₹${price}</p>
+      <p style="font-size: 0.85rem; color: var(--color-text-muted); text-align: center; margin-bottom: 20px;">Scan QR to pay for ${planName} Plan</p>
       
-      <!-- Credit Card Mockup -->
-      <div class="payment-card-visual">
-        <div class="card-chip"></div>
-        <div class="card-number-preview" id="cc-num-preview">XXXX XXXX XXXX XXXX</div>
-        <div class="card-bottom-row">
-          <div>
-            <span style="font-size: 0.6rem; display: block; opacity: 0.7;">Card Holder</span>
-            <span id="cc-name-preview" style="font-weight: 600;">${state.currentUser.name}</span>
-          </div>
-          <div>
-            <span style="font-size: 0.6rem; display: block; opacity: 0.7;">Expires</span>
-            <span id="cc-exp-preview" style="font-weight: 600;">12/28</span>
+      <!-- QR Scanner Mockup -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="qr-code-wrapper">
+          <div class="scanner-laser"></div>
+          <div style="background:#fff; padding:16px; border-radius:12px; display:inline-block; box-shadow:0 4px 12px rgba(0,0,0,0.06); border: 1.5px dashed var(--color-gold);">
+            <svg viewBox="0 0 100 100" width="160" height="160">
+              <!-- Outer corner squares (Position indicators) -->
+              <!-- Top-Left -->
+              <rect x="10" y="10" width="25" height="25" fill="#5c0a13" rx="2" />
+              <rect x="15" y="15" width="15" height="15" fill="#ffffff" rx="1" />
+              <rect x="18" y="18" width="9" height="9" fill="#d4af37" rx="0.5" />
+              <!-- Top-Right -->
+              <rect x="65" y="10" width="25" height="25" fill="#5c0a13" rx="2" />
+              <rect x="70" y="15" width="15" height="15" fill="#ffffff" rx="1" />
+              <rect x="73" y="18" width="9" height="9" fill="#d4af37" rx="0.5" />
+              <!-- Bottom-Left -->
+              <rect x="10" y="65" width="25" height="25" fill="#5c0a13" rx="2" />
+              <rect x="15" y="70" width="15" height="15" fill="#ffffff" rx="1" />
+              <rect x="18" y="73" width="9" height="9" fill="#d4af37" rx="0.5" />
+              <!-- Random QR pixels mockup pattern -->
+              <rect x="42" y="10" width="6" height="6" fill="#111111" />
+              <rect x="52" y="15" width="6" height="6" fill="#111111" />
+              <rect x="42" y="25" width="6" height="6" fill="#d4af37" />
+              <rect x="48" y="28" width="6" height="6" fill="#111111" />
+              <rect x="54" y="22" width="6" height="6" fill="#111111" />
+              
+              <rect x="10" y="42" width="6" height="6" fill="#111111" />
+              <rect x="22" y="42" width="6" height="6" fill="#d4af37" />
+              <rect x="16" y="48" width="6" height="6" fill="#111111" />
+              <rect x="28" y="52" width="6" height="6" fill="#111111" />
+              
+              <rect x="42" y="42" width="16" height="16" fill="#5c0a13" rx="1" />
+              <rect x="46" y="46" width="8" height="8" fill="#ffffff" rx="0.5" />
+              <rect x="49" y="49" width="2" height="2" fill="#d4af37" />
+              
+              <rect x="65" y="42" width="6" height="6" fill="#111111" />
+              <rect x="75" y="48" width="6" height="6" fill="#d4af37" />
+              <rect x="85" y="42" width="6" height="6" fill="#111111" />
+              <rect x="70" y="52" width="6" height="6" fill="#111111" />
+              <rect x="80" y="54" width="6" height="6" fill="#111111" />
+              
+              <rect x="42" y="65" width="6" height="6" fill="#111111" />
+              <rect x="52" y="70" width="6" height="6" fill="#d4af37" />
+              <rect x="48" y="76" width="6" height="6" fill="#111111" />
+              <rect x="54" y="82" width="6" height="6" fill="#111111" />
+              
+              <rect x="65" y="65" width="6" height="6" fill="#111111" />
+              <rect x="75" y="72" width="6" height="6" fill="#111111" />
+              <rect x="85" y="68" width="6" height="6" fill="#d4af37" />
+              <rect x="70" y="78" width="6" height="6" fill="#111111" />
+              <rect x="80" y="80" width="6" height="6" fill="#111111" />
+              <rect x="65" y="86" width="12" height="4" fill="#5c0a13" />
+              <rect x="82" y="86" width="8" height="4" fill="#d4af37" />
+            </svg>
           </div>
         </div>
       </div>
       
-      <form onsubmit="handleCreditCardPaySubmit(event, '${planName}', ${price})">
-        <div class="form-group">
-          <label>Card Number</label>
-          <input type="text" id="pay-cc-num" maxlength="19" placeholder="4111 2222 3333 4444" required oninput="updateCardVisualNum(this.value)">
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label>Expiry Date</label>
-            <input type="text" placeholder="MM/YY" maxlength="5" required>
-          </div>
-          <div class="form-group">
-            <label>CVV</label>
-            <input type="password" maxlength="3" placeholder="123" required>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; font-weight: 700;">Securely Pay ₹${price}</button>
+      <div style="background-color: #fdfaf2; border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 0.85rem; color: #444444; border: 1.5px solid rgba(212, 175, 55, 0.2);">
+        <p style="margin: 0 0 8px 0; font-weight: 700; color: var(--color-maroon-dark); text-align: center;">UPI Payment Instructions:</p>
+        <ul style="margin: 0; padding-left: 16px; line-height: 1.5; font-weight: 500;">
+          <li>Scan the QR code above with Google Pay, PhonePe, Paytm, or BHIM.</li>
+          <li>Enter exact amount: <strong style="color: var(--color-maroon); font-size: 0.95rem;">₹${price}</strong></li>
+          <li>Verify payment to account: <strong style="color: #2e7d32;">Nabhik Matrimony</strong></li>
+          <li>Once paid successfully, click the button below to submit request.</li>
+        </ul>
+      </div>
+      
+      <form onsubmit="handleUPIPaymentSubmit(event, '${planName}', ${price})">
+        <button type="submit" class="plan-action-btn btn-gold-solid" style="width: 100%; border-radius: 10px; font-weight: 700; font-size: 1.0rem;">I Have Done Payment</button>
       </form>
     </div>
   `;
   overlay.classList.add('active');
 }
 
-// Update card number visual preview
-function updateCardVisualNum(val) {
-  const p = document.getElementById('cc-num-preview');
-  if (p) {
-    p.innerText = val || 'XXXX XXXX XXXX XXXX';
-  }
-}
-
-// Complete payment gateway mockup
-function handleCreditCardPaySubmit(e, planName, price) {
+// Complete payment verification submit
+function handleUPIPaymentSubmit(e, planName, price) {
   e.preventDefault();
   closeModal(true);
+  
+  // Apply membership status to user state
   stateActions.purchaseMembership(planName, price);
   
-  const extraTiers = ['Profile Boost', 'Horoscope Match', 'Profile Verification', 'Homepage Featured Profile'];
-  if (extraTiers.includes(planName)) {
-    showToast(`Success! You have activated the ${planName} add-on.`);
-  } else {
-    showToast(`Congratulations! You are now a ${planName} member.`);
-  }
+  // Show successful submit confirmation message
+  showPaymentSuccessModal(planName, price);
+}
+
+// Show post-payment receipt message
+function showPaymentSuccessModal(planName, price) {
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
   
-  // Router reset to show upgraded states
-  initRouter();
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 440px; text-align: center; padding: 40px 32px; border-radius: 20px;">
+      <div style="width: 72px; height: 72px; border-radius: 50%; background-color: #ebfbee; color: #2b8a3e; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; font-size: 2.2rem; box-shadow: 0 4px 10px rgba(43,138,62,0.15); font-weight: bold;">
+        ✓
+      </div>
+      <h3 style="font-size: 1.4rem; color: var(--color-maroon-dark); font-family: var(--font-serif); margin-bottom: 12px; font-weight: 700;">Payment Done Successfully!</h3>
+      <p style="font-size: 0.9rem; color: #444444; line-height: 1.6; margin-bottom: 24px;">
+        Thank you! Your payment of <strong>₹${price}</strong> for the <strong>${planName}</strong> plan has been submitted successfully. 
+        Our administration will verify the transaction and activate your premium status shortly.
+      </p>
+      <button class="plan-action-btn btn-gold-solid" onclick="closeModal(); initRouter();" style="width: 100%; font-weight: 700; border-radius: 10px;">OK, Got It</button>
+    </div>
+  `;
+  overlay.classList.add('active');
 }
 
 // Function to handle Check Kundali Match compatibility report
