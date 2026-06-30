@@ -3289,176 +3289,251 @@ function switchDashboardTab(tabName) {
       
     case 'edit':
       panel.innerHTML = `
-        <h2>Edit Profile Details</h2>
+        <h2>Marriage Biodata</h2>
         <form onsubmit="handleEditProfileSubmit(event)">
           
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
+          <!-- 2. Profile Information -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">2. Profile Information</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Full Name</label>
               <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
             </div>
             <div class="form-group">
-              <label>Gender</label>
-              <select id="edit-gender">
-                <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male</option>
-                <option value="Female" ${state.currentUser.gender === 'Female' ? 'selected' : ''}>Female</option>
-              </select>
+              <label>Age</label>
+              <input type="number" id="edit-age" value="${state.currentUser.age || ''}" required min="18" max="100">
             </div>
           </div>
+          <div class="form-group">
+            <label>Profile Photo</label>
+            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+          </div>
           
+          <!-- 3. Personal Details -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">3. Personal Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Date of Birth</label>
               <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}">
             </div>
             <div class="form-group">
+              <label>Marital Status</label>
+              <select id="edit-marital-status">
+                <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
+                <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
+                <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
+                <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
               <label>Height</label>
               <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
             </div>
+            <div class="form-group">
+              <label>Weight</label>
+              <input type="text" id="edit-weight" value="${state.currentUser.weight || ''}" placeholder="e.g. 65 kg">
+            </div>
           </div>
-          
           <div class="form-row-2">
             <div class="form-group">
-              <label>Email ID</label>
-              <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+              <label>Blood Group</label>
+              <select id="edit-blood-group">
+                <option value="" ${!state.currentUser.bloodGroup ? 'selected' : ''}>Select Blood Group</option>
+                <option value="A+" ${state.currentUser.bloodGroup === 'A+' ? 'selected' : ''}>A+</option>
+                <option value="A-" ${state.currentUser.bloodGroup === 'A-' ? 'selected' : ''}>A-</option>
+                <option value="B+" ${state.currentUser.bloodGroup === 'B+' ? 'selected' : ''}>B+</option>
+                <option value="B-" ${state.currentUser.bloodGroup === 'B-' ? 'selected' : ''}>B-</option>
+                <option value="AB+" ${state.currentUser.bloodGroup === 'AB+' ? 'selected' : ''}>AB+</option>
+                <option value="AB-" ${state.currentUser.bloodGroup === 'AB-' ? 'selected' : ''}>AB-</option>
+                <option value="O+" ${state.currentUser.bloodGroup === 'O+' ? 'selected' : ''}>O+</option>
+                <option value="O-" ${state.currentUser.bloodGroup === 'O-' ? 'selected' : ''}>O-</option>
+              </select>
             </div>
             <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}">
+              <label>Nationality</label>
+              <input type="text" id="edit-nationality" value="${state.currentUser.nationality || 'Indian'}">
             </div>
           </div>
-
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Education & Profession</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Education</label>
-              <input type="text" id="edit-education" value="${state.currentUser.education || ''}">
-            </div>
-            <div class="form-group">
-              <label>Profession</label>
-              <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}">
-            </div>
-          </div>
-          
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>City</label>
-              <input type="text" id="edit-city" list="edit-cities-list" value="${state.currentUser.location ? state.currentUser.location.split(',')[0].trim() : ''}" required>
-              <datalist id="edit-cities-list">
-                <option value="Ahmednagar">
-                <option value="Akola">
-                <option value="Alibaug">
-                <option value="Amalner">
-                <option value="Amravati">
-                <option value="Aurangabad">
-                <option value="Baramati">
-                <option value="Beed">
-                <option value="Bhandara">
-                <option value="Bhiwandi">
-                <option value="Bhusawal">
-                <option value="Chandrapur">
-                <option value="Dhule">
-                <option value="Gondia">
-                <option value="Hingoli">
-                <option value="Ichalkaranji">
-                <option value="Jalgaon">
-                <option value="Jalna">
-                <option value="Kalyan-Dombivli">
-                <option value="Karad">
-                <option value="Karjat">
-                <option value="Kolhapur">
-                <option value="Latur">
-                <option value="Lonavala">
-                <option value="Mahabaleshwar">
-                <option value="Malegaon">
-                <option value="Matheran">
-                <option value="Mira-Bhayandar">
-                <option value="Mumbai">
-                <option value="Nagpur">
-                <option value="Nanded">
-                <option value="Nashik">
-                <option value="Navi Mumbai">
-                <option value="Osmanabad">
-                <option value="Palghar">
-                <option value="Pandharpur">
-                <option value="Panvel">
-                <option value="Parbhani">
-                <option value="Pune">
-                <option value="Ratnagiri">
-                <option value="Sangli">
-                <option value="Satara">
-                <option value="Shirdi">
-                <option value="Shrirampur">
-                <option value="Solapur">
-                <option value="Thane">
-                <option value="Ulhasnagar">
-                <option value="Wardha">
-                <option value="Washim">
-                <option value="Yavatmal">
-              </datalist>
-            </div>
-            <div class="form-group">
-              <label>Annual Income</label>
-              <input type="text" id="edit-income" value="${state.currentUser.income || ''}">
-            </div>
-          </div>
-
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Religion & Family Background</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Religion</label>
               <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}">
             </div>
             <div class="form-group">
-              <label>Community / Caste</label>
-              <input type="text" id="edit-community" value="${state.currentUser.community || 'Nabhik'}">
+              <label>Caste</label>
+              <input type="text" id="edit-caste" value="${state.currentUser.caste || state.currentUser.community || 'Nabhik'}">
             </div>
           </div>
-          
           <div class="form-row-2">
             <div class="form-group">
-              <label>Father's Name</label>
-              <input type="text" id="edit-father" value="${state.currentUser.fatherName || ''}">
+              <label>Sub-Caste</label>
+              <input type="text" id="edit-sub-caste" value="${state.currentUser.subCaste || ''}">
             </div>
             <div class="form-group">
-              <label>Mother's Name</label>
-              <input type="text" id="edit-mother" value="${state.currentUser.motherName || ''}">
+              <label>Mother Tongue</label>
+              <input type="text" id="edit-mother-tongue" value="${state.currentUser.motherTongue || 'Marathi'}">
             </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Native Place / Ancestral Town</label>
-            <input type="text" id="edit-native" value="${state.currentUser.nativePlace || ''}">
           </div>
 
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Lifestyle & Habits</h3>
+          <!-- 4. Education -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">4. Education</h3>
           <div class="form-row-2">
             <div class="form-group">
-              <label>Lifestyle & Food Preference</label>
+              <label>Highest Qualification</label>
+              <input type="text" id="edit-qualification" value="${state.currentUser.qualification || state.currentUser.education || ''}" placeholder="e.g. B.E / MBA">
+            </div>
+            <div class="form-group">
+              <label>Specialization / Stream</label>
+              <input type="text" id="edit-specialization" value="${state.currentUser.specialization || ''}" placeholder="e.g. Computer Science">
+            </div>
+          </div>
+
+          <!-- 5. Occupation -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">5. Occupation</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Profession</label>
+              <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}" placeholder="e.g. Software Engineer">
+            </div>
+            <div class="form-group">
+              <label>Company Name</label>
+              <input type="text" id="edit-company" value="${state.currentUser.company || ''}" placeholder="e.g. TCS / Self-Employed">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Annual Income</label>
+            <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
+          </div>
+
+          <!-- 6. Family Details -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">6. Family Details</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Father's Name & Occupation</label>
+              <input type="text" id="edit-father" value="${state.currentUser.fatherName || ''}" placeholder="e.g. Ramesh Patil (Retired)">
+            </div>
+            <div class="form-group">
+              <label>Mother's Name & Occupation</label>
+              <input type="text" id="edit-mother" value="${state.currentUser.motherName || ''}" placeholder="e.g. Sunita Patil (Housewife)">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Brother(s)</label>
+              <input type="text" id="edit-brothers" value="${state.currentUser.brothers || ''}" placeholder="e.g. 1 (Married) / None">
+            </div>
+            <div class="form-group">
+              <label>Sister(s)</label>
+              <input type="text" id="edit-sisters" value="${state.currentUser.sisters || ''}" placeholder="e.g. 1 (Unmarried) / None">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Family Type</label>
+            <select id="edit-family-type">
+              <option value="Nuclear" ${state.currentUser.familyType === 'Nuclear' ? 'selected' : ''}>Nuclear</option>
+              <option value="Joint" ${state.currentUser.familyType === 'Joint' ? 'selected' : ''}>Joint</option>
+            </select>
+          </div>
+
+          <!-- 7. Lifestyle -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">7. Lifestyle</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Food Preference (Vegetarian/Non-Vegetarian)</label>
               <select id="edit-food">
                 <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
                 <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
+                <option value="Eggetarian" ${state.currentUser.foodPreference === 'Eggetarian' ? 'selected' : ''}>Eggetarian</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Smoking / Drinking Habits</label>
-              <input type="text" id="edit-habits" value="${state.currentUser.smokingDrinking || 'No Smoking / No Drinking'}">
+              <label>Smoking Habit</label>
+              <select id="edit-smoking">
+                <option value="No" ${state.currentUser.smoking === 'No' ? 'selected' : ''}>No</option>
+                <option value="Yes" ${state.currentUser.smoking === 'Yes' ? 'selected' : ''}>Yes</option>
+                <option value="Occasionally" ${state.currentUser.smoking === 'Occasionally' ? 'selected' : ''}>Occasionally</option>
+              </select>
             </div>
           </div>
-          
           <div class="form-group">
-            <label>Hobbies & Interests</label>
-            <input type="text" id="edit-hobbies" value="${state.currentUser.hobbies || ''}" placeholder="e.g. Reading, Traveling, Music">
+            <label>Drinking Habit</label>
+            <select id="edit-drinking">
+              <option value="No" ${state.currentUser.drinking === 'No' ? 'selected' : ''}>No</option>
+              <option value="Yes" ${state.currentUser.drinking === 'Yes' ? 'selected' : ''}>Yes</option>
+              <option value="Socially" ${state.currentUser.drinking === 'Socially' ? 'selected' : ''}>Socially</option>
+            </select>
           </div>
 
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Profile Photo</h3>
+          <!-- 8. Hobbies -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">8. Hobbies</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Hobby 1</label>
+              <input type="text" id="edit-hobby-1" value="${state.currentUser.hobby1 || ''}">
+            </div>
+            <div class="form-group">
+              <label>Hobby 2</label>
+              <input type="text" id="edit-hobby-2" value="${state.currentUser.hobby2 || ''}">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Hobby 3</label>
+              <input type="text" id="edit-hobby-3" value="${state.currentUser.hobby3 || ''}">
+            </div>
+            <div class="form-group">
+              <label>Hobby 4</label>
+              <input type="text" id="edit-hobby-4" value="${state.currentUser.hobby4 || ''}">
+            </div>
+          </div>
+
+          <!-- 9. Partner Expectations -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">9. Partner Expectations</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Preferred Education</label>
+              <input type="text" id="edit-partner-education" value="${state.currentUser.partnerEducation || ''}" placeholder="e.g. Graduate / Post Graduate">
+            </div>
+            <div class="form-group">
+              <label>Preferred Profession</label>
+              <input type="text" id="edit-partner-profession" value="${state.currentUser.partnerProfession || ''}" placeholder="e.g. IT Professional / Business">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Family Values</label>
+              <select id="edit-partner-values">
+                <option value="Moderate" ${state.currentUser.partnerValues === 'Moderate' ? 'selected' : ''}>Moderate</option>
+                <option value="Traditional" ${state.currentUser.partnerValues === 'Traditional' ? 'selected' : ''}>Traditional</option>
+                <option value="Liberal" ${state.currentUser.partnerValues === 'Liberal' ? 'selected' : ''}>Liberal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Other Expectations</label>
+              <input type="text" id="edit-partner-expectations" value="${state.currentUser.partnerExpectations || ''}" placeholder="e.g. Simple nature, ready to settle in Pune">
+            </div>
+          </div>
+
+          <!-- 10. Contact Details -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">10. Contact Details</h3>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+            </div>
+          </div>
           <div class="form-group">
-            <label>Upload New Photo</label>
-            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+            <label>Residential Address</label>
+            <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
           </div>
           
-          <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 220px; font-size: 0.95rem; padding: 10px 20px;">Save Profile Changes</button>
+          <button type="submit" class="btn btn-primary" style="margin-top: 25px; width: 240px; font-size: 1rem; padding: 12px 24px; font-weight: 600; border-radius: 6px;">Save Profile Changes</button>
         </form>
       `;
       break;
@@ -5844,52 +5919,103 @@ function handleCheckKundaliMatch(profileId) {
 function handleEditProfileSubmit(e) {
   e.preventDefault();
   
+  // Extract all fields
   const name = document.getElementById('edit-name').value;
-  const gender = document.getElementById('edit-gender').value;
+  const age = document.getElementById('edit-age').value;
   const dob = document.getElementById('edit-dob').value;
+  const maritalStatus = document.getElementById('edit-marital-status').value;
   const height = document.getElementById('edit-height').value;
-  const email = document.getElementById('edit-email').value;
-  const mobile = document.getElementById('edit-mobile').value;
-  
-  const edu = document.getElementById('edit-education').value;
-  const prof = document.getElementById('edit-profession').value;
-  const city = document.getElementById('edit-city').value;
-  const inc = document.getElementById('edit-income').value;
-  
+  const weight = document.getElementById('edit-weight').value;
+  const bloodGroup = document.getElementById('edit-blood-group').value;
+  const nationality = document.getElementById('edit-nationality').value;
   const religion = document.getElementById('edit-religion').value;
-  const community = document.getElementById('edit-community').value;
+  const caste = document.getElementById('edit-caste').value;
+  const subCaste = document.getElementById('edit-sub-caste').value;
+  const motherTongue = document.getElementById('edit-mother-tongue').value;
+  
+  const qualification = document.getElementById('edit-qualification').value;
+  const specialization = document.getElementById('edit-specialization').value;
+  
+  const profession = document.getElementById('edit-profession').value;
+  const company = document.getElementById('edit-company').value;
+  const income = document.getElementById('edit-income').value;
+  
   const father = document.getElementById('edit-father').value;
   const mother = document.getElementById('edit-mother').value;
-  const native = document.getElementById('edit-native').value;
+  const brothers = document.getElementById('edit-brothers').value;
+  const sisters = document.getElementById('edit-sisters').value;
+  const familyType = document.getElementById('edit-family-type').value;
   
   const food = document.getElementById('edit-food').value;
-  const habits = document.getElementById('edit-habits').value;
-  const hobbies = document.getElementById('edit-hobbies').value;
+  const smoking = document.getElementById('edit-smoking').value;
+  const drinking = document.getElementById('edit-drinking').value;
+  
+  const hobby1 = document.getElementById('edit-hobby-1').value;
+  const hobby2 = document.getElementById('edit-hobby-2').value;
+  const hobby3 = document.getElementById('edit-hobby-3').value;
+  const hobby4 = document.getElementById('edit-hobby-4').value;
+  
+  const partnerEducation = document.getElementById('edit-partner-education').value;
+  const partnerProfession = document.getElementById('edit-partner-profession').value;
+  const partnerValues = document.getElementById('edit-partner-values').value;
+  const partnerExpectations = document.getElementById('edit-partner-expectations').value;
+  
+  const mobile = document.getElementById('edit-mobile').value;
+  const email = document.getElementById('edit-email').value;
+  const address = document.getElementById('edit-address').value;
   
   const photoInput = document.getElementById('edit-photo');
   
   function proceed(photoBase64) {
+    // Populate state.currentUser
     state.currentUser.name = name;
-    state.currentUser.gender = gender;
+    state.currentUser.age = age;
     state.currentUser.dob = dob;
+    state.currentUser.maritalStatus = maritalStatus;
     state.currentUser.height = height;
-    state.currentUser.emailId = email;
-    state.currentUser.mobile = mobile;
-    
-    state.currentUser.education = edu;
-    state.currentUser.profession = prof;
-    state.currentUser.location = `${city}, Maharashtra`;
-    state.currentUser.income = inc;
-    
+    state.currentUser.weight = weight;
+    state.currentUser.bloodGroup = bloodGroup;
+    state.currentUser.nationality = nationality;
     state.currentUser.religion = religion;
-    state.currentUser.community = community;
+    state.currentUser.caste = caste;
+    state.currentUser.community = caste; // Backwards compatibility with previous code
+    state.currentUser.subCaste = subCaste;
+    state.currentUser.motherTongue = motherTongue;
+    
+    state.currentUser.qualification = qualification;
+    state.currentUser.education = qualification; // Backwards compatibility
+    state.currentUser.specialization = specialization;
+    
+    state.currentUser.profession = profession;
+    state.currentUser.company = company;
+    state.currentUser.income = income;
+    
     state.currentUser.fatherName = father;
     state.currentUser.motherName = mother;
-    state.currentUser.nativePlace = native;
+    state.currentUser.brothers = brothers;
+    state.currentUser.sisters = sisters;
+    state.currentUser.familyType = familyType;
     
     state.currentUser.foodPreference = food;
-    state.currentUser.smokingDrinking = habits;
-    state.currentUser.hobbies = hobbies;
+    state.currentUser.smoking = smoking;
+    state.currentUser.drinking = drinking;
+    state.currentUser.smokingDrinking = `Smoking: ${smoking} / Drinking: ${drinking}`; // Backwards compatibility
+    
+    state.currentUser.hobby1 = hobby1;
+    state.currentUser.hobby2 = hobby2;
+    state.currentUser.hobby3 = hobby3;
+    state.currentUser.hobby4 = hobby4;
+    state.currentUser.hobbies = [hobby1, hobby2, hobby3, hobby4].filter(Boolean).join(', '); // Backwards compatibility
+    
+    state.currentUser.partnerEducation = partnerEducation;
+    state.currentUser.partnerProfession = partnerProfession;
+    state.currentUser.partnerValues = partnerValues;
+    state.currentUser.partnerExpectations = partnerExpectations;
+    
+    state.currentUser.mobile = mobile;
+    state.currentUser.emailId = email;
+    state.currentUser.address = address;
+    state.currentUser.location = address; // Backwards compatibility
     
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
@@ -5901,7 +6027,7 @@ function handleEditProfileSubmit(e) {
     
     const sidebarPhoto = document.getElementById('db-sidebar-user-photo');
     if (sidebarPhoto) {
-      sidebarPhoto.src = state.currentUser.photo || getSvgAvatar(gender, state.currentUser.id, name);
+      sidebarPhoto.src = state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, name);
       sidebarPhoto.alt = name;
     }
     
