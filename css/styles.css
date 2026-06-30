@@ -1550,6 +1550,59 @@ img {
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
+/* Accordion Form Layout */
+.accordion-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 15px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.accordion-header {
+  background-color: #fdfaf2;
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.accordion-header:hover {
+  background-color: #f7edd4;
+}
+
+.accordion-header h3 {
+  font-size: 1.05rem;
+  color: var(--color-maroon);
+  font-family: var(--font-serif);
+  margin: 0 !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+.accordion-icon {
+  font-size: 0.8rem;
+  color: var(--color-gold);
+  font-weight: bold;
+}
+
+.accordion-content {
+  padding: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.25s ease, padding 0.3s ease;
+}
+
+.accordion-content.active {
+  padding: 20px;
+  max-height: 2000px;
+  opacity: 1;
+  border-top: 1px solid var(--color-border);
 }
 
 /* Chat interface */

@@ -3054,245 +3054,308 @@ function switchDashboardTab(tabName) {
         <h2>Marriage Biodata</h2>
         <form onsubmit="handleEditProfileSubmit(event)">
           
-          <!-- 2. Profile Information -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">Profile Information</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
+          <!-- Profile Information -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Profile Information</h3>
+              <span class="accordion-icon">▲</span>
             </div>
-            <div class="form-group">
-              <label>Age</label>
-              <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Date of Birth</label>
-              <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
-            </div>
-            <div class="form-group">
-              <label>Marital Status</label>
-              <select id="edit-marital-status">
-                <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
-                <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
-                <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
-                <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Profile Photo</label>
-            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
-          </div>
-          
-          <!-- 3. Personal Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Height</label>
-              <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
-            </div>
-            <div class="form-group">
-              <label>Weight</label>
-              <input type="text" id="edit-weight" value="${state.currentUser.weight || ''}" placeholder="e.g. 65 kg">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Blood Group</label>
-              <select id="edit-blood-group">
-                <option value="" ${!state.currentUser.bloodGroup ? 'selected' : ''}>Select Blood Group</option>
-                <option value="A+" ${state.currentUser.bloodGroup === 'A+' ? 'selected' : ''}>A+</option>
-                <option value="A-" ${state.currentUser.bloodGroup === 'A-' ? 'selected' : ''}>A-</option>
-                <option value="B+" ${state.currentUser.bloodGroup === 'B+' ? 'selected' : ''}>B+</option>
-                <option value="B-" ${state.currentUser.bloodGroup === 'B-' ? 'selected' : ''}>B-</option>
-                <option value="AB+" ${state.currentUser.bloodGroup === 'AB+' ? 'selected' : ''}>AB+</option>
-                <option value="AB-" ${state.currentUser.bloodGroup === 'AB-' ? 'selected' : ''}>AB-</option>
-                <option value="O+" ${state.currentUser.bloodGroup === 'O+' ? 'selected' : ''}>O+</option>
-                <option value="O-" ${state.currentUser.bloodGroup === 'O-' ? 'selected' : ''}>O-</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Nationality</label>
-              <input type="text" id="edit-nationality" value="${state.currentUser.nationality || 'Indian'}">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Religion</label>
-              <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}">
-            </div>
-            <div class="form-group">
-              <label>Caste</label>
-              <input type="text" id="edit-caste" value="${state.currentUser.caste || state.currentUser.community || 'Nabhik'}">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Sub-Caste</label>
-              <input type="text" id="edit-sub-caste" value="${state.currentUser.subCaste || ''}">
-            </div>
-            <div class="form-group">
-              <label>Mother Tongue</label>
-              <input type="text" id="edit-mother-tongue" value="${state.currentUser.motherTongue || 'Marathi'}">
+            <div class="accordion-content active">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
+                </div>
+                <div class="form-group">
+                  <label>Age</label>
+                  <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Date of Birth</label>
+                  <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
+                </div>
+                <div class="form-group">
+                  <label>Marital Status</label>
+                  <select id="edit-marital-status">
+                    <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
+                    <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
+                    <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
+                    <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Profile Photo</label>
+                <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+              </div>
             </div>
           </div>
 
-          <!-- 4. Education -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Education</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Highest Qualification</label>
-              <input type="text" id="edit-qualification" value="${state.currentUser.qualification || state.currentUser.education || ''}" placeholder="e.g. B.E / MBA">
+          <!-- Personal Details -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Personal Details</h3>
+              <span class="accordion-icon">▼</span>
             </div>
-            <div class="form-group">
-              <label>Specialization / Stream</label>
-              <input type="text" id="edit-specialization" value="${state.currentUser.specialization || ''}" placeholder="e.g. Computer Science">
-            </div>
-          </div>
-
-          <!-- 5. Occupation -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Occupation</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Profession</label>
-              <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}" placeholder="e.g. Software Engineer">
-            </div>
-            <div class="form-group">
-              <label>Company Name</label>
-              <input type="text" id="edit-company" value="${state.currentUser.company || ''}" placeholder="e.g. TCS / Self-Employed">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Annual Income</label>
-            <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
-          </div>
-
-          <!-- 6. Family Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Family Details</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Father's Name & Occupation</label>
-              <input type="text" id="edit-father" value="${state.currentUser.fatherName || ''}" placeholder="e.g. Ramesh Patil (Retired)">
-            </div>
-            <div class="form-group">
-              <label>Mother's Name & Occupation</label>
-              <input type="text" id="edit-mother" value="${state.currentUser.motherName || ''}" placeholder="e.g. Sunita Patil (Housewife)">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Brother(s)</label>
-              <input type="text" id="edit-brothers" value="${state.currentUser.brothers || ''}" placeholder="e.g. 1 (Married) / None">
-            </div>
-            <div class="form-group">
-              <label>Sister(s)</label>
-              <input type="text" id="edit-sisters" value="${state.currentUser.sisters || ''}" placeholder="e.g. 1 (Unmarried) / None">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Family Type</label>
-            <select id="edit-family-type">
-              <option value="Nuclear" ${state.currentUser.familyType === 'Nuclear' ? 'selected' : ''}>Nuclear</option>
-              <option value="Joint" ${state.currentUser.familyType === 'Joint' ? 'selected' : ''}>Joint</option>
-            </select>
-          </div>
-
-          <!-- 7. Lifestyle -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Lifestyle</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Food Preference (Vegetarian/Non-Vegetarian)</label>
-              <select id="edit-food">
-                <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
-                <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
-                <option value="Eggetarian" ${state.currentUser.foodPreference === 'Eggetarian' ? 'selected' : ''}>Eggetarian</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Smoking Habit</label>
-              <select id="edit-smoking">
-                <option value="No" ${state.currentUser.smoking === 'No' ? 'selected' : ''}>No</option>
-                <option value="Yes" ${state.currentUser.smoking === 'Yes' ? 'selected' : ''}>Yes</option>
-                <option value="Occasionally" ${state.currentUser.smoking === 'Occasionally' ? 'selected' : ''}>Occasionally</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Drinking Habit</label>
-            <select id="edit-drinking">
-              <option value="No" ${state.currentUser.drinking === 'No' ? 'selected' : ''}>No</option>
-              <option value="Yes" ${state.currentUser.drinking === 'Yes' ? 'selected' : ''}>Yes</option>
-              <option value="Socially" ${state.currentUser.drinking === 'Socially' ? 'selected' : ''}>Socially</option>
-            </select>
-          </div>
-
-          <!-- 8. Hobbies -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Hobbies</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Hobby 1</label>
-              <input type="text" id="edit-hobby-1" value="${state.currentUser.hobby1 || ''}">
-            </div>
-            <div class="form-group">
-              <label>Hobby 2</label>
-              <input type="text" id="edit-hobby-2" value="${state.currentUser.hobby2 || ''}">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Hobby 3</label>
-              <input type="text" id="edit-hobby-3" value="${state.currentUser.hobby3 || ''}">
-            </div>
-            <div class="form-group">
-              <label>Hobby 4</label>
-              <input type="text" id="edit-hobby-4" value="${state.currentUser.hobby4 || ''}">
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Height</label>
+                  <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
+                </div>
+                <div class="form-group">
+                  <label>Weight</label>
+                  <input type="text" id="edit-weight" value="${state.currentUser.weight || ''}" placeholder="e.g. 65 kg">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Blood Group</label>
+                  <select id="edit-blood-group">
+                    <option value="" ${!state.currentUser.bloodGroup ? 'selected' : ''}>Select Blood Group</option>
+                    <option value="A+" ${state.currentUser.bloodGroup === 'A+' ? 'selected' : ''}>A+</option>
+                    <option value="A-" ${state.currentUser.bloodGroup === 'A-' ? 'selected' : ''}>A-</option>
+                    <option value="B+" ${state.currentUser.bloodGroup === 'B+' ? 'selected' : ''}>B+</option>
+                    <option value="B-" ${state.currentUser.bloodGroup === 'B-' ? 'selected' : ''}>B-</option>
+                    <option value="AB+" ${state.currentUser.bloodGroup === 'AB+' ? 'selected' : ''}>AB+</option>
+                    <option value="AB-" ${state.currentUser.bloodGroup === 'AB-' ? 'selected' : ''}>AB-</option>
+                    <option value="O+" ${state.currentUser.bloodGroup === 'O+' ? 'selected' : ''}>O+</option>
+                    <option value="O-" ${state.currentUser.bloodGroup === 'O-' ? 'selected' : ''}>O-</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Nationality</label>
+                  <input type="text" id="edit-nationality" value="${state.currentUser.nationality || 'Indian'}">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Religion</label>
+                  <input type="text" id="edit-religion" value="${state.currentUser.religion || 'Hindu'}">
+                </div>
+                <div class="form-group">
+                  <label>Caste</label>
+                  <input type="text" id="edit-caste" value="${state.currentUser.caste || state.currentUser.community || 'Nabhik'}">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Sub-Caste</label>
+                  <input type="text" id="edit-sub-caste" value="${state.currentUser.subCaste || ''}">
+                </div>
+                <div class="form-group">
+                  <label>Mother Tongue</label>
+                  <input type="text" id="edit-mother-tongue" value="${state.currentUser.motherTongue || 'Marathi'}">
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- 9. Partner Expectations -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Partner Expectations</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Preferred Education</label>
-              <input type="text" id="edit-partner-education" value="${state.currentUser.partnerEducation || ''}" placeholder="e.g. Graduate / Post Graduate">
+          <!-- Education -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Education</h3>
+              <span class="accordion-icon">▼</span>
             </div>
-            <div class="form-group">
-              <label>Preferred Profession</label>
-              <input type="text" id="edit-partner-profession" value="${state.currentUser.partnerProfession || ''}" placeholder="e.g. IT Professional / Business">
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Family Values</label>
-              <select id="edit-partner-values">
-                <option value="Moderate" ${state.currentUser.partnerValues === 'Moderate' ? 'selected' : ''}>Moderate</option>
-                <option value="Traditional" ${state.currentUser.partnerValues === 'Traditional' ? 'selected' : ''}>Traditional</option>
-                <option value="Liberal" ${state.currentUser.partnerValues === 'Liberal' ? 'selected' : ''}>Liberal</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Other Expectations</label>
-              <input type="text" id="edit-partner-expectations" value="${state.currentUser.partnerExpectations || ''}" placeholder="e.g. Simple nature, ready to settle in Pune">
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Highest Qualification</label>
+                  <input type="text" id="edit-qualification" value="${state.currentUser.qualification || state.currentUser.education || ''}" placeholder="e.g. B.E / MBA">
+                </div>
+                <div class="form-group">
+                  <label>Specialization / Stream</label>
+                  <input type="text" id="edit-specialization" value="${state.currentUser.specialization || ''}" placeholder="e.g. Computer Science">
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- 10. Contact Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Contact Details</h3>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+          <!-- Occupation -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Occupation</h3>
+              <span class="accordion-icon">▼</span>
             </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Profession</label>
+                  <input type="text" id="edit-profession" value="${state.currentUser.profession || ''}" placeholder="e.g. Software Engineer">
+                </div>
+                <div class="form-group">
+                  <label>Company Name</label>
+                  <input type="text" id="edit-company" value="${state.currentUser.company || ''}" placeholder="e.g. TCS / Self-Employed">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Annual Income</label>
+                <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
+              </div>
             </div>
           </div>
-          <div class="form-group">
-            <label>Residential Address</label>
-            <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
+
+          <!-- Family Details -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Family Details</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Father's Name & Occupation</label>
+                  <input type="text" id="edit-father" value="${state.currentUser.fatherName || ''}" placeholder="e.g. Ramesh Patil (Retired)">
+                </div>
+                <div class="form-group">
+                  <label>Mother's Name & Occupation</label>
+                  <input type="text" id="edit-mother" value="${state.currentUser.motherName || ''}" placeholder="e.g. Sunita Patil (Housewife)">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Brother(s)</label>
+                  <input type="text" id="edit-brothers" value="${state.currentUser.brothers || ''}" placeholder="e.g. 1 (Married) / None">
+                </div>
+                <div class="form-group">
+                  <label>Sister(s)</label>
+                  <input type="text" id="edit-sisters" value="${state.currentUser.sisters || ''}" placeholder="e.g. 1 (Unmarried) / None">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Family Type</label>
+                <select id="edit-family-type">
+                  <option value="Nuclear" ${state.currentUser.familyType === 'Nuclear' ? 'selected' : ''}>Nuclear</option>
+                  <option value="Joint" ${state.currentUser.familyType === 'Joint' ? 'selected' : ''}>Joint</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lifestyle -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Lifestyle</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Food Preference (Vegetarian/Non-Vegetarian)</label>
+                  <select id="edit-food">
+                    <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
+                    <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
+                    <option value="Eggetarian" ${state.currentUser.foodPreference === 'Eggetarian' ? 'selected' : ''}>Eggetarian</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Smoking Habit</label>
+                  <select id="edit-smoking">
+                    <option value="No" ${state.currentUser.smoking === 'No' ? 'selected' : ''}>No</option>
+                    <option value="Yes" ${state.currentUser.smoking === 'Yes' ? 'selected' : ''}>Yes</option>
+                    <option value="Occasionally" ${state.currentUser.smoking === 'Occasionally' ? 'selected' : ''}>Occasionally</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Drinking Habit</label>
+                <select id="edit-drinking">
+                  <option value="No" ${state.currentUser.drinking === 'No' ? 'selected' : ''}>No</option>
+                  <option value="Yes" ${state.currentUser.drinking === 'Yes' ? 'selected' : ''}>Yes</option>
+                  <option value="Socially" ${state.currentUser.drinking === 'Socially' ? 'selected' : ''}>Socially</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hobbies -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Hobbies</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Hobby 1</label>
+                  <input type="text" id="edit-hobby-1" value="${state.currentUser.hobby1 || ''}">
+                </div>
+                <div class="form-group">
+                  <label>Hobby 2</label>
+                  <input type="text" id="edit-hobby-2" value="${state.currentUser.hobby2 || ''}">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Hobby 3</label>
+                  <input type="text" id="edit-hobby-3" value="${state.currentUser.hobby3 || ''}">
+                </div>
+                <div class="form-group">
+                  <label>Hobby 4</label>
+                  <input type="text" id="edit-hobby-4" value="${state.currentUser.hobby4 || ''}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Partner Expectations -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Partner Expectations</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Preferred Education</label>
+                  <input type="text" id="edit-partner-education" value="${state.currentUser.partnerEducation || ''}" placeholder="e.g. Graduate / Post Graduate">
+                </div>
+                <div class="form-group">
+                  <label>Preferred Profession</label>
+                  <input type="text" id="edit-partner-profession" value="${state.currentUser.partnerProfession || ''}" placeholder="e.g. IT Professional / Business">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Family Values</label>
+                  <select id="edit-partner-values">
+                    <option value="Moderate" ${state.currentUser.partnerValues === 'Moderate' ? 'selected' : ''}>Moderate</option>
+                    <option value="Traditional" ${state.currentUser.partnerValues === 'Traditional' ? 'selected' : ''}>Traditional</option>
+                    <option value="Liberal" ${state.currentUser.partnerValues === 'Liberal' ? 'selected' : ''}>Liberal</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Other Expectations</label>
+                  <input type="text" id="edit-partner-expectations" value="${state.currentUser.partnerExpectations || ''}" placeholder="e.g. Simple nature, ready to settle in Pune">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Details -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Contact Details</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input type="text" id="edit-mobile" value="${state.currentUser.mobile || ''}" required>
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Residential Address</label>
+                <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
+              </div>
+            </div>
           </div>
           
           <button type="submit" class="btn btn-primary" style="margin-top: 25px; width: 240px; font-size: 1rem; padding: 12px 24px; font-weight: 600; border-radius: 6px;">Save Profile Changes</button>
