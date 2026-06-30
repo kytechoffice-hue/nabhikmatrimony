@@ -1545,7 +1545,7 @@ function renderHome(container) {
     </section>
 
     <!-- Success Stories -->
-    <section class="section-padding bg-maroon-section" style="border-top: 2px solid rgba(255, 255, 255, 0.3);">
+    <section class="section-padding bg-maroon-section" style="border-top: 8px solid #ffffff;">
       <div class="container">
         <div class="featured-header-row">
           <div class="traditional-header">
