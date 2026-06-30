@@ -3462,6 +3462,13 @@ function renderMembership(container) {
     const isCurrent = currentPlan === p.name;
     const priceText = p.price === 0 ? '₹0' : `₹${p.price}`;
     
+    // Modern UI styling selector class
+    let planClass = 'plan-free';
+    if (p.name === 'Silver') planClass = 'plan-silver';
+    else if (p.name === 'Gold') planClass = 'plan-gold';
+    else if (p.name === 'Platinum') planClass = 'plan-platinum';
+    else if (p.name === 'Premium Assisted') planClass = 'plan-assisted';
+    
     // Determine button text and action
     let btnHtml = '';
     if (p.name === 'Free') {
@@ -3537,7 +3544,7 @@ function renderMembership(container) {
     }
 
     return `
-      <div class="membership-card ${p.featured ? 'featured-plan' : ''}">
+      <div class="membership-card ${planClass} ${p.featured ? 'featured-plan' : ''}">
         ${p.featured ? `<div class="plan-ribbon">Most Popular</div>` : ''}
         
         <div class="plan-badge ${p.badgeClass}">
