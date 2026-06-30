@@ -868,10 +868,12 @@ const stateActions = {
   registerUser(userData) {
     // Generate new mock profile
     const newId = state.profiles.length + 1;
+    const computedAge = userData.dob ? calculateAge(userData.dob) : 28;
     const newProfile = {
       id: newId,
       verified: false,
       featured: false,
+      age: computedAge,
       ...userData
     };
     state.profiles.push(newProfile);
@@ -1134,9 +1136,19 @@ function showToast(message) {
 }
 
 
-// ==========================================
-// SECTION 3: APP ROUTER & LOGIC (formerly app.js)
-// Nabhik Matrimonial App Routing & Core Logic
+// Global age calculator from Date of Birth
+window.calculateAge = function(dobString) {
+  if (!dobString) return '';
+  const birthDate = new Date(dobString);
+  if (isNaN(birthDate.getTime())) return '';
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
 
 // Global navigation helper
 window.navigateTo = function(path) {
@@ -3052,7 +3064,7 @@ function switchDashboardTab(tabName) {
             </div>
             <div class="form-group">
               <label>Age</label>
-              <input type="number" id="edit-age" value="${state.currentUser.age || ''}" required min="18" max="100">
+              <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
             </div>
           </div>
           <div class="form-group">
@@ -3065,7 +3077,7 @@ function switchDashboardTab(tabName) {
           <div class="form-row-2">
             <div class="form-group">
               <label>Date of Birth</label>
-              <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}">
+              <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
             </div>
             <div class="form-group">
               <label>Marital Status</label>
