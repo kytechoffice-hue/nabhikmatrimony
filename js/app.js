@@ -438,12 +438,29 @@ const storage = {
 };
 
 let saveTimeout = null;
-function saveStateToServer() {
+function saveStateToServer(immediate = false) {
   // Populate cache from current state
   if (typeof state !== 'undefined') {
     Object.keys(state).forEach(key => {
       storage.cache[key] = state[key];
     });
+  }
+  
+  if (immediate) {
+    if (saveTimeout) clearTimeout(saveTimeout);
+    return (async () => {
+      try {
+        const res = await fetch('/api/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(storage.cache)
+        });
+        return await res.json();
+      } catch (e) {
+        console.error("Failed to save state to SQLite database:", e);
+        return { error: e.message };
+      }
+    })();
   }
   
   return new Promise((resolve) => {
@@ -641,23 +658,25 @@ if (state.profiles) {
 
 // State Updates Helpers
 const stateActions = {
-  saveAll() {
-    storage.set('profiles', state.profiles);
-    storage.set('stories', state.stories);
-    storage.set('events', state.events);
-    storage.set('blogs', state.blogs);
-    storage.set('currentUser', state.currentUser);
-    storage.set('interestsSent', state.interestsSent);
-    storage.set('interestsReceived', state.interestsReceived);
-    storage.set('shortlisted', state.shortlisted);
-    storage.set('activeChats', state.activeChats);
-    storage.set('revenueReport', state.revenueReport);
-    storage.set('plans', state.plans);
-    storage.set('tickets', state.tickets);
-    storage.set('payments', state.payments);
-    storage.set('gateways', state.gateways);
-    storage.set('emailTemplates', state.emailTemplates);
-    storage.set('ads', state.ads);
+  saveAll(immediate = false) {
+    storage.cache['profiles'] = state.profiles;
+    storage.cache['stories'] = state.stories;
+    storage.cache['events'] = state.events;
+    storage.cache['blogs'] = state.blogs;
+    storage.cache['currentUser'] = state.currentUser;
+    storage.cache['interestsSent'] = state.interestsSent;
+    storage.cache['interestsReceived'] = state.interestsReceived;
+    storage.cache['shortlisted'] = state.shortlisted;
+    storage.cache['activeChats'] = state.activeChats;
+    storage.cache['revenueReport'] = state.revenueReport;
+    storage.cache['plans'] = state.plans;
+    storage.cache['tickets'] = state.tickets;
+    storage.cache['payments'] = state.payments;
+    storage.cache['gateways'] = state.gateways;
+    storage.cache['emailTemplates'] = state.emailTemplates;
+    storage.cache['ads'] = state.ads;
+    
+    return saveStateToServer(immediate);
   },
 
   addTicket(ticketData) {
@@ -5764,7 +5783,7 @@ function handleEditProfileSubmit(e) {
   
   const photoInput = document.getElementById('edit-photo');
   
-  function proceed(photoBase64) {
+  async function proceed(photoBase64) {
     // Populate state.currentUser
     state.currentUser.name = name;
     state.currentUser.age = age;
@@ -5837,7 +5856,7 @@ function handleEditProfileSubmit(e) {
       state.profiles.push(state.currentUser);
     }
     
-    stateActions.saveAll();
+    await stateActions.saveAll(true);
     
     showToast('Profile updated successfully!');
     navigateTo('/dashboard?tab=overview');
