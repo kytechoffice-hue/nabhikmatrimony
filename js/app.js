@@ -3536,7 +3536,7 @@ function renderMembership(container) {
         
         <div class="membership-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; max-width: 700px; margin: 0 auto;">
           <!-- Feature 1: Fast Profile Verification -->
-          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-gold);">
+          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-gold); min-height: auto;">
             <div>
               <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
               <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 8px; font-weight: 700;">Fast Profile Verification</h4>
@@ -3549,7 +3549,7 @@ function renderMembership(container) {
           </div>
           
           <!-- Feature 2: Horoscope Compatibility -->
-          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-maroon-dark);">
+          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-maroon-dark); min-height: auto;">
             <div>
               <div style="font-size: 2.5rem; margin-bottom: 16px;">🪐</div>
               <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 8px; font-weight: 700;">Horoscope Compatibility</h4>
