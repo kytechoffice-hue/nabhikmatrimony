@@ -3067,13 +3067,6 @@ function switchDashboardTab(tabName) {
               <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
             </div>
           </div>
-          <div class="form-group">
-            <label>Profile Photo</label>
-            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
-          </div>
-          
-          <!-- 3. Personal Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Date of Birth</label>
@@ -3089,6 +3082,13 @@ function switchDashboardTab(tabName) {
               </select>
             </div>
           </div>
+          <div class="form-group">
+            <label>Profile Photo</label>
+            <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+          </div>
+          
+          <!-- 3. Personal Details -->
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Height</label>
