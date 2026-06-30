@@ -328,7 +328,8 @@ const initialPlans = [
       'Send a Few "Likes"',
       'Simple Compatibility Tips'
     ],
-    ctaText: 'Start Free'
+    ctaText: 'Start Free',
+    active: true
   },
   {
     name: 'Silver',
@@ -345,7 +346,8 @@ const initialPlans = [
       'Basic Horoscope Match',
       'Standard Search Filter'
     ],
-    ctaText: 'Go Silver'
+    ctaText: 'Go Silver',
+    active: true
   },
   {
     name: 'Gold',
@@ -362,7 +364,8 @@ const initialPlans = [
       'Detailed Horoscope Matching',
       'Profile Boosted for 30 Days'
     ],
-    ctaText: 'Go Gold'
+    ctaText: 'Go Gold',
+    active: true
   },
   {
     name: 'Platinum',
@@ -379,7 +382,8 @@ const initialPlans = [
       'Priority Customer Service',
       '3 Profile Boosts (90 days total)'
     ],
-    ctaText: 'Go Platinum'
+    ctaText: 'Go Platinum',
+    active: true
   },
   {
     name: 'Premium Assisted',
@@ -396,7 +400,8 @@ const initialPlans = [
       'Direct Family Meeting Support',
       'Full Privacy Controls Option'
     ],
-    ctaText: 'Choose Assisted'
+    ctaText: 'Choose Assisted',
+    active: true
   }
 ];
 
@@ -587,6 +592,15 @@ const state = {
   emailTemplates: storage.get('emailTemplates', initialEmailTemplates),
   ads: storage.get('ads', initialAds)
 };
+
+// Ensure all plans have active status by default
+if (Array.isArray(state.plans)) {
+  state.plans.forEach(p => {
+    if (p.active === undefined) {
+      p.active = true;
+    }
+  });
+}
 
 // Symmetrical database migration: convert old single-number keys to composite keys
 if (state.activeChats && typeof state.activeChats === 'object') {
