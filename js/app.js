@@ -1461,16 +1461,7 @@ function initRouter() {
 function renderHome(container) {
   // Grab featured profiles for homepage slider
   const featured = state.profiles.filter(p => p.featured && (!state.currentUser || p.id !== state.currentUser.id));
-  let featuredHtml = '';
-  if (featured.length > 0) {
-    featuredHtml = featured.map(p => makeProfileCard(p)).join('');
-  } else {
-    featuredHtml = `
-      <div style="width: 100%; text-align: center; padding: 60px 0; color: rgba(255,255,255,0.55); font-family: var(--font-serif); font-size: 1.15rem; letter-spacing: 0.5px;">
-        ${t('No other featured profiles registered yet.', 'अद्याप इतर कोणतेही वैशिष्ट्यीकृत प्रोफाईल नोंदणीकृत नाहीत.')}
-      </div>
-    `;
-  }
+  const featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
   const stories = state.stories.slice(0, 8);
