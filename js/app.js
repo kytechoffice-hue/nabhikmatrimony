@@ -3056,7 +3056,7 @@ function switchDashboardTab(tabName) {
         <form onsubmit="handleEditProfileSubmit(event)">
           
           <!-- 2. Profile Information -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">2. Profile Information</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 20px 0 12px 0; font-family: var(--font-serif);">Profile Information</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Full Name</label>
@@ -3073,7 +3073,7 @@ function switchDashboardTab(tabName) {
           </div>
           
           <!-- 3. Personal Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">3. Personal Details</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Personal Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Date of Birth</label>
@@ -3141,7 +3141,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 4. Education -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">4. Education</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Education</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Highest Qualification</label>
@@ -3154,7 +3154,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 5. Occupation -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">5. Occupation</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Occupation</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Profession</label>
@@ -3171,7 +3171,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 6. Family Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">6. Family Details</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Family Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Father's Name & Occupation</label>
@@ -3201,7 +3201,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 7. Lifestyle -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">7. Lifestyle</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Lifestyle</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Food Preference (Vegetarian/Non-Vegetarian)</label>
@@ -3230,7 +3230,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 8. Hobbies -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">8. Hobbies</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Hobbies</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Hobby 1</label>
@@ -3253,7 +3253,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 9. Partner Expectations -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">9. Partner Expectations</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Partner Expectations</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Preferred Education</label>
@@ -3280,7 +3280,7 @@ function switchDashboardTab(tabName) {
           </div>
 
           <!-- 10. Contact Details -->
-          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">10. Contact Details</h3>
+          <h3 style="font-size: 1.15rem; color: var(--color-maroon); border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: 24px 0 12px 0; font-family: var(--font-serif);">Contact Details</h3>
           <div class="form-row-2">
             <div class="form-group">
               <label>Mobile Number</label>
