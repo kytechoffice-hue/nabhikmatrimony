@@ -1161,6 +1161,10 @@ window.previewEditPhoto = function(input) {
       if (preview) {
         preview.src = e.target.result;
       }
+      const status = document.getElementById('edit-photo-status');
+      if (status) {
+        status.innerHTML = `<strong style="color: #2e7d32;">✓ Selected file: ${input.files[0].name}</strong>`;
+      }
     };
     reader.readAsDataURL(input.files[0]);
   }
@@ -3137,7 +3141,9 @@ function switchDashboardTab(tabName) {
                   <img id="edit-photo-preview" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" style="width: 80px; height: 80px; border-radius: 12px; border: 2px solid var(--color-gold); object-fit: cover;">
                   <div>
                     <input type="file" accept="image/*" id="edit-photo" onchange="previewEditPhoto(this)" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
-                    <span style="font-size: 0.75rem; color: var(--color-text-muted); display: block;">Upload a new image to change your profile picture.</span>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted); display: block;" id="edit-photo-status">
+                      ${state.currentUser.photo ? '<span style="color: #2e7d32; font-weight: 600;">✓ Saved photo loaded successfully</span>' : 'No photo uploaded yet. Choose a file to upload.'}
+                    </span>
                   </div>
                 </div>
               </div>
