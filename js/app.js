@@ -1220,7 +1220,6 @@ function updateHeaderAuth() {
       <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px;">
         👤 ${state.currentUser.name} ${isPremium ? `👑 ${state.currentUser.membership}` : ''}
       </span>
-      <a href="/dashboard" class="btn-login" style="padding: 6px 14px; font-size: 0.8rem; ${isDashboardActive ? 'background-color: var(--color-gold); color: var(--color-maroon-dark); border-color: var(--color-gold); font-weight: 600;' : ''}">${t('Dashboard', 'डॅशबोर्ड')}</a>
       <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">${t('Logout', 'लॉग आउट')}</button>
     `;
   } else {
