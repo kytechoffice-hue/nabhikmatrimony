@@ -1550,6 +1550,8 @@ img {
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
 /* Accordion Form Layout */
 .accordion-item {
   border: 1px solid var(--color-border);
