@@ -2910,11 +2910,6 @@ function switchDashboardTab(tabName) {
             <p>Chats</p>
           </div>
         </div>
-        
-        <h3 style="font-size: 1.25rem; margin: 32px 0 16px 0;">🎯 Recommended Matches (AI Suggestions)</h3>
-        <div class="search-results-grid">
-          ${recMatches.slice(0, 3).map(p => makeProfileCard(p)).join('')}
-        </div>
       `;
       break;
       
@@ -2923,7 +2918,7 @@ function switchDashboardTab(tabName) {
         .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified)
         .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
       panel.innerHTML = `
-        <h2>AI Suggestions & Compatible Matches</h2>
+        <h2>Compatible Matches</h2>
         <div class="search-results-grid">
           ${matchesList.map(p => makeProfileCard(p)).join('')}
         </div>
