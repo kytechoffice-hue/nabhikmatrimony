@@ -315,92 +315,59 @@ const initialBlogs = [
 const initialPlans = [
   {
     name: 'Free',
-    displayName: 'Free Plan',
+    displayName: 'FREE',
     price: 0,
-    period: '',
+    period: 'Forever',
     badgeClass: 'free-badge',
-    badgeIcon: '🌱',
-    tagline: 'Best for new users.',
+    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+    tagline: 'Forever',
     features: [
-      'Set Up a Free Account',
-      'Add Pictures',
-      'View Listings',
-      'Send a Few "Likes"',
-      'Simple Compatibility Tips'
+      { text: 'Create Profile', included: true },
+      { text: 'Search Profiles', included: true },
+      { text: 'Send Interest', included: true },
+      { text: 'View Contact Details', included: false },
+      { text: 'Chat with Members', included: false }
     ],
-    ctaText: 'Start Free',
-    active: true
-  },
-  {
-    name: 'Silver',
-    displayName: 'Silver Plan',
-    price: 1999,
-    period: ' / 3 Months',
-    badgeClass: 'silver-badge',
-    badgeIcon: '🥈',
-    tagline: 'Step up your search.',
-    features: [
-      'Send Unlimited Likes',
-      'View 20 Verified Contacts',
-      'Send 5 Personal Messages',
-      'Basic Horoscope Match',
-      'Standard Search Filter'
-    ],
-    ctaText: 'Go Silver',
+    ctaText: 'Register Free',
     active: true
   },
   {
     name: 'Gold',
-    displayName: 'Gold Plan',
-    price: 3999,
-    period: ' / 6 Months',
+    displayName: 'GOLD',
+    price: 999,
+    period: 'for 6 Months',
     badgeClass: 'gold-badge',
-    badgeIcon: '👑',
-    tagline: 'Our most popular choice.',
+    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M3 20h18"></path></svg>`,
+    tagline: 'for 6 Months',
     features: [
-      'Send Unlimited Likes',
-      'View 50 Verified Contacts',
-      'Send Unlimited Messages',
-      'Detailed Horoscope Matching',
-      'Profile Boosted for 30 Days'
+      { text: 'Everything in Free', included: true },
+      { text: 'View Contact Details', included: true },
+      { text: 'Chat with Members', included: true },
+      { text: 'WhatsApp Contact', included: true },
+      { text: 'Unlimited Search', included: true },
+      { text: 'See Who Viewed You', included: true }
     ],
-    ctaText: 'Go Gold',
-    active: true
+    ctaText: 'Upgrade Now',
+    active: true,
+    featured: true
   },
   {
-    name: 'Platinum',
-    displayName: 'Platinum Plan',
-    price: 5999,
-    period: ' / 12 Months',
+    name: 'Diamond',
+    displayName: 'DIAMOND',
+    price: 1999,
+    period: 'for 12 Months',
     badgeClass: 'platinum-badge',
-    badgeIcon: '💎',
-    tagline: 'Full matching power.',
+    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>`,
+    tagline: 'for 12 Months',
     features: [
-      'View Unlimited Contacts',
-      'Send Unlimited Messages',
-      'Personal Relationship Manager',
-      'Priority Customer Service',
-      '3 Profile Boosts (90 days total)'
+      { text: 'Everything in Gold', included: true },
+      { text: 'Unlimited Chat', included: true },
+      { text: 'Profile Highlight', included: true },
+      { text: 'Priority Listing', included: true },
+      { text: 'Dedicated Support', included: true },
+      { text: 'See Who Viewed You', included: true }
     ],
-    ctaText: 'Go Platinum',
-    active: true
-  },
-  {
-    name: 'Premium Assisted',
-    displayName: 'Assisted Service',
-    price: 9999,
-    period: ' / 12 Months',
-    badgeClass: 'assisted-badge',
-    badgeIcon: '🤝',
-    tagline: 'Let our experts help.',
-    features: [
-      'Dedicated Matrimonial Expert',
-      'Handpicked Match Selections',
-      'Background Verified Introductions',
-      'Direct Family Meeting Support',
-      'Full Privacy Controls Option'
-    ],
-    ctaText: 'Choose Assisted',
+    ctaText: 'Become Premium',
     active: true
   }
 ];
@@ -593,14 +560,9 @@ const state = {
   ads: storage.get('ads', initialAds)
 };
 
-// Ensure all plans have active status by default
-if (Array.isArray(state.plans)) {
-  state.plans.forEach(p => {
-    if (p.active === undefined) {
-      p.active = true;
-    }
-  });
-}
+// Force update plans array to match the requested design
+state.plans = initialPlans;
+storage.set('plans', initialPlans);
 
 // Symmetrical database migration: convert old single-number keys to composite keys
 if (state.activeChats && typeof state.activeChats === 'object') {
@@ -3464,109 +3426,79 @@ function renderMembership(container) {
     
     // Modern UI styling selector class
     let planClass = 'plan-free';
-    if (p.name === 'Silver') planClass = 'plan-silver';
-    else if (p.name === 'Gold') planClass = 'plan-gold';
-    else if (p.name === 'Platinum') planClass = 'plan-platinum';
-    else if (p.name === 'Premium Assisted') planClass = 'plan-assisted';
+    if (p.name === 'Gold') planClass = 'plan-gold';
+    else if (p.name === 'Diamond') planClass = 'plan-diamond';
     
     // Determine button text and action
     let btnHtml = '';
     if (p.name === 'Free') {
       if (!state.currentUser) {
-        btnHtml = `
-          <a href="/register" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Register Free</a>
-          <a href="/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-        `;
+        btnHtml = `<a href="/register" class="plan-action-btn">Register Free</a>`;
       } else {
-        btnHtml = `
-          <button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>
-          <a href="/membership/free" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-        `;
+        btnHtml = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       }
-    } else if (p.name === 'Silver') {
-      let mainBtn = '';
-      if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
-      } else if (isCurrent) {
-        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
-      } else {
-        mainBtn = `<button onclick="handleSelectPlan('Silver', 299)" class="plan-btn" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
-      }
-      btnHtml = `
-        ${mainBtn}
-        <a href="/membership/silver" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-      `;
     } else if (p.name === 'Gold') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-action-btn btn-gold-solid">Sign In to Choose</a>`;
       } else if (isCurrent) {
-        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Gold', 599)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-action-btn btn-gold-solid">Upgrade Now</button>`;
       }
-      btnHtml = `
-        ${mainBtn}
-        <a href="/membership/gold" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-      `;
-    } else if (p.name === 'Platinum') {
+      btnHtml = mainBtn;
+    } else if (p.name === 'Diamond') {
       let mainBtn = '';
       if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
+        mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
       } else if (isCurrent) {
-        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
+        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Platinum', 1199)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Diamond', 1999)" class="plan-action-btn">Become Premium</button>`;
       }
-      btnHtml = `
-        ${mainBtn}
-        <a href="/membership/platinum" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-      `;
-    } else if (p.name === 'Premium Assisted') {
-      let mainBtn = '';
-      if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block;">Sign In to Choose</a>`;
-      } else if (isCurrent) {
-        mainBtn = `<button class="plan-btn plan-btn-active" style="margin-bottom: 8px; display: block; width: 100%;" disabled>Active Plan</button>`;
-      } else {
-        mainBtn = `<button onclick="handleSelectPlan('Premium Assisted', 4999)" class="plan-btn btn-gold" style="margin-bottom: 8px; display: block; width: 100%;">Upgrade Now</button>`;
-      }
-      btnHtml = `
-        ${mainBtn}
-        <a href="/membership/assisted" class="plan-btn" style="display: block; width: 100%; text-align: center; text-decoration: none;">View Details</a>
-      `;
-    } else if (!state.currentUser) {
-      btnHtml = `<a href="/login" class="plan-btn btn-gold">Sign In to Choose</a>`;
-    } else if (isCurrent) {
-      btnHtml = `<button class="plan-btn plan-btn-active" disabled>Active Plan</button>`;
+      btnHtml = mainBtn;
     } else {
-      btnHtml = `<button onclick="handleSelectPlan('${p.name}', ${p.price})" class="plan-btn ${p.featured ? 'btn-gold' : ''}">Upgrade Now</button>`;
+      // Fallback
+      if (!state.currentUser) {
+        btnHtml = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        btnHtml = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
+      } else {
+        btnHtml = `<button onclick="handleSelectPlan('${p.name}', ${p.price})" class="plan-action-btn">Upgrade Now</button>`;
+      }
     }
 
     return `
-      <div class="membership-card ${planClass} ${p.featured ? 'featured-plan' : ''}">
-        ${p.featured ? `<div class="plan-ribbon">Most Popular</div>` : ''}
+      <div class="membership-card ${planClass} ${p.featured ? 'plan-gold' : ''}">
+        ${p.featured ? `<div class="plan-gold-ribbon">Most Popular</div>` : ''}
         
-        <div class="plan-badge ${p.badgeClass}">
-          <span style="font-size: 1.5rem;">${p.badgeIcon}</span>
+        <div class="modern-badge">
+          ${p.badgeIcon}
         </div>
         
         <h3>${p.displayName}</h3>
-        <p style="font-size: 0.85rem; color: var(--color-text-muted); text-align: center; margin-bottom: 16px; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-          ${p.tagline}
-        </p>
         
-        <div class="plan-price">${priceText}<span>${p.period}</span></div>
+        <div class="card-divider"><span class="dot"></span></div>
         
-        <ul class="plan-features">
-          ${p.features.map(f => `<li>${f}</li>`).join('')}
+        <div class="modern-price">
+          <div class="amount">${priceText}</div>
+          <div class="period">${p.period}</div>
+        </div>
+        
+        <ul class="modern-features">
+          ${p.features.map(f => `
+            <li>
+              <span class="feature-icon ${f.included ? 'included' : 'excluded'}">
+                ${f.included ? `
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ` : `
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                `}
+              </span>
+              ${f.text}
+            </li>
+          `).join('')}
         </ul>
-        
-        ${p.note ? `
-          <div style="background-color: var(--color-cream-dark); border-left: 3px solid var(--color-gold); padding: 8px 12px; margin-bottom: 20px; font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.3; font-style: italic; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;">
-            💡 ${p.note}
-          </div>
-        ` : ''}
         
         <div style="margin-top: auto;">
           ${btnHtml}
@@ -3576,25 +3508,21 @@ function renderMembership(container) {
   }).join('');
 
   container.innerHTML = `
-    <div class="page-banner">
-      <div class="container">
-        <h1>Premium Membership Plans</h1>
+    <div class="membership-page-wrapper">
+      <div class="container section-padding">
+        <div class="traditional-header">
+          <h2>Membership Plans</h2>
+          <p>Choose the perfect plan to connect with verified brides and grooms.</p>
+          <div class="gold-ornament"><span class="diamond"></span></div>
+        </div>
+        <div class="membership-grid">
+          ${cardsHtml}
+        </div>
       </div>
     </div>
     
-    <div class="container section-padding">
-      <div class="traditional-header">
-        <h2>Choose Your Matchmaking Journey</h2>
-        <div class="traditional-divider"><span class="icon">✦</span></div>
-        <p style="max-width: 600px; margin: 16px auto 0 auto; color: var(--color-text-muted); font-size: 0.95rem;">
-          Upgrade your Nabhik Matrimonial membership to connect faster, access verified phone numbers, and unlock direct chats with compatible life partners.
-        </p>
-      </div>
-      <div class="membership-grid">
-        ${cardsHtml}
-      </div>
-      
-      <!-- Recommended Pricing Table -->
+    <!-- Recommended Pricing Table -->
+    <div class="container section-padding" style="background-color: #ffffff;">
       <div class="pricing-table-container">
         <h3>Recommended Pricing Table</h3>
         <table class="comparison-table">
@@ -3602,9 +3530,8 @@ function renderMembership(container) {
             <tr>
               <th>Features</th>
               <th>Free</th>
-              <th>Silver</th>
               <th>Gold</th>
-              <th>Platinum</th>
+              <th>Diamond</th>
             </tr>
           </thead>
           <tbody>
@@ -3613,67 +3540,71 @@ function renderMembership(container) {
               <td>Yes</td>
               <td>Yes</td>
               <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Search Profiles</td>
+              <td>Yes</td>
+              <td>Yes</td>
               <td>Yes</td>
             </tr>
             <tr>
-              <td>View Profiles</td>
-              <td>Limited</td>
-              <td>50</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Send Interests</td>
-              <td>5/Day</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Chat Access</td>
-              <td>No</td>
-              <td>Basic</td>
-              <td>Full</td>
-              <td>Full</td>
-            </tr>
-            <tr>
-              <td>Contact Details</td>
-              <td>No</td>
-              <td>Limited</td>
+              <td>Send Interest</td>
               <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>View Contact Details</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Chat with Members</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>WhatsApp Contact</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Unlimited Search</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Unlimited Chat</td>
+              <td>No</td>
+              <td>No</td>
               <td>Yes</td>
             </tr>
             <tr>
               <td>Profile Highlight</td>
               <td>No</td>
+              <td>No</td>
               <td>Yes</td>
-              <td>Yes</td>
-              <td>Priority</td>
             </tr>
             <tr>
-              <td>Verification Badge</td>
-              <td>No</td>
+              <td>Priority Listing</td>
               <td>No</td>
               <td>No</td>
               <td>Yes</td>
             </tr>
             <tr>
-              <td>Support</td>
-              <td>Email</td>
-              <td>Email</td>
-              <td>Priority</td>
-              <td>WhatsApp + Call</td>
-            </tr>
-            <tr>
-              <td>Price</td>
-              <td><strong>₹0</strong></td>
-              <td><strong>₹299</strong></td>
-              <td><strong>₹599</strong></td>
-              <td><strong>₹1199</strong></td>
+              <td>Dedicated Support</td>
+              <td>No</td>
+              <td>No</td>
+              <td>Yes</td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
       
       <!-- Extra Features -->
       <div style="margin-top: 60px;">
