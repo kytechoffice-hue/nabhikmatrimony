@@ -11,3 +11,6 @@ node_modules/
 
 # Local databases
 *.db
+
+# Local SMTP Configuration
+email_config.json

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/kytechoffice-hue/nabhikmatrimony#readme",
   "dependencies": {
+    "nodemailer": "^9.0.2",
     "sqlite3": "^6.0.1"
   }
 }

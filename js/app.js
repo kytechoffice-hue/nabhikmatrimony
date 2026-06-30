@@ -5343,20 +5343,26 @@ function openOtpVerificationModal(email) {
   const code = Math.floor(1000 + Math.random() * 9000);
   window.otpVerificationCode = code;
   
+  // Send OTP to backend API
+  fetch('/api/send-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, code: code })
+  }).then(r => r.json()).then(res => {
+    if (res.fallback) {
+      console.log('%c[OTP FALLBACK]', 'color: #00bcd4; font-weight: bold;', `OTP is printed in the server terminal console since SMTP is unconfigured.`);
+    }
+  }).catch(e => {
+    console.error('Error triggering email sending:', e);
+  });
+
   overlay.innerHTML = `
     <div class="modal-content otp-container">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
       <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif);">${t('Email Verification', 'ईमेल पडताळणी')}</h3>
       <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">${t('An OTP verification code was sent to', 'पडताळणी कोड पाठविला गेला आहे')} ${email}</p>
       
-      <!-- Simulated Email Inbox Notification -->
-      <div class="sms-mock-device">
-        <div class="sms-bubble">
-          <strong>Nabhik Verification:</strong> Your security verification code for registration is: <strong>${code}</strong>. Do not share.
-        </div>
-      </div>
-      
-      <p style="font-size: 0.88rem; font-weight: 500; margin-bottom: 8px;">Enter 4-Digit Code</p>
+      <p style="font-size: 0.88rem; font-weight: 500; margin-top: 24px; margin-bottom: 8px;">Enter 4-Digit Code</p>
       <div class="otp-inputs">
         <input type="text" maxlength="1" class="otp-digit" oninput="moveOtpFocus(this, 1)">
         <input type="text" maxlength="1" class="otp-digit" oninput="moveOtpFocus(this, 2)">
