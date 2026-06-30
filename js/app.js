@@ -1166,14 +1166,30 @@ window.previewEditPhoto = function(input) {
   }
 };
 
-// Global accordion toggle helper for forms
+// Global accordion toggle helper for forms (collapses other sections when opening a new one)
 window.toggleAccordionSection = function(header) {
   const content = header.nextElementSibling;
   const icon = header.querySelector('.accordion-icon');
+  
   if (content.classList.contains('active')) {
     content.classList.remove('active');
     if (icon) icon.textContent = '▼';
   } else {
+    // Close other sibling accordion panels in the same form
+    const parentForm = header.closest('form');
+    if (parentForm) {
+      const allItems = parentForm.querySelectorAll('.accordion-item');
+      allItems.forEach(item => {
+        const itemContent = item.querySelector('.accordion-content');
+        const itemIcon = item.querySelector('.accordion-icon');
+        if (itemContent && itemContent !== content) {
+          itemContent.classList.remove('active');
+          if (itemIcon) itemIcon.textContent = '▼';
+        }
+      });
+    }
+    
+    // Open this section
     content.classList.add('active');
     if (icon) icon.textContent = '▲';
   }
