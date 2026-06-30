@@ -5259,8 +5259,8 @@ function handleRegistrationSubmit(e) {
       photo: photoBase64
     };
     
-    // Open OTP device mockup Modal
-    openOtpVerificationModal(mobile);
+    // Open Email verification mockup Modal
+    openOtpVerificationModal(email);
   }
   
   if (photoInput && photoInput.files && photoInput.files[0]) {
@@ -5310,7 +5310,7 @@ function handleOtpLoginRequest(e) {
     name: `User-${mobile.slice(-4)}`,
     gender: 'Male' // Default gender fallback
   };
-  openOtpVerificationModal(mobile);
+  openOtpVerificationModal(window.tempRegData.emailId);
 }
 
 // Toggle Login page forms (email vs otp)
@@ -5333,8 +5333,8 @@ function toggleLoginTabs(type) {
   }
 }
 
-// Open OTP validation Modal with phone SMS mockup
-function openOtpVerificationModal(mobile) {
+// Open OTP validation Modal with Email mockup
+function openOtpVerificationModal(email) {
   const overlay = document.getElementById('modal-system-overlay');
   if (!overlay) return;
   
@@ -5345,13 +5345,13 @@ function openOtpVerificationModal(mobile) {
   overlay.innerHTML = `
     <div class="modal-content otp-container">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
-      <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif);">Mobile Verification</h3>
-      <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">An OTP verification code was sent to +91 ${mobile}</p>
+      <h3 style="font-size: 1.4rem; color: var(--color-maroon); font-family: var(--font-serif);">${t('Email Verification', 'ईमेल पडताळणी')}</h3>
+      <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">${t('An OTP verification code was sent to', 'पडताळणी कोड पाठविला गेला आहे')} ${email}</p>
       
-      <!-- Simulated Phone SMS Device -->
+      <!-- Simulated Email Inbox Notification -->
       <div class="sms-mock-device">
         <div class="sms-bubble">
-          <strong>Nabhik OTP:</strong> Your security verification code for registration is: <strong>${code}</strong>. Do not share.
+          <strong>Nabhik Verification:</strong> Your security verification code for registration is: <strong>${code}</strong>. Do not share.
         </div>
       </div>
       
@@ -5383,9 +5383,9 @@ function confirmOtpCodeSubmit() {
   if (digits == window.otpVerificationCode) {
     closeModal(true);
     
-    // Check if user already exists
-    const mobile = window.tempRegData.mobile || '';
-    const existingUser = state.profiles.find(p => p.mobile === mobile || (p.emailId && p.emailId.startsWith(mobile)));
+    // Check if user already exists using emailId
+    const email = window.tempRegData.emailId || '';
+    const existingUser = state.profiles.find(p => p.emailId === email);
     
     let user;
     if (existingUser) {
@@ -5409,7 +5409,7 @@ function confirmOtpCodeSubmit() {
       navigateTo('/dashboard?tab=overview');
     }
   } else {
-    alert('Invalid verification code. Please check the SMS mockup box and try again.');
+    alert('Invalid verification code. Please check the email notification box and try again.');
   }
 }
 
