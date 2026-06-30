@@ -966,7 +966,7 @@ const stateActions = {
     if (state.currentUser) {
       state.revenueReport.totalRevenue += price;
       
-      const extraTiers = ['Profile Boost', 'Horoscope Match', 'Profile Verification', 'Homepage Featured Profile'];
+      const extraTiers = ['Profile Boost', 'Horoscope Match', 'Profile Verification', 'Homepage Featured Profile', 'Fast Profile Verification', 'Horoscope Compatibility'];
       if (extraTiers.includes(planName)) {
         if (!state.revenueReport.extraFeatures) {
           state.revenueReport.extraFeatures = {};
@@ -974,7 +974,7 @@ const stateActions = {
         state.revenueReport.extraFeatures[planName] = (state.revenueReport.extraFeatures[planName] || 0) + 1;
         
         // Custom feature actions
-        if (planName === 'Profile Verification') {
+        if (planName === 'Profile Verification' || planName === 'Fast Profile Verification') {
           state.currentUser.verified = true;
           const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
           if (idx !== -1) state.profiles[idx].verified = true;
@@ -989,7 +989,7 @@ const stateActions = {
           const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
           if (idx !== -1) state.profiles[idx].boosted = true;
         }
-        if (planName === 'Horoscope Match') {
+        if (planName === 'Horoscope Match' || planName === 'Horoscope Compatibility') {
           state.currentUser.horoscopeMatch = true;
           const idx = state.profiles.findIndex(p => p.id === state.currentUser.id);
           if (idx !== -1) state.profiles[idx].horoscopeMatch = true;
@@ -3534,56 +3534,30 @@ function renderMembership(container) {
           </p>
         </div>
         
-        <div class="membership-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
-          <!-- Feature 1 -->
-          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+        <div class="membership-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; max-width: 700px; margin: 0 auto;">
+          <!-- Feature 1: Fast Profile Verification -->
+          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-gold);">
             <div>
-              <div style="font-size: 2.2rem; margin-bottom: 12px;">🚀</div>
-              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Profile Boost</h4>
-              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Get 5x more profile visibility and match recommendations for 30 days.</p>
+              <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 8px; font-weight: 700;">Fast Profile Verification</h4>
+              <p style="font-size: 0.82rem; color: var(--color-text-muted); line-height: 1.4; margin-bottom: 16px;">Get verified checkmark badge quickly indicating verified identity documents.</p>
             </div>
             <div>
-              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹99</div>
-              <button onclick="handleSelectPlan('Profile Boost', 99)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Buy Boost</button>
-            </div>
-          </div>
-          
-          <!-- Feature 2 -->
-          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
-            <div>
-              <div style="font-size: 2.2rem; margin-bottom: 12px;">🪐</div>
-              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Horoscope Match</h4>
-              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Detailed Gun Milan report analysis with native astrology charts.</p>
-            </div>
-            <div>
-              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹49</div>
-              <button onclick="handleSelectPlan('Horoscope Match', 49)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Get Match</button>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-maroon); margin-bottom: 16px; font-family: var(--font-serif);">₹300</div>
+              <button onclick="handleSelectPlan('Fast Profile Verification', 300)" class="plan-action-btn btn-gold-solid" style="padding: 10px 0; font-size: 0.88rem; width: 100%; border-radius: 8px;">Verify Now</button>
             </div>
           </div>
           
-          <!-- Feature 3 -->
-          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
+          <!-- Feature 2: Horoscope Compatibility -->
+          <div class="membership-card" style="padding: 32px 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius); border-top: 4px solid var(--color-maroon-dark);">
             <div>
-              <div style="font-size: 2.2rem; margin-bottom: 12px;">🛡️</div>
-              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Profile Verification</h4>
-              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Get the green verification checkmark badge indicating verified IDs.</p>
+              <div style="font-size: 2.5rem; margin-bottom: 16px;">🪐</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-maroon); margin-bottom: 8px; font-weight: 700;">Horoscope Compatibility</h4>
+              <p style="font-size: 0.82rem; color: var(--color-text-muted); line-height: 1.4; margin-bottom: 16px;">Premium Kundali matchmaking report and compatibility report by expert astrologer.</p>
             </div>
             <div>
-              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹199</div>
-              <button onclick="handleSelectPlan('Profile Verification', 199)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Verify Now</button>
-            </div>
-          </div>
-          
-          <!-- Feature 4 -->
-          <div class="membership-card" style="padding: 24px; text-align: center; justify-content: space-between; border-radius: var(--border-radius-sm);">
-            <div>
-              <div style="font-size: 2.2rem; margin-bottom: 12px;">⭐</div>
-              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-maroon); margin-bottom: 6px;">Homepage Featured</h4>
-              <p style="font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.3; margin-bottom: 12px;">Display your profile in the prominent slider right on the homepage.</p>
-            </div>
-            <div>
-              <div style="font-size: 1.3rem; font-weight: 700; color: var(--color-maroon); margin-bottom: 12px;">₹299</div>
-              <button onclick="handleSelectPlan('Homepage Featured Profile', 299)" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--border-radius-sm);">Feature Profile</button>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-maroon); margin-bottom: 16px; font-family: var(--font-serif);">₹1500</div>
+              <button onclick="handleSelectPlan('Horoscope Compatibility', 1500)" class="plan-action-btn btn-gold-solid" style="padding: 10px 0; font-size: 0.88rem; width: 100%; border-radius: 8px;">Get Report</button>
             </div>
           </div>
         </div>
