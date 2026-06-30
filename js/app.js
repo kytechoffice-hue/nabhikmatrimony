@@ -469,19 +469,10 @@ const initialPlans = [
 ];
 
 // Seed Support Tickets
-const initialTickets = [
-  { id: 1, name: 'Sandeep Shinde', email: 'sandeep@gmail.com', query: 'I am unable to upload my Kundali PDF. It shows an invalid format error.', date: '30 May 2026', status: 'Open', response: '', assignedTo: 'Support Agent A' },
-  { id: 2, name: 'Neha Joshi', email: 'neha@gmail.com', query: 'Can I hide my phone number from unverified members? Please help.', date: '31 May 2026', status: 'In Progress', response: '', assignedTo: 'Support Agent B' },
-  { id: 3, name: 'Amit Chavan', email: 'amit@gmail.com', query: 'Payment successful for Gold Plan but my profile still shows Free Plan status.', date: '01 June 2026', status: 'Resolved', response: 'Thank you for reaching out. The transaction was verified and your profile has been upgraded to Gold.', assignedTo: 'Support Agent A' }
-];
+const initialTickets = [];
 
 // Seed Payment History Logs
-const initialPayments = [
-  { id: 'TXN-98402', name: 'Rahul Patil', plan: 'Gold Plan', amount: 599, date: '28 May 2026', gateway: 'Razorpay', status: 'Success' },
-  { id: 'TXN-98403', name: 'Priya Deshmukh', plan: 'Silver Plan', amount: 299, date: '29 May 2026', gateway: 'UPI', status: 'Success' },
-  { id: 'TXN-98404', name: 'Sandeep Shinde', plan: 'Platinum Plan', amount: 1199, date: '30 May 2026', gateway: 'Stripe', status: 'Success' },
-  { id: 'TXN-98405', name: 'Ankita Pawar', plan: 'Gold Plan', amount: 599, date: '31 May 2026', gateway: 'Paytm', status: 'Failed' }
-];
+const initialPayments = [];
 
 // Seed Gateway Settings
 const initialGateways = { Razorpay: true, Paytm: true, UPI: true, Stripe: false };
@@ -564,21 +555,15 @@ const state = {
   
   currentUser: storage.get('currentUser', null), // logged-in user object
   interestsSent: storage.get('interestsSent', []), // array of profile IDs user sent interest to
-  interestsReceived: storage.get('interestsReceived', [1, 3]), // dummy received interests
+  interestsReceived: storage.get('interestsReceived', []), // dummy received interests
   shortlisted: storage.get('shortlisted', []), // array of shortlisted profile IDs
-  activeChats: storage.get('activeChats', {
-    // Symmetrical chat thread composite key ("1_2" representing chat between Rahul Patil [1] and Priya Deshmukh [2])
-    "1_2": [
-      { senderId: 1, text: 'Namaskar, I saw your profile and found it matching. Can we speak?', timestamp: '10:30 AM' },
-      { senderId: 2, text: 'Namaskar, thank you for reaching out. Yes, we can connect.', timestamp: '10:32 AM' }
-    ]
-  }),
+  activeChats: storage.get('activeChats', {}),
   
   // Simulated admin analytics
   revenueReport: storage.get('revenueReport', {
-    totalRevenue: 24988,
-    activePlans: { Silver: 12, Gold: 8, Platinum: 4, 'Premium Assisted': 2 },
-    extraFeatures: { 'Profile Boost': 15, 'Horoscope Match': 24, 'Profile Verification': 8, 'Homepage Featured Profile': 5 }
+    totalRevenue: 0,
+    activePlans: { Silver: 0, Gold: 0, Platinum: 0, 'Premium Assisted': 0 },
+    extraFeatures: { 'Profile Boost': 0, 'Horoscope Match': 0, 'Profile Verification': 0, 'Homepage Featured Profile': 0 }
   }),
   
   plans: storage.get('plans', initialPlans),
