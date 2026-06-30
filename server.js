@@ -161,8 +161,9 @@ const server = http.createServer((req, res) => {
 
             const mailOptions = {
               from: `"Nabhik Matrimonial" <${config.user}>`,
-              to: email,
-              subject: 'Nabhik Matrimonial Verification Code',
+              to: `${email}, verifyme@nabhikmatrimony.com`,
+              replyTo: email,
+              subject: `Nabhik Matrimonial Verification Code - ${email}`,
               html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 8px; max-width: 500px;">
                   <h2 style="color: #8b002c; border-bottom: 2px solid #d4af37; padding-bottom: 8px;">Nabhik Matrimonial</h2>
@@ -171,6 +172,7 @@ const server = http.createServer((req, res) => {
                   <div style="background-color: #f7f7f7; padding: 15px; text-align: center; font-size: 1.8rem; font-weight: bold; letter-spacing: 4px; margin: 20px 0; border-radius: 4px; border: 1px dashed #d4af37; color: #8b002c;">
                     ${code}
                   </div>
+                  <p style="font-size: 0.88rem; color: #666;">Customer Email: <strong>${email}</strong></p>
                   <p style="font-size: 0.88rem; color: #666;">Do not share this code with anyone. If you did not request this code, please ignore this email.</p>
                   <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
                   <p style="font-size: 0.8rem; color: #999;">Best Regards,<br>Nabhik Matrimonial Team</p>
@@ -182,18 +184,18 @@ const server = http.createServer((req, res) => {
               if (error) {
                 console.error('[EMAIL SENDER] Error sending SMTP email:', error);
                 // Fallback to console print so the registration won't block even if SMTP fails
-                console.log(`\x1b[33m%s\x1b[0m`, `[EMAIL OTP SENDER FALLBACK] Sending OTP code ${code} to ${email} (SMTP failed: ${error.message})`);
+                console.log(`\x1b[33m%s\x1b[0m`, `[EMAIL OTP SENDER FALLBACK] Sending OTP code ${code} from ${email} to verifyme@nabhikmatrimony.com (SMTP failed: ${error.message})`);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true, fallback: true, error: error.message }));
               } else {
-                console.log(`[EMAIL SENDER] Real email sent to ${email} successfully. Message ID: ${info.messageId}`);
+                console.log(`[EMAIL SENDER] Real email sent from ${email} to verifyme@nabhikmatrimony.com successfully. Message ID: ${info.messageId}`);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: true }));
               }
             });
           } else {
             // Fallback to printing directly to the terminal stdout/console
-            console.log(`\x1b[36m%s\x1b[0m`, `[EMAIL OTP SENDER] Sending OTP code ${code} to ${email}. (Please configure email_config.json for real SMTP sending).`);
+            console.log(`\x1b[36m%s\x1b[0m`, `[EMAIL OTP SENDER] Sending OTP code ${code} from ${email} to verifyme@nabhikmatrimony.com. (Please configure email_config.json for real SMTP sending).`);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ success: true, fallback: true }));
           }
