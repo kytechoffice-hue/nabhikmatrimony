@@ -1129,6 +1129,43 @@ window.calculateAge = function(dobString) {
   return age;
 };
 
+// Global helper to format date strings to YYYY-MM-DD for native input date pickers
+window.formatDateForInput = function(dobString) {
+  if (!dobString) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dobString)) {
+    return dobString;
+  }
+  const parsed = new Date(dobString);
+  if (!isNaN(parsed.getTime())) {
+    const yyyy = parsed.getFullYear();
+    const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+    const dd = String(parsed.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  const parts = dobString.split(/[\/\-]/);
+  if (parts.length === 3) {
+    if (parts[0].length === 4) {
+      return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+    }
+    return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+  }
+  return '';
+};
+
+// Global helper to preview uploaded profile photo dynamically
+window.previewEditPhoto = function(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('edit-photo-preview');
+      if (preview) {
+        preview.src = e.target.result;
+      }
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
 // Global accordion toggle helper for forms
 window.toggleAccordionSection = function(header) {
   const content = header.nextElementSibling;
@@ -3066,7 +3103,7 @@ function switchDashboardTab(tabName) {
               <div class="form-row-2">
                 <div class="form-group">
                   <label>Date of Birth</label>
-                  <input type="date" id="edit-dob" value="${state.currentUser.dob || ''}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
+                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
                 </div>
                 <div class="form-group">
                   <label>Marital Status</label>
@@ -3080,7 +3117,13 @@ function switchDashboardTab(tabName) {
               </div>
               <div class="form-group">
                 <label>Profile Photo</label>
-                <input type="file" accept="image/*" id="edit-photo" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+                <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
+                  <img id="edit-photo-preview" src="${state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name)}" style="width: 80px; height: 80px; border-radius: 12px; border: 2px solid var(--color-gold); object-fit: cover;">
+                  <div>
+                    <input type="file" accept="image/*" id="edit-photo" onchange="previewEditPhoto(this)" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem;">
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted); display: block;">Upload a new image to change your profile picture.</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
