@@ -479,6 +479,10 @@ async function loadStateFromServer() {
       // Copy loaded values into state object
       if (typeof state !== 'undefined') {
         Object.keys(state).forEach(key => {
+          if (key === 'plans') {
+            state[key] = initialPlans;
+            return;
+          }
           if (storage.cache[key] !== undefined) {
             state[key] = storage.cache[key];
           }
@@ -559,7 +563,9 @@ const state = {
 
 // Force update plans array to match the requested design
 state.plans = initialPlans;
+storage.cache.plans = initialPlans;
 storage.set('plans', initialPlans);
+saveStateToServer();
 
 // Symmetrical database migration: convert old single-number keys to composite keys
 if (state.activeChats && typeof state.activeChats === 'object') {
