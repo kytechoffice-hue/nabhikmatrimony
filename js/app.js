@@ -4095,6 +4095,15 @@ function switchAdminTab(tabName) {
   const panel = document.getElementById('admin-content-panel');
   if (!panel) return;
   
+  const isCurrentUserMaster = state.currentUser && (
+    state.currentUser.role === 'master' || 
+    (state.currentUser.name && state.currentUser.name.toLowerCase() === 'master')
+  );
+  
+  const visibleProfiles = isCurrentUserMaster ? 
+    state.profiles : 
+    state.profiles.filter(p => p && p.role !== 'master' && (p.name ? p.name.toLowerCase() !== 'master' : true));
+  
   document.querySelectorAll('.admin-menu a').forEach(a => {
     if (a.id === `ad-tab-${tabName}`) {
       a.classList.add('active');
@@ -4105,19 +4114,19 @@ function switchAdminTab(tabName) {
   
   switch (tabName) {
     case 'dashboard': {
-      const totalUsers = state.profiles.length;
-      const activeUsers = state.profiles.filter(p => p.verified && !p.suspended).length;
-      const male = state.profiles.filter(p => p.gender && p.gender.toLowerCase() === 'male').length;
-      const female = state.profiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
-      const premium = state.profiles.filter(p => p.membership && p.membership !== 'Free').length;
-      const pending = state.profiles.filter(p => !p.verified).length;
+      const totalUsers = visibleProfiles.length;
+      const activeUsers = visibleProfiles.filter(p => p.verified && !p.suspended).length;
+      const male = visibleProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'male').length;
+      const female = visibleProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
+      const premium = visibleProfiles.filter(p => p.membership && p.membership !== 'Free').length;
+      const pending = visibleProfiles.filter(p => !p.verified).length;
       const storiesCount = state.stories.length;
       const totalRevenue = state.revenueReport.totalRevenue;
 
-      const recentUsers = state.profiles.slice(-3).reverse();
+      const recentUsers = visibleProfiles.slice(-3).reverse();
       const recentPayments = (state.payments || []).slice(-3).reverse();
       const recentTickets = (state.tickets || []).slice(-3).reverse();
-      const pendingApprovals = state.profiles.filter(p => !p.verified).slice(0, 3);
+      const pendingApprovals = visibleProfiles.filter(p => !p.verified).slice(0, 3);
 
       panel.innerHTML = `
         <h2>Dashboard Overview</h2>
@@ -4346,7 +4355,7 @@ function switchAdminTab(tabName) {
       break;
     }
     case 'verification': {
-      const pendingUsers = state.profiles.filter(p => !p.verified);
+      const pendingUsers = visibleProfiles.filter(p => !p.verified);
       panel.innerHTML = `
         <h2>Profile Verification System</h2>
         <p style="margin-bottom:20px; color:var(--color-text-muted);">Review submitted verification details. Confirm identity, contact info, and profile photographs.</p>
@@ -6124,7 +6133,14 @@ function filterAdminUsers() {
   const membership = document.getElementById('adm-filt-membership') ? document.getElementById('adm-filt-membership').value : 'All';
   const status = document.getElementById('adm-filt-status') ? document.getElementById('adm-filt-status').value : 'All';
 
-  let filtered = state.profiles;
+  const isCurrentUserMaster = state.currentUser && (
+    state.currentUser.role === 'master' || 
+    (state.currentUser.name && state.currentUser.name.toLowerCase() === 'master')
+  );
+  
+  let filtered = isCurrentUserMaster ? 
+    state.profiles : 
+    state.profiles.filter(p => p && p.role !== 'master' && (p.name ? p.name.toLowerCase() !== 'master' : true));
 
   if (city !== 'All') {
     filtered = filtered.filter(p => p.location && p.location.includes(city));
