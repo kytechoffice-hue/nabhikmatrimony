@@ -3278,6 +3278,15 @@ function switchDashboardTab(tabName) {
                   <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
                 </div>
                 <div class="form-group">
+                  <label>Gender</label>
+                  <select id="edit-gender">
+                    <option value="Female" ${state.currentUser.gender === 'Female' ? 'selected' : ''}>Female (Bride)</option>
+                    <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male (Groom)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
                   <label>Marital Status</label>
                   <select id="edit-marital-status">
                     <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
@@ -3285,6 +3294,8 @@ function switchDashboardTab(tabName) {
                     <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
                     <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
                   </select>
+                </div>
+                <div class="form-group">
                 </div>
               </div>
               <div class="form-group">
@@ -5873,6 +5884,7 @@ function handleEditProfileSubmit(e) {
   const name = document.getElementById('edit-name').value;
   const age = document.getElementById('edit-age').value;
   const dob = document.getElementById('edit-dob').value;
+  const gender = document.getElementById('edit-gender').value;
   const maritalStatus = document.getElementById('edit-marital-status').value;
   const height = document.getElementById('edit-height').value;
   const weight = document.getElementById('edit-weight').value;
@@ -5921,6 +5933,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.name = name;
     state.currentUser.age = age;
     state.currentUser.dob = dob;
+    state.currentUser.gender = gender;
     state.currentUser.maritalStatus = maritalStatus;
     state.currentUser.height = height;
     state.currentUser.weight = weight;
