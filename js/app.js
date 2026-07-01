@@ -504,6 +504,32 @@ async function loadStateFromServer() {
             state[key] = storage.cache[key];
           }
         });
+        
+        // Sanitize/ensure correct roles for master and admin
+        if (state.profiles && Array.isArray(state.profiles)) {
+          state.profiles.forEach(p => {
+            if (p && p.name) {
+              const nameLower = p.name.toLowerCase();
+              if (nameLower === 'master') {
+                p.role = 'master';
+                p.isAdmin = true;
+              } else if (nameLower === 'admin' || nameLower === 'nmadmin') {
+                p.role = 'admin';
+                p.isAdmin = true;
+              }
+            }
+          });
+        }
+        if (state.currentUser && state.currentUser.name) {
+          const nameLower = state.currentUser.name.toLowerCase();
+          if (nameLower === 'master') {
+            state.currentUser.role = 'master';
+            state.currentUser.isAdmin = true;
+          } else if (nameLower === 'admin' || nameLower === 'nmadmin') {
+            state.currentUser.role = 'admin';
+            state.currentUser.isAdmin = true;
+          }
+        }
       }
       
       // Save plans update back to server if loaded server plans do not match initialPlans
@@ -899,9 +925,12 @@ const stateActions = {
     }
     // Fallback: If no match but valid string, seed mock user
     if (email) {
+      const name = email.split('@')[0];
+      const isMaster = name.toLowerCase() === 'master';
+      const isAdminUser = name.toLowerCase() === 'admin' || name.toLowerCase() === 'nmadmin';
       const mockUser = {
         id: Math.max(...state.profiles.filter(p => p && typeof p.id === 'number').map(p => p.id), 0) + 1,
-        name: email.split('@')[0],
+        name: name,
         emailId: email,
         gender: 'Male',
         age: 28,
@@ -913,7 +942,9 @@ const stateActions = {
         community: 'Nabhik',
         income: '₹1,500,000 / Year',
         verified: true,
-        membership: 'Free'
+        membership: 'Free',
+        isAdmin: isMaster || isAdminUser,
+        role: isMaster ? 'master' : (isAdminUser ? 'admin' : 'member')
       };
       state.profiles.push(mockUser);
       state.currentUser = mockUser;
@@ -6142,7 +6173,9 @@ function filterAdminUsers() {
                 `}
               </td>
               <td>
-                ${(p.role === 'admin' || p.isAdmin) ? `
+                ${(p.role === 'master' || (p.name && p.name.toLowerCase() === 'master')) ? `
+                  <span class="badge-status" style="background:#fbe9e7; color:#d84315; font-weight: bold;">MASTER</span>
+                ` : (p.role === 'admin' || p.isAdmin || (p.name && (p.name.toLowerCase() === 'admin' || p.name.toLowerCase() === 'nmadmin'))) ? `
                   <span class="badge-status" style="background:#e8eaf6; color:#3f51b5; font-weight: bold;">ADMIN</span>
                 ` : `
                   <span class="badge-status" style="background:#eceff1; color:#37474f;">MEMBER</span>
