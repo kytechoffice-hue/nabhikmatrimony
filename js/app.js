@@ -1411,10 +1411,12 @@ function updateHeaderAuth() {
   
   if (state.currentUser) {
     const isPremium = state.currentUser.membership && state.currentUser.membership !== 'Free';
-    const isDashboardActive = window.location.pathname === '/dashboard';
+    const avatar = state.currentUser.photo || getSvgAvatar(state.currentUser.gender, state.currentUser.id, state.currentUser.name);
     authContainer.innerHTML = `
-      <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 20px;">
-        👤 ${state.currentUser.name} ${isPremium ? `👑 ${state.currentUser.membership}` : ''}
+      <span style="color: var(--color-gold); font-size: 0.85rem; font-weight: 600; background: rgba(212,175,55,0.1); padding: 4px 12px 4px 6px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; vertical-align: middle;">
+        <img src="${avatar}" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--color-gold); display: block;" alt="user avatar">
+        <span>${state.currentUser.name}</span>
+        ${isPremium ? `<span title="${state.currentUser.membership}">👑</span>` : ''}
       </span>
       <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">${t('Logout', 'लॉग आउट')}</button>
     `;
