@@ -1469,94 +1469,142 @@ function generateAndDownloadBiodataImage(user) {
   }, 500);
 };
 
+function getImageDataUrl(url) {
+  return new Promise((resolve) => {
+    if (!url || url.startsWith('data:')) {
+      resolve(url || '');
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        resolve(dataUrl);
+      } catch (e) {
+        resolve(url);
+      }
+    };
+    img.onerror = () => {
+      resolve(url);
+    };
+    img.src = url;
+  });
+}
+
 function generateBiodataDataUrl(user) {
   return new Promise((resolve, reject) => {
-    const avatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
-
-    // Create a container for rendering the biodata card hidden from normal viewport
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.top = '-9999px';
-    container.style.left = '-9999px';
-    container.style.width = '700px';
-    container.style.backgroundColor = '#fdfaf2';
-    container.style.padding = '40px';
-    container.style.fontFamily = "'Georgia', serif";
-    container.style.color = '#4a0a10';
-    container.style.boxSizing = 'border-box';
+    const originalAvatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
     
-    // Custom styled HTML markup inside container matching the design layout
-    container.innerHTML = `
-      <div style="border: 6px double #d4af37; padding: 40px; background-color: #ffffff; box-sizing: border-box;">
-        <div style="text-align: center; font-size: 1.5rem; color: #d4af37; margin-bottom: 8px;">✦ ⚜ ✦</div>
-        <h1 style="text-align: center; color: #5c0a13; margin: 0 0 4px 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Marriage Biodata</h1>
-        <div style="text-align: center; color: #d4af37; margin: 0 0 24px 0; font-size: 1.0rem; letter-spacing: 3px; text-transform: uppercase; border-bottom: 1.5px solid rgba(212, 175, 55, 0.25); padding-bottom: 12px; font-weight: normal;">Nabhik Matrimonial</div>
-        
-        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 16px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Personal Details</h3>
-        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
-          <!-- Left Column -->
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Full Name:</span><span style="color: #333333;">${user.name}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Age:</span><span style="color: #333333;">${user.age || calculateAge(user.dob) || ''} Years</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Height:</span><span style="color: #333333;">${user.height || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Blood Group:</span><span style="color: #333333;">${user.bloodGroup || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Religion:</span><span style="color: #333333;">${user.religion || 'Hindu'}</span></div>
+    getImageDataUrl(originalAvatar).then(avatar => {
+      // Create a container for rendering the biodata card hidden from normal viewport
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '-9999px';
+      container.style.left = '-9999px';
+      container.style.width = '700px';
+      container.style.backgroundColor = '#fdfaf2';
+      container.style.padding = '40px';
+      container.style.fontFamily = "'Georgia', serif";
+      container.style.color = '#4a0a10';
+      container.style.boxSizing = 'border-box';
+      
+      // Custom styled HTML markup inside container matching the design layout
+      container.innerHTML = `
+        <div style="border: 6px double #d4af37; padding: 40px; background-color: #ffffff; box-sizing: border-box;">
+          <div style="text-align: center; font-size: 1.5rem; color: #d4af37; margin-bottom: 8px;">✦ ⚜ ✦</div>
+          <h1 style="text-align: center; color: #5c0a13; margin: 0 0 4px 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Marriage Biodata</h1>
+          <div style="text-align: center; color: #d4af37; margin: 0 0 24px 0; font-size: 1.0rem; letter-spacing: 3px; text-transform: uppercase; border-bottom: 1.5px solid rgba(212, 175, 55, 0.25); padding-bottom: 12px; font-weight: normal;">Nabhik Matrimonial</div>
+          
+          <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 16px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Personal Details</h3>
+          <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
+            <!-- Left Column -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Full Name:</span><span style="color: #333333;">${user.name}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Age:</span><span style="color: #333333;">${user.age || calculateAge(user.dob) || ''} Years</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Height:</span><span style="color: #333333;">${user.height || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Blood Group:</span><span style="color: #333333;">${user.bloodGroup || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Religion:</span><span style="color: #333333;">${user.religion || 'Hindu'}</span></div>
+            </div>
+            
+            <!-- Middle Column (Photo) -->
+            <div style="flex-shrink: 0; text-align: center; margin: 0 10px;">
+              ${avatar.startsWith('<svg') ? 
+                `<div style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
+                `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; object-fit: cover; background-color: #fff; display: block;">`
+              }
+            </div>
+            
+            <!-- Right Column -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Weight:</span><span style="color: #333333;">${user.weight || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+            </div>
           </div>
           
-          <!-- Middle Column (Photo) -->
-          <div style="flex-shrink: 0; text-align: center; margin: 0 10px;">
-            ${avatar.startsWith('<svg') ? 
-              `<div style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
-              `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; object-fit: cover; background-color: #fff; display: block;">`
-            }
+          <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Education & Career</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Education:</span><span style="color: #333333;">${user.qualification || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
           </div>
           
-          <!-- Right Column -->
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Weight:</span><span style="color: #333333;">${user.weight || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+          <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Father's Name:</span><span style="color: #333333;">${user.fatherName || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mother's Name:</span><span style="color: #333333;">${user.motherName || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Brothers:</span><span style="color: #333333;">${user.brothers || 'None'}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Sisters:</span><span style="color: #333333;">${user.sisters || 'None'}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Family Type:</span><span style="color: #333333;">${user.familyType || 'Nuclear'}</span></div>
           </div>
+          
+          <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Contact details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mobile Number:</span><span style="color: #333333;">${user.mobile || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Email Address:</span><span style="color: #333333;">${user.emailId || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Address:</span><span style="color: #333333;">${user.address || ''}</span></div>
+          </div>
+          
+          <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
         </div>
-        
-        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Education & Career</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Education:</span><span style="color: #333333;">${user.qualification || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
-        </div>
-        
-        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
-          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Father's Name:</span><span style="color: #333333;">${user.fatherName || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mother's Name:</span><span style="color: #333333;">${user.motherName || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Brothers:</span><span style="color: #333333;">${user.brothers || 'None'}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Sisters:</span><span style="color: #333333;">${user.sisters || 'None'}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Family Type:</span><span style="color: #333333;">${user.familyType || 'Nuclear'}</span></div>
-        </div>
-        
-        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Contact details</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mobile Number:</span><span style="color: #333333;">${user.mobile || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Email Address:</span><span style="color: #333333;">${user.emailId || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Address:</span><span style="color: #333333;">${user.address || ''}</span></div>
-        </div>
-        
-        <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
-      </div>
-    `;
+      `;
 
-    document.body.appendChild(container);
+      document.body.appendChild(container);
 
-    setTimeout(() => {
-      if (typeof html2canvas === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        script.onload = () => {
+      setTimeout(() => {
+        if (typeof html2canvas === 'undefined') {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+          script.onload = () => {
+            html2canvas(container, {
+              useCORS: true,
+              scale: 2,
+              backgroundColor: '#fdfaf2'
+            }).then(canvas => {
+              const dataUrl = canvas.toDataURL('image/png');
+              document.body.removeChild(container);
+              resolve(dataUrl);
+            }).catch(err => {
+              if (document.body.contains(container)) document.body.removeChild(container);
+              reject(err);
+            });
+          };
+          script.onerror = () => {
+            if (document.body.contains(container)) document.body.removeChild(container);
+            reject(new Error("Failed to load html2canvas library"));
+          };
+          document.head.appendChild(script);
+        } else {
           html2canvas(container, {
             useCORS: true,
             scale: 2,
@@ -1569,27 +1617,9 @@ function generateBiodataDataUrl(user) {
             if (document.body.contains(container)) document.body.removeChild(container);
             reject(err);
           });
-        };
-        script.onerror = () => {
-          if (document.body.contains(container)) document.body.removeChild(container);
-          reject(new Error("Failed to load html2canvas library"));
-        };
-        document.head.appendChild(script);
-      } else {
-        html2canvas(container, {
-          useCORS: true,
-          scale: 2,
-          backgroundColor: '#fdfaf2'
-        }).then(canvas => {
-          const dataUrl = canvas.toDataURL('image/png');
-          document.body.removeChild(container);
-          resolve(dataUrl);
-        }).catch(err => {
-          if (document.body.contains(container)) document.body.removeChild(container);
-          reject(err);
-        });
-      }
-    }, 250);
+        }
+      }, 250);
+    }).catch(err => reject(err));
   });
 }
 
