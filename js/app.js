@@ -6121,19 +6121,19 @@ function filterAdminUsers() {
               </td>
               <td>
                 <div class="action-btn-group">
-                  <button onclick="handleAdminEditUser(${p.id})" class="admin-action-btn" style="background:#e3f2fd; color:#1565c0;">Edit</button>
+                  <button onclick="handleAdminEditUser(${p.id})" class="admin-action-btn" style="background:#e3f2fd; color:#1565c0;" title="Edit Member">✏️</button>
                   ${p.suspended ? `
-                    <button onclick="handleAdminToggleSuspend(${p.id}, false)" class="admin-action-btn btn-approve">Restore</button>
+                    <button onclick="handleAdminToggleSuspend(${p.id}, false)" class="admin-action-btn btn-approve" title="Restore Member">🔄</button>
                   ` : `
-                    <button onclick="handleAdminToggleSuspend(${p.id}, true)" class="admin-action-btn" style="background:#fff3e0; color:#e65100;">Suspend</button>
+                    <button onclick="handleAdminToggleSuspend(${p.id}, true)" class="admin-action-btn" style="background:#fff3e0; color:#e65100;" title="Suspend Member">⏸️</button>
                   `}
                   ${p.verified ? `
-                    <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject">Block</button>
+                    <button onclick="handleAdminReject(${p.id})" class="admin-action-btn btn-reject" title="Block Member">🚫</button>
                   ` : `
-                    <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve">Approve</button>
+                    <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve" title="Approve Member">✅</button>
                   `}
-                  <button onclick="handleAdminResetPassword(${p.id})" class="admin-action-btn" style="background:#f3e5f5; color:#4a148c;">Reset PW</button>
-                  <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete">Delete</button>
+                  <button onclick="handleAdminResetPassword(${p.id})" class="admin-action-btn" style="background:#f3e5f5; color:#4a148c;" title="Reset Password">🔑</button>
+                  <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete" title="Delete Member">🗑️</button>
                 </div>
               </td>
             </tr>
