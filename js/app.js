@@ -1438,6 +1438,18 @@ function updateNavigation() {
   
   const pathName = window.location.pathname || '/';
   
+  const routeIcons = {
+    '/': '🏠',
+    '/dashboard': '📊',
+    '/search': '🔍',
+    '/membership': '💎',
+    '/stories': '📖',
+    '/contact': '📞',
+    '/help': '❓',
+    '/about': 'ℹ️',
+    '/admin': '👑'
+  };
+
   const makeLink = (href, text, extraStyle = '') => {
     const cleanPath = pathName.split('?')[0];
     const isActive = (
@@ -1446,7 +1458,8 @@ function updateNavigation() {
       (cleanPath.startsWith('/profile') && href === '/search') ||
       (cleanPath.startsWith('/membership') && href === '/membership')
     );
-    return `<li><a href="${href}" class="${isActive ? 'active' : ''}" style="${extraStyle}">${text}</a></li>`;
+    const icon = routeIcons[href] || '🔗';
+    return `<li><a href="${href}" class="${isActive ? 'active' : ''}" style="font-size: 1.2rem; display: inline-flex; align-items: center; justify-content: center; ${extraStyle}" title="${text}">${icon}</a></li>`;
   };
   
   if (state.currentUser) {
