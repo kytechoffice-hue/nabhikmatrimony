@@ -1132,7 +1132,12 @@ function makeProfileCard(profile) {
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   // Check if interest is already sent
-  const isInterestSent = state.interestsSent && state.interestsSent.includes(profile.id);
+  const isInterestSent = state.interestsSent && state.interestsSent.map(Number).includes(Number(profile.id));
+  
+  // Check if shortlisted
+  const isShortlisted = state.shortlisted && state.shortlisted.map(Number).includes(Number(profile.id));
+  
+  const isLoggedIn = !!state.currentUser;
   
   return `
     <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px; position: relative; overflow: hidden;">
@@ -1145,7 +1150,7 @@ function makeProfileCard(profile) {
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-maroon)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: block;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         </div>
 
-        <!-- Details Overlay (reveals Name, Education, City + Send Interest Button) -->
+        <!-- Details Overlay (reveals Name, Education, City + Actions) -->
         <div class="profile-details-hover-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.95)); padding: 20px 16px 16px; color: #fff; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: auto; text-align: left; box-sizing: border-box;">
           <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; font-family: var(--font-serif); color: var(--color-gold-light); text-shadow: 0 1px 2px rgba(0,0,0,0.5);">${profile.name}</div>
           <div style="font-size: 0.8rem; opacity: 0.95; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
@@ -1155,11 +1160,30 @@ function makeProfileCard(profile) {
             <span>📍</span> <span>${profile.location ? profile.location.split(',')[0] : 'N/A'}</span>
           </div>
           
-          <!-- Send Interest Action Button -->
-          ${isInterestSent ? `
-            <button class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid #2e7d32; background: rgba(46,125,50,0.1); color: #81c784; font-weight: bold; font-size: 0.8rem; cursor: default;">Interest Sent</button>
+          <!-- Actions Grid -->
+          ${isLoggedIn ? `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
+              <!-- Send Interest Action Button -->
+              ${isInterestSent ? `
+                <button class="btn-interest-small" style="width: 100%; padding: 8px 4px; border-radius: 4px; border: 1.5px solid #2e7d32; background: rgba(46,125,50,0.1); color: #81c784; font-weight: bold; font-size: 0.75rem; cursor: default; box-sizing: border-box; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Interest Sent</button>
+              ` : `
+                <button onclick="event.stopPropagation(); handleSendInterest(${profile.id}, false)" class="btn-interest-small" style="width: 100%; padding: 8px 4px; border-radius: 4px; border: 1.5px solid var(--color-gold); background: var(--color-gold); color: #fff; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2); box-sizing: border-box; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">❤️ Interest</button>
+              `}
+              
+              <!-- Shortlist Action Button -->
+              ${isShortlisted ? `
+                <button onclick="event.stopPropagation(); handleCardToggleShortlist(${profile.id}, this)" class="btn-shortlist-small" style="width: 100%; padding: 8px 4px; border-radius: 4px; border: 1.5px solid #f57f17; background: #fffde7; color: #f57f17; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; box-sizing: border-box; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">⭐ Shortlisted</button>
+              ` : `
+                <button onclick="event.stopPropagation(); handleCardToggleShortlist(${profile.id}, this)" class="btn-shortlist-small" style="width: 100%; padding: 8px 4px; border-radius: 4px; border: 1.5px solid #d4af37; background: transparent; color: #d4af37; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; box-sizing: border-box; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">☆ Shortlist</button>
+              `}
+            </div>
           ` : `
-            <button onclick="event.stopPropagation(); handleSendInterest(${profile.id}, false)" class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid var(--color-gold); background: var(--color-gold); color: #fff; font-weight: bold; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2);">❤️ Send Interest</button>
+            <!-- Send Interest Action Button (Full Width for Guest) -->
+            ${isInterestSent ? `
+              <button class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid #2e7d32; background: rgba(46,125,50,0.1); color: #81c784; font-weight: bold; font-size: 0.8rem; cursor: default;">Interest Sent</button>
+            ` : `
+              <button onclick="event.stopPropagation(); handleSendInterest(${profile.id}, false)" class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid var(--color-gold); background: var(--color-gold); color: #fff; font-weight: bold; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2);">❤️ Send Interest</button>
+            `}
           `}
         </div>
       </div>
@@ -5285,6 +5309,30 @@ function handleSendInterest(id, updateDetailsPage = false) {
       btn.style.color = '#81c784';
     }
   }
+}
+
+function handleCardToggleShortlist(id, btn) {
+  if (!state.currentUser) {
+    showToast('Please login to shortlist profiles.');
+    navigateTo('/login');
+    return;
+  }
+  stateActions.toggleShortlist(id);
+  const isShort = state.shortlisted.map(Number).includes(Number(id));
+  if (btn) {
+    if (isShort) {
+      btn.innerHTML = '⭐ Shortlisted';
+      btn.style.borderColor = '#f57f17';
+      btn.style.background = '#fffde7';
+      btn.style.color = '#f57f17';
+    } else {
+      btn.innerHTML = '☆ Shortlist';
+      btn.style.borderColor = '#d4af37';
+      btn.style.background = 'transparent';
+      btn.style.color = '#d4af37';
+    }
+  }
+  showToast(isShort ? 'Profile added to Shortlist!' : 'Profile removed from Shortlist.');
 }
 
 // Start chat simulator
