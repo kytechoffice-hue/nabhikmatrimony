@@ -505,17 +505,22 @@ async function loadStateFromServer() {
           }
         });
         
-        // Sanitize/ensure correct roles for master and admin
+        // Sanitize/ensure correct roles and normalize arrays for all profiles
         if (state.profiles && Array.isArray(state.profiles)) {
           state.profiles.forEach(p => {
-            if (p && p.name) {
-              const nameLower = p.name.toLowerCase();
-              if (nameLower === 'master') {
-                p.role = 'master';
-                p.isAdmin = true;
-              } else if (nameLower === 'admin' || nameLower === 'nmadmin') {
-                p.role = 'admin';
-                p.isAdmin = true;
+            if (p) {
+              p.interestsSent = (p.interestsSent || []).map(Number);
+              p.interestsReceived = (p.interestsReceived || []).map(Number);
+              p.shortlisted = (p.shortlisted || []).map(Number);
+              if (p.name) {
+                const nameLower = p.name.toLowerCase();
+                if (nameLower === 'master') {
+                  p.role = 'master';
+                  p.isAdmin = true;
+                } else if (nameLower === 'admin' || nameLower === 'nmadmin') {
+                  p.role = 'admin';
+                  p.isAdmin = true;
+                }
               }
             }
           });
@@ -529,7 +534,13 @@ async function loadStateFromServer() {
             state.currentUser.role = 'admin';
             state.currentUser.isAdmin = true;
           }
+          state.currentUser.interestsSent = (state.currentUser.interestsSent || []).map(Number);
+          state.currentUser.interestsReceived = (state.currentUser.interestsReceived || []).map(Number);
+          state.currentUser.shortlisted = (state.currentUser.shortlisted || []).map(Number);
         }
+        state.interestsSent = (state.interestsSent || []).map(Number);
+        state.interestsReceived = (state.interestsReceived || []).map(Number);
+        state.shortlisted = (state.shortlisted || []).map(Number);
       }
       
       // Save plans update back to server if loaded server plans do not match initialPlans
@@ -3263,7 +3274,8 @@ function switchDashboardTab(tabName) {
       break;
       
     case 'interests':
-      const interestProfiles = state.profiles.filter(p => state.interestsReceived.includes(p.id));
+      const interestIds = (state.interestsReceived || []).map(Number);
+      const interestProfiles = state.profiles.filter(p => p && p.verified && interestIds.includes(Number(p.id)));
       panel.innerHTML = `
         <h2>Received Interests</h2>
         ${interestProfiles.length ? `
@@ -3275,7 +3287,8 @@ function switchDashboardTab(tabName) {
       break;
       
     case 'shortlisted':
-      const shortlistedProfiles = state.profiles.filter(p => state.shortlisted.includes(p.id));
+      const shortlistedIds = (state.shortlisted || []).map(Number);
+      const shortlistedProfiles = state.profiles.filter(p => p && p.verified && shortlistedIds.includes(Number(p.id)));
       panel.innerHTML = `
         <h2>Shortlisted Profiles</h2>
         ${shortlistedProfiles.length ? `
