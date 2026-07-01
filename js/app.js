@@ -1,6 +1,14 @@
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("Unhandled Error:", message, "at", source, ":", lineno);
+  alert("JS Error: " + message + "\nLine: " + lineno + "\nSource: " + source);
+  return false;
+};
+window.onunhandledrejection = function(event) {
+  console.error("Unhandled Rejection:", event.reason);
+  alert("Unhandled Rejection: " + (event.reason ? event.reason.message || event.reason : event));
+};
+
 // Consolidated Matrimonial Application Bundle
-// ==========================================
-// SECTION 1: DATABASE & ACTIONS (formerly data.js)
 // Nabhik Matrimonial Mock Database & State Management
 
 // Multi-language translation helpers
@@ -5540,7 +5548,7 @@ function handleSendChatMessage(e, profileId) {
   }, 1500);
 }
 
-function handleShareBiodata(profileId) {
+window.handleShareBiodata = function(profileId) {
   if (!state.currentUser) {
     showToast('Please login to share biodata.');
     navigateTo('/login');
@@ -5596,7 +5604,8 @@ function handleShareBiodata(profileId) {
     }, 1500);
   }).catch(err => {
     console.error(err);
-    showToast('Failed to generate biodata image.');
+    alert('Error generating biodata: ' + err.message + '\n' + err.stack);
+    showToast('Failed to generate biodata image: ' + err.message);
   });
 }
 
