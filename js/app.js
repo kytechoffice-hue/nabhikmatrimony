@@ -3353,6 +3353,9 @@ function renderDashboard(container) {
   const isMale = state.currentUser.gender.toLowerCase() === 'male';
   const matches = state.profiles.filter(p => p.gender.toLowerCase() === (isMale ? 'female' : 'male') && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master');
   
+  const userMembership = state.currentUser ? (state.currentUser.membership || '').toLowerCase() : '';
+  const isGoldOrDiamond = userMembership === 'gold' || userMembership === 'diamond';
+
   // Dashboard navigation and view layout
   container.innerHTML = `
     <div class="page-banner">
@@ -3374,7 +3377,7 @@ function renderDashboard(container) {
           <li><a href="/dashboard?tab=matches" id="db-tab-matches">❤️ Matches</a></li>
           <li><a href="/dashboard?tab=interests" id="db-tab-interests">✉ Received Interests</a></li>
           <li><a href="/dashboard?tab=shortlisted" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
-          <li><a href="/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>
+          ${isGoldOrDiamond ? `<li><a href="/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>` : ''}
           <li><a href="/dashboard?tab=edit" id="db-tab-edit">✏ Edit Profile</a></li>
         </ul>
       </aside>
@@ -3536,7 +3539,15 @@ function switchDashboardTab(tabName) {
       break;
     }
       
-    case 'messages':
+    case 'messages': {
+      const userMembership = state.currentUser ? (state.currentUser.membership || '').toLowerCase() : '';
+      const isGoldOrDiamond = userMembership === 'gold' || userMembership === 'diamond';
+      if (!isGoldOrDiamond) {
+        showToast('💬 Chat Center is exclusive to Gold & Diamond members. Please upgrade your plan.');
+        navigateTo('/membership');
+        return;
+      }
+      
       // Get chat threads for the logged-in user based on composite keys
       const currentUserId = state.currentUser.id;
       const threadKeys = Object.keys(state.activeChats).filter(key => {
@@ -3601,14 +3612,15 @@ function switchDashboardTab(tabName) {
       
       // Auto scroll active chat box to bottom on initial tab load
       setTimeout(() => {
-        if (threadProfiles.length > 0) {
+        if (threadProfiles && threadProfiles.length > 0) {
           const firstBox = document.getElementById(`chat-messages-box-${threadProfiles[0].id}`);
           if (firstBox) {
             firstBox.scrollTop = firstBox.scrollHeight;
           }
         }
       }, 50);
-      break;
+    }
+    break;
       
     case 'edit':
       panel.innerHTML = `
@@ -5501,8 +5513,10 @@ function handleStartChat(id) {
     return;
   }
   
-  if (!state.currentUser.membership || state.currentUser.membership === 'Free') {
-    showToast('💬 Chatting is exclusive to premium members. Upgrade your plan to start chatting!');
+  const userMembership = state.currentUser ? (state.currentUser.membership || '').toLowerCase() : '';
+  const isGoldOrDiamond = userMembership === 'gold' || userMembership === 'diamond';
+  if (!isGoldOrDiamond) {
+    showToast('💬 Chat Center is exclusive to Gold & Diamond members. Please upgrade your plan.');
     navigateTo('/membership');
     return;
   }
