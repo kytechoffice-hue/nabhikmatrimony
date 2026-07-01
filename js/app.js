@@ -1062,6 +1062,9 @@ const stateActions = {
 function makeProfileCard(profile) {
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
+  // Check if interest is already sent
+  const isInterestSent = state.interestsSent && state.interestsSent.includes(profile.id);
+  
   return `
     <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px; position: relative; overflow: hidden;">
       <div class="profile-card-image" style="height: 100%; position: relative;">
@@ -1073,15 +1076,22 @@ function makeProfileCard(profile) {
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-maroon)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: block;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         </div>
 
-        <!-- Details Overlay (reveals Name, Education, City) -->
-        <div class="profile-details-hover-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.95)); padding: 24px 16px 16px; color: #fff; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; text-align: left; box-sizing: border-box;">
+        <!-- Details Overlay (reveals Name, Education, City + Send Interest Button) -->
+        <div class="profile-details-hover-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.95)); padding: 20px 16px 16px; color: #fff; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: auto; text-align: left; box-sizing: border-box;">
           <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; font-family: var(--font-serif); color: var(--color-gold-light); text-shadow: 0 1px 2px rgba(0,0,0,0.5);">${profile.name}</div>
           <div style="font-size: 0.8rem; opacity: 0.95; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
             <span>🎓</span> <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${profile.education || profile.qualification || 'N/A'}</span>
           </div>
-          <div style="font-size: 0.8rem; opacity: 0.95; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+          <div style="font-size: 0.8rem; opacity: 0.95; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
             <span>📍</span> <span>${profile.location ? profile.location.split(',')[0] : 'N/A'}</span>
           </div>
+          
+          <!-- Send Interest Action Button -->
+          ${isInterestSent ? `
+            <button class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid #2e7d32; background: rgba(46,125,50,0.1); color: #81c784; font-weight: bold; font-size: 0.8rem; cursor: default;">Interest Sent</button>
+          ` : `
+            <button onclick="event.stopPropagation(); handleSendInterest(${profile.id}, false)" class="btn-interest-small" style="width: 100%; padding: 8px; border-radius: 4px; border: 1.5px solid var(--color-gold); background: var(--color-gold); color: #fff; font-weight: bold; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2);">❤️ Send Interest</button>
+          `}
         </div>
       </div>
     </div>
@@ -5132,6 +5142,11 @@ function handleToggleShortlist(id, updateDetailsPage = false) {
 
 // Interest send simulation
 function handleSendInterest(id, updateDetailsPage = false) {
+  if (!state.currentUser) {
+    showToast('Please login to send interest.');
+    navigateTo('/login');
+    return;
+  }
   if (state.currentUser && (!state.currentUser.membership || state.currentUser.membership === 'Free')) {
     if (state.interestsSent.length >= 5 && !state.interestsSent.includes(id)) {
       showToast('⚠️ Daily limit reached! Free accounts can only send 5 interests. Upgrade to Silver or above for unlimited interests.');
