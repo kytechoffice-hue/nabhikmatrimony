@@ -1321,25 +1321,33 @@ window.downloadUserBiodata = function() {
         <h1>Marriage Biodata</h1>
         <div class="subtitle">Nabhik Matrimonial</div>
         
-        <div class="profile-photo-container">
-          ${avatar.startsWith('<svg') ? 
-            `<div style="width: 140px; height: 165px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
-            `<img class="profile-photo" src="${avatar}" alt="Photo">`
-          }
-        </div>
-        
         <h3>Personal Details</h3>
-        <div class="details-grid">
-          <div class="grid-item"><span class="label">Full Name:</span><span class="value">${user.name}</span></div>
-          <div class="grid-item"><span class="label">Date of Birth:</span><span class="value">${user.dob || ''}</span></div>
-          <div class="grid-item"><span class="label">Age:</span><span class="value">${user.age || calculateAge(user.dob) || ''} Years</span></div>
-          <div class="grid-item"><span class="label">Marital Status:</span><span class="value">${user.maritalStatus || 'Never Married'}</span></div>
-          <div class="grid-item"><span class="label">Height:</span><span class="value">${user.height || ''}</span></div>
-          <div class="grid-item"><span class="label">Weight:</span><span class="value">${user.weight || ''}</span></div>
-          <div class="grid-item"><span class="label">Blood Group:</span><span class="value">${user.bloodGroup || ''}</span></div>
-          <div class="grid-item"><span class="label">Mother Tongue:</span><span class="value">${user.motherTongue || 'Marathi'}</span></div>
-          <div class="grid-item"><span class="label">Religion:</span><span class="value">${user.religion || 'Hindu'}</span></div>
-          <div class="grid-item"><span class="label">Caste / Sub-Caste:</span><span class="value">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
+          <!-- Left Column -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+            <div class="grid-item"><span class="label" style="width: 100px;">Full Name:</span><span class="value">${user.name}</span></div>
+            <div class="grid-item"><span class="label" style="width: 100px;">Age:</span><span class="value">${user.age || calculateAge(user.dob) || ''} Years</span></div>
+            <div class="grid-item"><span class="label" style="width: 100px;">Height:</span><span class="value">${user.height || ''}</span></div>
+            <div class="grid-item"><span class="label" style="width: 100px;">Blood Group:</span><span class="value">${user.bloodGroup || ''}</span></div>
+            <div class="grid-item"><span class="label" style="width: 100px;">Religion:</span><span class="value">${user.religion || 'Hindu'}</span></div>
+          </div>
+          
+          <!-- Middle Column (Photo) -->
+          <div style="flex-shrink: 0; text-align: center; margin: 0 10px;">
+            ${avatar.startsWith('<svg') ? 
+              `<div style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
+              `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; object-fit: cover; background-color: #fff; display: block;">`
+            }
+          </div>
+          
+          <!-- Right Column -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 8px; padding-left: 10px;">
+            <div class="grid-item"><span class="label" style="width: 110px;">Date of Birth:</span><span class="value">${user.dob || ''}</span></div>
+            <div class="grid-item"><span class="label" style="width: 110px;">Marital Status:</span><span class="value">${user.maritalStatus || 'Never Married'}</span></div>
+            <div class="grid-item"><span class="label" style="width: 110px;">Weight:</span><span class="value">${user.weight || ''}</span></div>
+            <div class="grid-item"><span class="label" style="width: 110px;">Mother Tongue:</span><span class="value">${user.motherTongue || 'Marathi'}</span></div>
+            <div class="grid-item"><span class="label" style="width: 110px;">Caste / Sub-Caste:</span><span class="value" style="display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+          </div>
         </div>
         
         <h3>Education & Career</h3>
