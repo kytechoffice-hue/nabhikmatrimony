@@ -6259,15 +6259,99 @@ function handleAdminResetPassword(id) {
 function handleAdminEditUser(id) {
   const profile = state.profiles.find(p => p.id === id);
   if (!profile) return;
-  const newName = prompt("Edit Member Name:", profile.name);
-  if (newName === null) return;
-  const newLocation = prompt("Edit Location (City):", profile.location);
-  if (newLocation === null) return;
-  const newMembership = prompt("Edit Membership (Free, Silver, Gold, Platinum, Premium Assisted):", profile.membership);
-  if (newMembership === null) return;
 
-  stateActions.adminUpdateUser(id, { name: newName, location: newLocation, membership: newMembership });
+  const overlay = document.getElementById('modal-system-overlay');
+  if (!overlay) return;
+
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 500px; padding: 24px; position: relative;">
+      <button class="modal-close-btn" onclick="closeModal()">×</button>
+      <h3 style="font-size: 1.3rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 20px; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px;">
+        Edit Member #NB-${1000 + profile.id}
+      </h3>
+      <form onsubmit="handleAdminUpdateUserSubmit(event, ${profile.id})">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="admin-form-group">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Full Name</label>
+            <input type="text" id="edit-usr-name" class="admin-input" value="${profile.name || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div class="admin-form-group">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Username / Email ID</label>
+            <input type="text" id="edit-usr-email" class="admin-input" value="${profile.emailId || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div class="admin-form-group">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Password</label>
+            <input type="text" id="edit-usr-password" class="admin-input" value="${profile.password || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div class="admin-form-group">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Location (City)</label>
+            <input type="text" id="edit-usr-location" class="admin-input" value="${profile.location || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Role</label>
+              <select id="edit-usr-role" class="admin-select" style="width: 100%; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                <option value="member" ${profile.role === 'member' ? 'selected' : ''}>Member</option>
+                <option value="admin" ${profile.role === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="master" ${profile.role === 'master' ? 'selected' : ''}>Master</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Membership</label>
+              <select id="edit-usr-membership" class="admin-select" style="width: 100%; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                <option value="Free" ${profile.membership === 'Free' ? 'selected' : ''}>Free</option>
+                <option value="Silver" ${profile.membership === 'Silver' ? 'selected' : ''}>Silver</option>
+                <option value="Gold" ${profile.membership === 'Gold' ? 'selected' : ''}>Gold</option>
+                <option value="Platinum" ${profile.membership === 'Platinum' ? 'selected' : ''}>Platinum</option>
+                <option value="Premium Assisted" ${profile.membership === 'Premium Assisted' ? 'selected' : ''}>Premium Assisted</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; border-top: 1.5px solid var(--color-border); padding-top: 16px;">
+          <button type="button" onclick="closeModal()" class="admin-action-btn" style="background: #efebe9; color: #5d4037; padding: 8px 16px; font-weight: 600; border-radius: 4px;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="padding: 8px 24px; font-weight: 700; border-radius: 4px;">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+function handleAdminUpdateUserSubmit(e, id) {
+  e.preventDefault();
+  const name = document.getElementById('edit-usr-name').value;
+  const emailId = document.getElementById('edit-usr-email').value;
+  const password = document.getElementById('edit-usr-password').value;
+  const location = document.getElementById('edit-usr-location').value;
+  const role = document.getElementById('edit-usr-role').value;
+  const membership = document.getElementById('edit-usr-membership').value;
+  
+  const isAdmin = role === 'admin' || role === 'master';
+
+  stateActions.adminUpdateUser(id, {
+    name,
+    emailId,
+    password,
+    location,
+    role,
+    membership,
+    isAdmin
+  });
+
+  // Force update loaded currentUser if editing our own profile
+  if (state.currentUser && state.currentUser.id === id) {
+    state.currentUser.name = name;
+    state.currentUser.emailId = emailId;
+    state.currentUser.password = password;
+    state.currentUser.location = location;
+    state.currentUser.role = role;
+    state.currentUser.membership = membership;
+    state.currentUser.isAdmin = isAdmin;
+  }
+
   showToast('User profile updated successfully!');
+  closeModal(true);
   filterAdminUsers();
 }
 
