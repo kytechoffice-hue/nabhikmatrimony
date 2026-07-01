@@ -1418,7 +1418,9 @@ function updateHeaderAuth() {
         <span>${state.currentUser.name}</span>
         ${isPremium ? `<span title="${state.currentUser.membership}">👑</span>` : ''}
       </span>
-      <button onclick="handleLogout()" class="btn-register" style="padding: 6px 14px; font-size: 0.8rem; background: #c62828; color: #fff;">${t('Logout', 'लॉग आउट')}</button>
+      <button onclick="handleLogout()" class="btn-register" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; padding: 0; background: #c62828; color: #fff; border: none; vertical-align: middle; cursor: pointer; transition: all 0.2s;" title="${t('Logout', 'लॉग आउट')}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; display: block;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     `;
   } else {
     authContainer.innerHTML = `
@@ -1484,8 +1486,8 @@ function updateNavigation() {
     } else {
       // Show full menu when logged in for normal members
       navContainer.innerHTML = `
-        ${makeLink('/', t('Home', 'मुख्यपृष्ठ'))}
         ${makeLink('/dashboard', t('Dashboard', 'डॅशबोर्ड'))}
+        ${makeLink('/', t('Home', 'मुख्यपृष्ठ'))}
         ${makeLink('/search', t('Search Profiles', 'जोडीदार शोधा'))}
         ${makeLink('/membership', t('Membership', 'सभासदत्व'))}
         ${makeLink('/stories', t('Success Stories', 'यशस्वी कथा'))}
