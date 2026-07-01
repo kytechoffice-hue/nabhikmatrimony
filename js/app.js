@@ -3273,18 +3273,41 @@ function switchDashboardTab(tabName) {
       `;
       break;
       
-    case 'interests':
+    case 'interests': {
       const interestIds = (state.interestsReceived || []).map(Number);
       const interestProfiles = state.profiles.filter(p => p && p.verified && interestIds.includes(Number(p.id)));
+      
+      const sentIds = (state.interestsSent || []).map(Number);
+      // Filter out self if ID 4 has self in sent interests array
+      const sentProfiles = state.profiles.filter(p => p && p.verified && p.id !== state.currentUser.id && sentIds.includes(Number(p.id)));
+      
       panel.innerHTML = `
-        <h2>Received Interests</h2>
-        ${interestProfiles.length ? `
-          <div class="search-results-grid">${interestProfiles.map(p => makeProfileCard(p)).join('')}</div>
-        ` : `
-          <p style="color: var(--color-text-muted);">No interests received yet.</p>
-        `}
+        <h2 style="margin-bottom: 24px;">Interests Management</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 32px;">
+          <!-- Received Interests Section -->
+          <div>
+            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📥 Received Interests (${interestProfiles.length})</h3>
+            ${interestProfiles.length ? `
+              <div class="search-results-grid">${interestProfiles.map(p => makeProfileCard(p)).join('')}</div>
+            ` : `
+              <p style="color: var(--color-text-muted); font-size: 0.9rem;">No interests received yet.</p>
+            `}
+          </div>
+          
+          <!-- Sent Interests Section -->
+          <div>
+            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📤 Sent Interests (${sentProfiles.length})</h3>
+            ${sentProfiles.length ? `
+              <div class="search-results-grid">${sentProfiles.map(p => makeProfileCard(p)).join('')}</div>
+            ` : `
+              <p style="color: var(--color-text-muted); font-size: 0.9rem;">You haven't sent any interests yet.</p>
+            `}
+          </div>
+        </div>
       `;
       break;
+    }
       
     case 'shortlisted':
       const shortlistedIds = (state.shortlisted || []).map(Number);
