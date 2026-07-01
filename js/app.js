@@ -6101,6 +6101,7 @@ function filterAdminUsers() {
             <th>City</th>
             <th>Membership</th>
             <th>Status</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -6110,13 +6111,20 @@ function filterAdminUsers() {
               <td>#NB-${1000 + p.id}</td>
               <td><strong>${p.name}</strong></td>
               <td>${p.gender}</td>
-              <td>${p.location.split(',')[0]}</td>
-              <td><span class="badge-plan ${p.membership === 'Free' ? 'badge-pending' : 'badge-approved'}" style="${p.membership === 'Free' ? 'background:#efebe9; color:#5d4037;' : ''}">${p.membership}</span></td>
+              <td>${p.location ? p.location.split(',')[0] : ''}</td>
+              <td><span class="badge-plan ${p.membership === 'Free' ? 'badge-pending' : 'badge-approved'}" style="${p.membership === 'Free' || !p.membership ? 'background:#efebe9; color:#5d4037;' : ''}">${p.membership || (p.role === 'admin' ? 'Admin' : 'Free')}</span></td>
               <td>
                 ${p.suspended ? `
                   <span class="badge-status badge-pending" style="background:#efebe9; color:#5d4037;">Suspended</span>
                 ` : `
                   <span class="badge-status ${p.verified ? 'badge-approved' : 'badge-pending'}">${p.verified ? 'Verified' : 'Pending'}</span>
+                `}
+              </td>
+              <td>
+                ${(p.role === 'admin' || p.isAdmin) ? `
+                  <span class="badge-status" style="background:#e8eaf6; color:#3f51b5; font-weight: bold;">ADMIN</span>
+                ` : `
+                  <span class="badge-status" style="background:#eceff1; color:#37474f;">MEMBER</span>
                 `}
               </td>
               <td>
@@ -6138,7 +6146,7 @@ function filterAdminUsers() {
               </td>
             </tr>
           `).join('')}
-          ${filtered.length === 0 ? '<tr><td colspan="7">No matching users found.</td></tr>' : ''}
+          ${filtered.length === 0 ? '<tr><td colspan="8">No matching users found.</td></tr>' : ''}
         </tbody>
       </table>
     `;
