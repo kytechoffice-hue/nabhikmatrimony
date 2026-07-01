@@ -1457,15 +1457,133 @@ function generateAndDownloadBiodataImage(user) {
       
       document.body.removeChild(container);
       showToast("Biodata image downloaded successfully!");
-    }).catch(err => {
-      console.error(err);
-      if (document.body.contains(container)) {
-        document.body.removeChild(container);
-      }
-      showToast("Failed to generate image. Please try again.");
     });
   }, 500);
 };
+
+function generateBiodataDataUrl(user) {
+  return new Promise((resolve, reject) => {
+    const avatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
+
+    // Create a container for rendering the biodata card hidden from normal viewport
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.top = '-9999px';
+    container.style.left = '-9999px';
+    container.style.width = '700px';
+    container.style.backgroundColor = '#fdfaf2';
+    container.style.padding = '40px';
+    container.style.fontFamily = "'Georgia', serif";
+    container.style.color = '#4a0a10';
+    container.style.boxSizing = 'border-box';
+    
+    // Custom styled HTML markup inside container matching the design layout
+    container.innerHTML = `
+      <div style="border: 6px double #d4af37; padding: 40px; background-color: #ffffff; box-sizing: border-box;">
+        <div style="text-align: center; font-size: 1.5rem; color: #d4af37; margin-bottom: 8px;">✦ ⚜ ✦</div>
+        <h1 style="text-align: center; color: #5c0a13; margin: 0 0 4px 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Marriage Biodata</h1>
+        <div style="text-align: center; color: #d4af37; margin: 0 0 24px 0; font-size: 1.0rem; letter-spacing: 3px; text-transform: uppercase; border-bottom: 1.5px solid rgba(212, 175, 55, 0.25); padding-bottom: 12px; font-weight: normal;">Nabhik Matrimonial</div>
+        
+        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 16px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Personal Details</h3>
+        <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
+          <!-- Left Column -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Full Name:</span><span style="color: #333333;">${user.name}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Age:</span><span style="color: #333333;">${user.age || calculateAge(user.dob) || ''} Years</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Height:</span><span style="color: #333333;">${user.height || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Blood Group:</span><span style="color: #333333;">${user.bloodGroup || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Religion:</span><span style="color: #333333;">${user.religion || 'Hindu'}</span></div>
+          </div>
+          
+          <!-- Middle Column (Photo) -->
+          <div style="flex-shrink: 0; text-align: center; margin: 0 10px;">
+            ${avatar.startsWith('<svg') ? 
+              `<div style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
+              `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; object-fit: cover; background-color: #fff; display: block;">`
+            }
+          </div>
+          
+          <!-- Right Column -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Weight:</span><span style="color: #333333;">${user.weight || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+          </div>
+        </div>
+        
+        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Education & Career</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Education:</span><span style="color: #333333;">${user.qualification || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+        </div>
+        
+        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Father's Name:</span><span style="color: #333333;">${user.fatherName || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mother's Name:</span><span style="color: #333333;">${user.motherName || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Brothers:</span><span style="color: #333333;">${user.brothers || 'None'}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Sisters:</span><span style="color: #333333;">${user.sisters || 'None'}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Family Type:</span><span style="color: #333333;">${user.familyType || 'Nuclear'}</span></div>
+        </div>
+        
+        <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Contact details</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mobile Number:</span><span style="color: #333333;">${user.mobile || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Email Address:</span><span style="color: #333333;">${user.emailId || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Address:</span><span style="color: #333333;">${user.address || ''}</span></div>
+        </div>
+        
+        <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
+      </div>
+    `;
+
+    document.body.appendChild(container);
+
+    setTimeout(() => {
+      if (typeof html2canvas === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = () => {
+          html2canvas(container, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: '#fdfaf2'
+          }).then(canvas => {
+            const dataUrl = canvas.toDataURL('image/png');
+            document.body.removeChild(container);
+            resolve(dataUrl);
+          }).catch(err => {
+            if (document.body.contains(container)) document.body.removeChild(container);
+            reject(err);
+          });
+        };
+        script.onerror = () => {
+          if (document.body.contains(container)) document.body.removeChild(container);
+          reject(new Error("Failed to load html2canvas library"));
+        };
+        document.head.appendChild(script);
+      } else {
+        html2canvas(container, {
+          useCORS: true,
+          scale: 2,
+          backgroundColor: '#fdfaf2'
+        }).then(canvas => {
+          const dataUrl = canvas.toDataURL('image/png');
+          document.body.removeChild(container);
+          resolve(dataUrl);
+        }).catch(err => {
+          if (document.body.contains(container)) document.body.removeChild(container);
+          reject(err);
+        });
+      }
+    }, 250);
+  });
+}
 
 // Global accordion toggle helper for forms (collapses other sections when opening a new one)
 window.toggleAccordionSection = function(header) {
@@ -3788,6 +3906,7 @@ function switchDashboardTab(tabName) {
 }
 
 // Helper to construct Chat Conversation Panel HTML
+// Helper to construct Chat Conversation Panel HTML
 function makeChatPanel(profileId) {
   const profile = state.profiles.find(p => p.id === profileId);
   if (!profile || !state.currentUser) return '';
@@ -3804,11 +3923,21 @@ function makeChatPanel(profileId) {
     const timeStr = m.timestamp || (isYou ? '10:32 AM' : '10:30 AM');
     const ticksHtml = isYou ? `<span class="message-status-ticks">✓✓</span>` : '';
     
+    const isImage = m.text && m.text.startsWith('data:image/');
+    const textHtml = isImage ? `
+      <div style="cursor: pointer; position: relative;" onclick="window.open().document.write('<img src=\\'' + this.querySelector('img').src + '\\' style=\\'max-width:100%;\\'>')">
+        <img src="${m.text}" alt="Biodata Image" style="max-width: 200px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block;" />
+        <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.2);">
+          🔎 Click to view
+        </div>
+      </div>
+    ` : m.text;
+    
     return `
       <div class="message-row ${isYou ? 'message-sent-row' : 'message-received-row'}">
         ${!isYou ? `<img src="${avatar}" class="message-avatar" alt="${profile.name}" width="32" height="32">` : ''}
         <div class="message-bubble ${isYou ? 'message-sent' : 'message-received'}">
-          <div class="message-text">${m.text}</div>
+          <div class="message-text">${textHtml}</div>
           <div class="message-meta">
             <span class="message-time">${timeStr}</span>
             ${ticksHtml}
@@ -3827,6 +3956,9 @@ function makeChatPanel(profileId) {
       ${msgsHtml}
     </div>
     <form class="chat-input-box" onsubmit="handleSendChatMessage(event, ${profileId})">
+      <button type="button" onclick="handleShareBiodata(${profileId})" class="btn-share-biodata" title="Share Biodata as Image" style="background: transparent; border: none; cursor: pointer; padding: 0 4px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--color-maroon); flex-shrink: 0;" onmouseover="this.style.transform='scale(1.15)'; this.style.color='var(--color-gold)'" onmouseout="this.style.transform='scale(1)'; this.style.color='var(--color-maroon)'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </button>
       <input type="text" id="chat-input-field-${profileId}" placeholder="Type your message..." required autocomplete="off">
       <button type="submit" class="btn-send-message">➔</button>
     </form>
@@ -5406,6 +5538,66 @@ function handleSendChatMessage(e, profileId) {
     }
     showToast(`New message from ${partner.name}`);
   }, 1500);
+}
+
+function handleShareBiodata(profileId) {
+  if (!state.currentUser) {
+    showToast('Please login to share biodata.');
+    navigateTo('/login');
+    return;
+  }
+  
+  showToast('Generating biodata image, please wait...');
+  generateBiodataDataUrl(state.currentUser).then(dataUrl => {
+    stateActions.sendChatMessage(profileId, dataUrl);
+    
+    // Re-render conversation box
+    const area = document.getElementById('chat-conversation-area');
+    if (area) {
+      area.innerHTML = makeChatPanel(profileId);
+      const box = document.getElementById(`chat-messages-box-${profileId}`);
+      box.scrollTop = box.scrollHeight;
+    }
+    showToast('Biodata image shared successfully!');
+    
+    // Trigger partner automatic reply
+    const partner = state.profiles.find(p => p.id === profileId);
+    const replies = [
+      `Namaskar! Thank you for sharing your marriage biodata. It looks very comprehensive. I will share it with my family and reply soon.`
+    ];
+    
+    setTimeout(() => {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const randomReply = replies[Math.floor(Math.random() * replies.length)];
+      const key = getChatKey(state.currentUser.id, profileId);
+      if (!state.activeChats[key]) {
+        state.activeChats[key] = [];
+      }
+      state.activeChats[key].push({ senderId: profileId, text: randomReply, timestamp: timeStr });
+      stateActions.saveAll();
+      
+      const currentBox = document.getElementById(`chat-messages-box-${profileId}`);
+      if (currentBox) {
+        const partnerPhoto = partner.photo || getSvgAvatar(partner.gender, partner.id, partner.name);
+        currentBox.innerHTML += `
+          <div class="message-row message-received-row">
+            <img src="${partnerPhoto}" class="message-avatar" alt="${partner.name}" width="32" height="32">
+            <div class="message-bubble message-received">
+              <div class="message-text">${randomReply}</div>
+              <div class="message-meta">
+                <span class="message-time">${timeStr}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        currentBox.scrollTop = currentBox.scrollHeight;
+      }
+      showToast(`New message from ${partner.name}`);
+    }, 1500);
+  }).catch(err => {
+    console.error(err);
+    showToast('Failed to generate biodata image.');
+  });
 }
 
 // Profile report submission
