@@ -1063,10 +1063,26 @@ function makeProfileCard(profile) {
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
   
   return `
-    <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px;">
-      <div class="profile-card-image" style="height: 100%;">
-        <img src="${avatar}" alt="${profile.name}" width="250" height="240" style="object-fit: cover;" loading="lazy">
+    <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px; position: relative; overflow: hidden;">
+      <div class="profile-card-image" style="height: 100%; position: relative;">
+        <img src="${avatar}" alt="${profile.name}" width="250" height="240" style="object-fit: cover; width: 100%; height: 100%; display: block;" loading="lazy">
         ${profile.verified ? `<div class="profile-card-overlay"><span style="margin-right:2px;">✔</span> Verified</div>` : ''}
+        
+        <!-- Info Icon Trigger -->
+        <div class="profile-details-info-icon" style="position: absolute; bottom: 12px; right: 12px; z-index: 10; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.95); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s; pointer-events: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-maroon)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: block;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </div>
+
+        <!-- Details Overlay (reveals Name, Education, City) -->
+        <div class="profile-details-hover-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.95)); padding: 24px 16px 16px; color: #fff; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; text-align: left; box-sizing: border-box;">
+          <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; font-family: var(--font-serif); color: var(--color-gold-light); text-shadow: 0 1px 2px rgba(0,0,0,0.5);">${profile.name}</div>
+          <div style="font-size: 0.8rem; opacity: 0.95; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+            <span>🎓</span> <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${profile.education || profile.qualification || 'N/A'}</span>
+          </div>
+          <div style="font-size: 0.8rem; opacity: 0.95; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+            <span>📍</span> <span>${profile.location ? profile.location.split(',')[0] : 'N/A'}</span>
+          </div>
+        </div>
       </div>
     </div>
   `;

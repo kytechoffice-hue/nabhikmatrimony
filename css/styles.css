@@ -720,6 +720,15 @@ img {
   letter-spacing: 0.5px;
 }
 
+.profile-card:hover .profile-details-hover-overlay {
+  transform: translateY(0) !important;
+}
+
+.profile-card:hover .profile-details-info-icon {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
 .profile-card-info {
   padding: 16px;
   text-align: center;
