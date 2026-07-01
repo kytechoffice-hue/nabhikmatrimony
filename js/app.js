@@ -1736,7 +1736,7 @@ function initRouter() {
 
 function renderHome(container) {
   // Grab featured profiles for homepage slider (only verified, non-current-user profiles)
-  const featured = state.profiles.filter(p => p.featured && p.verified && (!state.currentUser || p.id !== state.currentUser.id));
+  const featured = state.profiles.filter(p => p.featured && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master' && (!state.currentUser || p.id !== state.currentUser.id));
   const featuredHtml = featured.map(p => makeProfileCard(p)).join('');
   
   // Grab success stories
@@ -3069,7 +3069,7 @@ function renderDashboard(container) {
   
   // Quick dynamic recommendations (AI Suggestions Simulation)
   const isMale = state.currentUser.gender.toLowerCase() === 'male';
-  const matches = state.profiles.filter(p => p.gender.toLowerCase() === (isMale ? 'female' : 'male') && p.verified);
+  const matches = state.profiles.filter(p => p.gender.toLowerCase() === (isMale ? 'female' : 'male') && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master');
   
   // Dashboard navigation and view layout
   container.innerHTML = `
@@ -3193,7 +3193,7 @@ function switchDashboardTab(tabName) {
       
     case 'matches':
       const matchesList = state.profiles
-        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified)
+        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master')
         .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
       panel.innerHTML = `
         <h2>Compatible Matches</h2>
@@ -5017,6 +5017,7 @@ function runProfileSearch() {
   
   // Filter core
   let results = state.profiles.filter(p => {
+    if (p.role === 'admin' || p.role === 'master' || p.isAdmin) return false;
     if (p.gender !== gender) return false;
     if (p.age < ageFrom || p.age > ageTo) return false;
     if (city && !p.location.includes(city)) return false;
