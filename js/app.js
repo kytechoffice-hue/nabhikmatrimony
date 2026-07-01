@@ -582,16 +582,17 @@ try {
   console.error("Failed to check or clear localStorage ads", e);
 }
 
+const loadedCurrentUser = storage.get('currentUser', null);
 const state = {
   profiles: (storage.get('profiles', initialProfiles) || []).filter(p => p && typeof p === 'object'),
   stories: storage.get('stories', initialStories),
   events: storage.get('events', initialEvents),
   blogs: storage.get('blogs', initialBlogs),
   
-  currentUser: storage.get('currentUser', null), // logged-in user object
-  interestsSent: storage.get('interestsSent', []), // array of profile IDs user sent interest to
-  interestsReceived: storage.get('interestsReceived', []), // dummy received interests
-  shortlisted: storage.get('shortlisted', []), // array of shortlisted profile IDs
+  currentUser: loadedCurrentUser, // logged-in user object
+  interestsSent: loadedCurrentUser ? (loadedCurrentUser.interestsSent || []) : storage.get('interestsSent', []), 
+  interestsReceived: loadedCurrentUser ? (loadedCurrentUser.interestsReceived || []) : storage.get('interestsReceived', []), 
+  shortlisted: loadedCurrentUser ? (loadedCurrentUser.shortlisted || []) : storage.get('shortlisted', []), 
   activeChats: storage.get('activeChats', {}),
   
   // Simulated admin analytics
@@ -684,6 +685,18 @@ if (state.profiles) {
 // State Updates Helpers
 const stateActions = {
   saveAll(immediate = false) {
+    if (state.currentUser) {
+      state.currentUser.interestsSent = state.interestsSent;
+      state.currentUser.interestsReceived = state.interestsReceived;
+      state.currentUser.shortlisted = state.shortlisted;
+      
+      const profile = state.profiles.find(p => p.id === state.currentUser.id);
+      if (profile) {
+        profile.interestsSent = state.interestsSent;
+        profile.interestsReceived = state.interestsReceived;
+        profile.shortlisted = state.shortlisted;
+      }
+    }
     storage.cache['profiles'] = state.profiles;
     storage.cache['stories'] = state.stories;
     storage.cache['events'] = state.events;
@@ -920,6 +933,9 @@ const stateActions = {
         }
       }
       state.currentUser = found;
+      state.interestsSent = found.interestsSent || [];
+      state.interestsReceived = found.interestsReceived || [];
+      state.shortlisted = found.shortlisted || [];
       this.saveAll();
       return found;
     }
@@ -944,10 +960,16 @@ const stateActions = {
         verified: true,
         membership: 'Free',
         isAdmin: isMaster || isAdminUser,
-        role: isMaster ? 'master' : (isAdminUser ? 'admin' : 'member')
+        role: isMaster ? 'master' : (isAdminUser ? 'admin' : 'member'),
+        interestsSent: [],
+        interestsReceived: [],
+        shortlisted: []
       };
       state.profiles.push(mockUser);
       state.currentUser = mockUser;
+      state.interestsSent = [];
+      state.interestsReceived = [];
+      state.shortlisted = [];
       this.saveAll();
       return mockUser;
     }
@@ -956,6 +978,9 @@ const stateActions = {
   
   logoutUser() {
     state.currentUser = null;
+    state.interestsSent = [];
+    state.interestsReceived = [];
+    state.shortlisted = [];
     this.saveAll();
   },
   
@@ -972,8 +997,16 @@ const stateActions = {
   sendInterest(id) {
     if (!state.interestsSent.includes(id)) {
       state.interestsSent.push(id);
-      this.saveAll();
     }
+    // Update recipient profile's interestsReceived list
+    const recipient = state.profiles.find(p => p.id === id);
+    if (recipient) {
+      recipient.interestsReceived = recipient.interestsReceived || [];
+      if (state.currentUser && !recipient.interestsReceived.includes(state.currentUser.id)) {
+        recipient.interestsReceived.push(state.currentUser.id);
+      }
+    }
+    this.saveAll();
   },
   
   sendChatMessage(profileId, text) {
