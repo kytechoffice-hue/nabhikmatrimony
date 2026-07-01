@@ -604,6 +604,7 @@ const state = {
   interestsSent: loadedCurrentUser ? (loadedCurrentUser.interestsSent || []) : storage.get('interestsSent', []), 
   interestsReceived: loadedCurrentUser ? (loadedCurrentUser.interestsReceived || []) : storage.get('interestsReceived', []), 
   shortlisted: loadedCurrentUser ? (loadedCurrentUser.shortlisted || []) : storage.get('shortlisted', []), 
+  shortlistedBy: loadedCurrentUser ? (loadedCurrentUser.shortlistedBy || []) : storage.get('shortlistedBy', []), 
   activeChats: storage.get('activeChats', {}),
   
   // Simulated admin analytics
@@ -700,12 +701,14 @@ const stateActions = {
       state.currentUser.interestsSent = state.interestsSent;
       state.currentUser.interestsReceived = state.interestsReceived;
       state.currentUser.shortlisted = state.shortlisted;
+      state.currentUser.shortlistedBy = state.shortlistedBy;
       
       const profile = state.profiles.find(p => p.id === state.currentUser.id);
       if (profile) {
         profile.interestsSent = state.interestsSent;
         profile.interestsReceived = state.interestsReceived;
         profile.shortlisted = state.shortlisted;
+        profile.shortlistedBy = state.shortlistedBy;
       }
     }
     storage.cache['profiles'] = state.profiles;
@@ -716,6 +719,7 @@ const stateActions = {
     storage.cache['interestsSent'] = state.interestsSent;
     storage.cache['interestsReceived'] = state.interestsReceived;
     storage.cache['shortlisted'] = state.shortlisted;
+    storage.cache['shortlistedBy'] = state.shortlistedBy;
     storage.cache['activeChats'] = state.activeChats;
     storage.cache['revenueReport'] = state.revenueReport;
     storage.cache['plans'] = state.plans;
@@ -947,6 +951,7 @@ const stateActions = {
       state.interestsSent = found.interestsSent || [];
       state.interestsReceived = found.interestsReceived || [];
       state.shortlisted = found.shortlisted || [];
+      state.shortlistedBy = found.shortlistedBy || [];
       this.saveAll();
       return found;
     }
@@ -974,13 +979,15 @@ const stateActions = {
         role: isMaster ? 'master' : (isAdminUser ? 'admin' : 'member'),
         interestsSent: [],
         interestsReceived: [],
-        shortlisted: []
+        shortlisted: [],
+        shortlistedBy: []
       };
       state.profiles.push(mockUser);
       state.currentUser = mockUser;
       state.interestsSent = [];
       state.interestsReceived = [];
       state.shortlisted = [];
+      state.shortlistedBy = [];
       this.saveAll();
       return mockUser;
     }
@@ -992,15 +999,33 @@ const stateActions = {
     state.interestsSent = [];
     state.interestsReceived = [];
     state.shortlisted = [];
+    state.shortlistedBy = [];
     this.saveAll();
   },
   
   toggleShortlist(id) {
-    const idx = state.shortlisted.indexOf(id);
+    const targetId = Number(id);
+    const idx = state.shortlisted.map(Number).indexOf(targetId);
+    
+    const recipient = state.profiles.find(p => Number(p.id) === targetId);
+    const senderId = state.currentUser ? Number(state.currentUser.id) : 0;
+    
     if (idx > -1) {
       state.shortlisted.splice(idx, 1);
+      if (recipient && recipient.shortlistedBy) {
+        const sIdx = recipient.shortlistedBy.map(Number).indexOf(senderId);
+        if (sIdx > -1) {
+          recipient.shortlistedBy.splice(sIdx, 1);
+        }
+      }
     } else {
-      state.shortlisted.push(id);
+      state.shortlisted.push(targetId);
+      if (recipient) {
+        recipient.shortlistedBy = recipient.shortlistedBy || [];
+        if (senderId && !recipient.shortlistedBy.map(Number).includes(senderId)) {
+          recipient.shortlistedBy.push(senderId);
+        }
+      }
     }
     this.saveAll();
   },
@@ -3309,18 +3334,40 @@ function switchDashboardTab(tabName) {
       break;
     }
       
-    case 'shortlisted':
-      const shortlistedIds = (state.shortlisted || []).map(Number);
-      const shortlistedProfiles = state.profiles.filter(p => p && p.verified && shortlistedIds.includes(Number(p.id)));
+    case 'shortlisted': {
+      const shortlistedByIds = (state.shortlistedBy || []).map(Number);
+      const shortlistedByProfiles = state.profiles.filter(p => p && p.verified && shortlistedByIds.includes(Number(p.id)));
+      
+      const myShortlistIds = (state.shortlisted || []).map(Number);
+      const myShortlistProfiles = state.profiles.filter(p => p && p.verified && p.id !== state.currentUser.id && myShortlistIds.includes(Number(p.id)));
+      
       panel.innerHTML = `
-        <h2>Shortlisted Profiles</h2>
-        ${shortlistedProfiles.length ? `
-          <div class="search-results-grid">${shortlistedProfiles.map(p => makeProfileCard(p)).join('')}</div>
-        ` : `
-          <p style="color: var(--color-text-muted);">Your shortlist is empty. Start exploring profiles!</p>
-        `}
+        <h2 style="margin-bottom: 24px;">Shortlist Management</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 32px;">
+          <!-- Shortlisted By Section -->
+          <div>
+            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📥 Shortlisted By (${shortlistedByProfiles.length})</h3>
+            ${shortlistedByProfiles.length ? `
+              <div class="search-results-grid">${shortlistedByProfiles.map(p => makeProfileCard(p)).join('')}</div>
+            ` : `
+              <p style="color: var(--color-text-muted); font-size: 0.9rem;">No members have shortlisted you yet.</p>
+            `}
+          </div>
+          
+          <!-- My Shortlist Section -->
+          <div>
+            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📤 My Shortlist (${myShortlistProfiles.length})</h3>
+            ${myShortlistProfiles.length ? `
+              <div class="search-results-grid">${myShortlistProfiles.map(p => makeProfileCard(p)).join('')}</div>
+            ` : `
+              <p style="color: var(--color-text-muted); font-size: 0.9rem;">Your shortlist is empty. Start exploring profiles!</p>
+            `}
+          </div>
+        </div>
       `;
       break;
+    }
       
     case 'messages':
       // Get chat threads for the logged-in user based on composite keys
