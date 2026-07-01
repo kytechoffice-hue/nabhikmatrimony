@@ -1189,6 +1189,201 @@ window.previewEditPhoto = function(input) {
   }
 };
 
+// Global helper to generate and print/download user marriage biodata
+window.downloadUserBiodata = function() {
+  const user = state.currentUser;
+  if (!user) return;
+  
+  const printWindow = window.open('', '_blank', 'width=800,height=900');
+  if (!printWindow) {
+    showToast("Popup blocked! Please allow popups to download biodata.");
+    return;
+  }
+  
+  const avatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
+  
+  // Custom styled marriage biodata template matching the maroon-gold aesthetic
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Marriage Biodata - ${user.name}</title>
+      <meta charset="utf-8">
+      <style>
+        body {
+          font-family: 'Georgia', serif;
+          background-color: #fdfaf2;
+          color: #4a0a10;
+          padding: 30px;
+          margin: 0;
+        }
+        .biodata-wrapper {
+          max-width: 680px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          border: 6px double #d4af37;
+          padding: 40px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+          position: relative;
+        }
+        .decorative-header {
+          text-align: center;
+          font-size: 1.5rem;
+          color: #d4af37;
+          margin-bottom: 8px;
+        }
+        h1 {
+          text-align: center;
+          color: #5c0a13;
+          margin: 0 0 4px 0;
+          font-size: 2.2rem;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-weight: 700;
+        }
+        .subtitle {
+          text-align: center;
+          color: #d4af37;
+          margin: 0 0 24px 0;
+          font-size: 1.0rem;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          border-bottom: 1.5px solid rgba(212, 175, 55, 0.25);
+          padding-bottom: 12px;
+          font-weight: normal;
+        }
+        .profile-photo-container {
+          text-align: center;
+          margin-bottom: 24px;
+        }
+        .profile-photo {
+          width: 140px;
+          height: 165px;
+          border: 3px solid #d4af37;
+          padding: 4px;
+          border-radius: 8px;
+          object-fit: cover;
+          display: inline-block;
+          background-color: #fff;
+        }
+        h3 {
+          color: #5c0a13;
+          border-bottom: 2px solid #d4af37;
+          padding-bottom: 4px;
+          margin: 24px 0 12px 0;
+          font-size: 1.15rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        .details-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px 24px;
+        }
+        .grid-item {
+          font-size: 0.92rem;
+          line-height: 1.4;
+        }
+        .label {
+          font-weight: bold;
+          color: #5c0a13;
+          display: inline-block;
+          width: 140px;
+        }
+        .value {
+          color: #333333;
+        }
+        .full-row {
+          grid-column: span 2;
+        }
+        .footer-ornament {
+          text-align: center;
+          color: #d4af37;
+          margin-top: 32px;
+          font-size: 1.2rem;
+        }
+        @media print {
+          body {
+            background-color: #ffffff;
+            padding: 0;
+          }
+          .biodata-wrapper {
+            box-shadow: none;
+            border: 6px double #d4af37;
+            padding: 20px;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="biodata-wrapper">
+        <div class="decorative-header">✦ ⚜ ✦</div>
+        <h1>Marriage Biodata</h1>
+        <div class="subtitle">Nabhik Matrimonial</div>
+        
+        <div class="profile-photo-container">
+          ${avatar.startsWith('<svg') ? 
+            `<div style="width: 140px; height: 165px; border: 3px solid #d4af37; padding: 4px; border-radius: 8px; display: inline-block; background-color: #fff;">${avatar}</div>` :
+            `<img class="profile-photo" src="${avatar}" alt="Photo">`
+          }
+        </div>
+        
+        <h3>Personal Details</h3>
+        <div class="details-grid">
+          <div class="grid-item"><span class="label">Full Name:</span><span class="value">${user.name}</span></div>
+          <div class="grid-item"><span class="label">Date of Birth:</span><span class="value">${user.dob || ''}</span></div>
+          <div class="grid-item"><span class="label">Age:</span><span class="value">${user.age || calculateAge(user.dob) || ''} Years</span></div>
+          <div class="grid-item"><span class="label">Marital Status:</span><span class="value">${user.maritalStatus || 'Never Married'}</span></div>
+          <div class="grid-item"><span class="label">Height:</span><span class="value">${user.height || ''}</span></div>
+          <div class="grid-item"><span class="label">Weight:</span><span class="value">${user.weight || ''}</span></div>
+          <div class="grid-item"><span class="label">Blood Group:</span><span class="value">${user.bloodGroup || ''}</span></div>
+          <div class="grid-item"><span class="label">Mother Tongue:</span><span class="value">${user.motherTongue || 'Marathi'}</span></div>
+          <div class="grid-item"><span class="label">Religion:</span><span class="value">${user.religion || 'Hindu'}</span></div>
+          <div class="grid-item"><span class="label">Caste / Sub-Caste:</span><span class="value">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
+        </div>
+        
+        <h3>Education & Career</h3>
+        <div class="details-grid">
+          <div class="grid-item"><span class="label">Education:</span><span class="value">${user.qualification || ''}</span></div>
+          <div class="grid-item"><span class="label">Specialization:</span><span class="value">${user.specialization || ''}</span></div>
+          <div class="grid-item"><span class="label">Occupation:</span><span class="value">${user.profession || ''}</span></div>
+          <div class="grid-item"><span class="label">Company Name:</span><span class="value">${user.company || ''}</span></div>
+          <div class="grid-item full-row"><span class="label">Annual Income:</span><span class="value">${user.income || ''}</span></div>
+        </div>
+        
+        <h3>Family details</h3>
+        <div class="details-grid">
+          <div class="grid-item full-row"><span class="label">Father's Name:</span><span class="value">${user.fatherName || ''}</span></div>
+          <div class="grid-item full-row"><span class="label">Mother's Name:</span><span class="value">${user.motherName || ''}</span></div>
+          <div class="grid-item"><span class="label">Brothers:</span><span class="value">${user.brothers || 'None'}</span></div>
+          <div class="grid-item"><span class="label">Sisters:</span><span class="value">${user.sisters || 'None'}</span></div>
+          <div class="grid-item full-row"><span class="label">Family Type:</span><span class="value">${user.familyType || 'Nuclear'}</span></div>
+        </div>
+        
+        <h3>Contact details</h3>
+        <div class="details-grid">
+          <div class="grid-item"><span class="label">Mobile Number:</span><span class="value">${user.mobile || ''}</span></div>
+          <div class="grid-item"><span class="label">Email Address:</span><span class="value">${user.emailId || ''}</span></div>
+          <div class="grid-item full-row"><span class="label">Address:</span><span class="value">${user.address || ''}</span></div>
+        </div>
+        
+        <div class="footer-ornament">✦ ⚜ ✦</div>
+      </div>
+      <script>
+        window.onload = function() {
+          window.print();
+          setTimeout(function() { window.close(); }, 500);
+        };
+      <\/script>
+    </body>
+    </html>
+  `;
+  
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+};
+
 // Global accordion toggle helper for forms (collapses other sections when opening a new one)
 window.toggleAccordionSection = function(header) {
   const content = header.nextElementSibling;
@@ -3119,7 +3314,12 @@ function switchDashboardTab(tabName) {
       
     case 'edit':
       panel.innerHTML = `
-        <h2>Marriage Biodata</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; border-bottom: 1.5px solid var(--color-border); padding-bottom: 12px;">
+          <h2 style="margin: 0; border: none; padding: 0;">Marriage Biodata</h2>
+          <button type="button" onclick="downloadUserBiodata()" class="plan-action-btn btn-gold-solid" title="Download Biodata" style="font-size: 0.85rem; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; width: auto; font-weight: 700;">
+            📥 Download Biodata
+          </button>
+        </div>
         <form onsubmit="handleEditProfileSubmit(event)">
           
           <!-- Profile Information -->
