@@ -4090,6 +4090,12 @@ function renderAdmin(container) {
   switchAdminTab('dashboard');
 }
 
+let adminUsersCurrentPage = 1;
+function changeAdminPage(pNum) {
+  adminUsersCurrentPage = pNum;
+  filterAdminUsers();
+}
+
 // Switch admin views
 function switchAdminTab(tabName) {
   const panel = document.getElementById('admin-content-panel');
@@ -4285,6 +4291,10 @@ function switchAdminTab(tabName) {
               <option value="Pending">Pending</option>
               <option value="Suspended">Suspended</option>
             </select>
+          </div>
+          <div class="admin-filter-item">
+            <label>Search Username</label>
+            <input type="text" id="adm-filt-username" class="admin-input" placeholder="Enter username..." oninput="adminUsersCurrentPage = 1; filterAdminUsers()" style="height: 38px; border-radius: 6px; border: 1px solid var(--color-border); padding: 0 12px; font-size: 0.85rem; width: 160px; box-sizing: border-box;">
           </div>
           <button onclick="toggleAdminAddUserForm()" class="btn-primary" style="padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; height:38px;">+ Add Member</button>
         </div>
@@ -6132,6 +6142,7 @@ function filterAdminUsers() {
   const gender = document.getElementById('adm-filt-gender') ? document.getElementById('adm-filt-gender').value : 'All';
   const membership = document.getElementById('adm-filt-membership') ? document.getElementById('adm-filt-membership').value : 'All';
   const status = document.getElementById('adm-filt-status') ? document.getElementById('adm-filt-status').value : 'All';
+  const usernameSearch = document.getElementById('adm-filt-username') ? document.getElementById('adm-filt-username').value.trim().toLowerCase() : '';
 
   const isCurrentUserMaster = state.currentUser && (
     state.currentUser.role === 'master' || 
@@ -6160,10 +6171,30 @@ function filterAdminUsers() {
       filtered = filtered.filter(p => p.suspended);
     }
   }
+  if (usernameSearch) {
+    filtered = filtered.filter(p => 
+      (p.name && p.name.toLowerCase().includes(usernameSearch)) ||
+      (p.emailId && p.emailId.toLowerCase().includes(usernameSearch))
+    );
+  }
+
+  // Pagination calculation
+  const totalFilteredRecords = filtered.length;
+  const totalPages = Math.ceil(totalFilteredRecords / 10);
+  if (adminUsersCurrentPage > totalPages) {
+    adminUsersCurrentPage = Math.max(totalPages, 1);
+  }
+  const startIndex = (adminUsersCurrentPage - 1) * 10;
+  const endIndex = Math.min(startIndex + 10, totalFilteredRecords);
+  const paginatedRecords = filtered.slice(startIndex, endIndex);
 
   const container = document.getElementById('admin-users-table-container');
   if (container) {
     container.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; color: var(--color-text-muted);">
+        <div>Showing <strong>${totalFilteredRecords > 0 ? startIndex + 1 : 0} to ${endIndex}</strong> of <strong>${totalFilteredRecords}</strong> members</div>
+        <div>Page <strong>${adminUsersCurrentPage}</strong> of <strong>${totalPages || 1}</strong></div>
+      </div>
       <table class="admin-table">
         <thead>
           <tr>
@@ -6176,7 +6207,7 @@ function filterAdminUsers() {
           </tr>
         </thead>
         <tbody>
-          ${filtered.map(p => `
+          ${paginatedRecords.map(p => `
             <tr>
               <td>#NB-${1000 + p.id}</td>
               <td><strong>${p.name}</strong></td>
@@ -6215,9 +6246,18 @@ function filterAdminUsers() {
               </td>
             </tr>
           `).join('')}
-          ${filtered.length === 0 ? '<tr><td colspan="6">No matching users found.</td></tr>' : ''}
+          ${paginatedRecords.length === 0 ? '<tr><td colspan="6">No matching users found.</td></tr>' : ''}
         </tbody>
       </table>
+      ${totalPages > 1 ? `
+        <div class="pagination-container" style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 16px;">
+          <button onclick="changeAdminPage(${adminUsersCurrentPage - 1})" class="admin-action-btn" ${adminUsersCurrentPage === 1 ? 'disabled' : ''} style="background: #efebe9; color: #5d4037; padding: 6px 12px; font-weight: bold; border-radius: 4px; border: none; cursor: ${adminUsersCurrentPage === 1 ? 'not-allowed' : 'pointer'}; opacity: ${adminUsersCurrentPage === 1 ? 0.5 : 1};">Prev</button>
+          ${Array.from({length: totalPages}, (_, i) => i + 1).map(pNum => `
+            <button onclick="changeAdminPage(${pNum})" class="admin-action-btn" style="padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; ${adminUsersCurrentPage === pNum ? 'background: var(--color-gold); color: #fff; font-weight: bold;' : 'background: #efebe9; color: #5d4037;' }">${pNum}</button>
+          `).join('')}
+          <button onclick="changeAdminPage(${adminUsersCurrentPage + 1})" class="admin-action-btn" ${adminUsersCurrentPage === totalPages ? 'disabled' : ''} style="background: #efebe9; color: #5d4037; padding: 6px 12px; font-weight: bold; border-radius: 4px; border: none; cursor: ${adminUsersCurrentPage === totalPages ? 'not-allowed' : 'pointer'}; opacity: ${adminUsersCurrentPage === totalPages ? 0.5 : 1};">Next</button>
+        </div>
+      ` : ''}
     `;
   }
 }
