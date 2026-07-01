@@ -1185,6 +1185,9 @@ function makeProfileCard(profile) {
                 <button onclick="event.stopPropagation(); handleCardToggleShortlist(${profile.id}, this)" class="btn-shortlist-small" style="width: 100%; padding: 8px 4px; border-radius: 4px; border: 1.5px solid #d4af37; background: transparent; color: #d4af37; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; box-sizing: border-box; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">☆ Shortlist</button>
               `}
             </div>
+            
+            <!-- Share Biodata Action Button -->
+            <button onclick="event.stopPropagation(); handleShareBiodataFromCard(${profile.id})" class="btn-share-biodata-card" style="width: 100%; padding: 8px; margin-top: 8px; border-radius: 4px; border: 1.5px solid #00acc1; background: #00acc1; color: #fff; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2); box-sizing: border-box; text-align: center; display: block;">📄 Share Biodata</button>
           ` : `
             <!-- Send Interest Action Button (Full Width for Guest) -->
             ${isInterestSent ? `
@@ -5636,6 +5639,52 @@ window.handleShareBiodata = function(profileId) {
     console.error(err);
     alert('Error generating biodata: ' + err.message + '\n' + err.stack);
     showToast('Failed to generate biodata image: ' + err.message);
+  });
+}
+
+window.handleShareBiodataFromCard = function(recipientId) {
+  if (!state.currentUser) {
+    showToast('Please login to share biodata.');
+    navigateTo('/login');
+    return;
+  }
+  
+  if (Number(recipientId) === Number(state.currentUser.id)) {
+    showToast('⚠️ You cannot share biodata with yourself.');
+    return;
+  }
+  
+  showToast('Generating biodata image, please wait...');
+  generateBiodataDataUrl(state.currentUser).then(dataUrl => {
+    // Add connection/chat if it doesn't exist
+    const key = getChatKey(state.currentUser.id, recipientId);
+    if (!state.activeChats[key]) {
+      state.activeChats[key] = [];
+    }
+    stateActions.sendChatMessage(recipientId, dataUrl);
+    
+    // Trigger partner automatic reply
+    const partner = state.profiles.find(p => p.id === recipientId);
+    const replies = [
+      `Namaskar! Thank you for sharing your marriage biodata. It looks very comprehensive. I will share it with my family and reply soon.`
+    ];
+    
+    setTimeout(() => {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const randomReply = replies[Math.floor(Math.random() * replies.length)];
+      if (!state.activeChats[key]) {
+        state.activeChats[key] = [];
+      }
+      state.activeChats[key].push({ senderId: recipientId, text: randomReply, timestamp: timeStr });
+      stateActions.saveAll();
+      showToast(`New message from ${partner.name}`);
+    }, 1500);
+    
+    showToast('Biodata shared in Chat successfully!');
+  }).catch(err => {
+    console.error(err);
+    alert('Error generating biodata: ' + err.message);
+    showToast('Failed to generate biodata image.');
   });
 }
 
