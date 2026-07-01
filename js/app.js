@@ -627,7 +627,8 @@ const state = {
   payments: storage.get('payments', initialPayments),
   gateways: storage.get('gateways', initialGateways),
   emailTemplates: storage.get('emailTemplates', initialEmailTemplates),
-  ads: storage.get('ads', initialAds)
+  ads: storage.get('ads', initialAds),
+  activityLog: storage.get('activityLog', [])
 };
 // Plans array design synced inside loadStateFromServer
 // Symmetrical database migration: convert old single-number keys to composite keys
@@ -1474,6 +1475,214 @@ function generateAndDownloadBiodataImage(user) {
       showToast("Biodata image downloaded successfully!");
     });
   }, 500);
+};
+
+window.logUserActivity = function(type, text) {
+  if (!state.currentUser) return;
+  if (!state.activityLog) {
+    state.activityLog = [];
+  }
+  state.activityLog.push({
+    userId: state.currentUser.id,
+    type: type,
+    text: text,
+    time: new Date().toISOString()
+  });
+  stateActions.saveAll();
+};
+
+function getSeededActivities() {
+  if (!state.currentUser) return [];
+  const logs = state.activityLog.filter(log => log.userId === state.currentUser.id);
+  if (logs.length > 0) return logs;
+  
+  const seeded = [];
+  const now = new Date();
+  
+  seeded.push({
+    userId: state.currentUser.id,
+    type: 'auth',
+    text: 'Logged in successfully from Mumbai IP',
+    time: new Date(now.getTime() - 2 * 3600000).toISOString()
+  });
+  
+  if (state.shortlisted && state.shortlisted.length > 0) {
+    state.shortlisted.forEach((id, idx) => {
+      const p = state.profiles.find(x => x.id === Number(id));
+      if (p) {
+        seeded.push({
+          userId: state.currentUser.id,
+          type: 'shortlist',
+          text: `Added ${p.name} to Shortlisted Profiles`,
+          time: new Date(now.getTime() - (12 + idx) * 3600000).toISOString()
+        });
+      }
+    });
+  }
+  
+  if (state.interestsSent && state.interestsSent.length > 0) {
+    state.interestsSent.forEach((id, idx) => {
+      const p = state.profiles.find(x => x.id === Number(id));
+      if (p) {
+        seeded.push({
+          userId: state.currentUser.id,
+          type: 'interest',
+          text: `Sent Interest Request to ${p.name}`,
+          time: new Date(now.getTime() - (24 + idx) * 3600000).toISOString()
+        });
+      }
+    });
+  }
+  
+  if (seeded.length > 0) {
+    state.activityLog.push(...seeded);
+    stateActions.saveAll();
+  }
+  
+  return seeded;
+}
+
+function formatActivityTime(isoString) {
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return isoString;
+  const now = new Date();
+  const diffMs = now - d;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} mins ago`;
+  if (diffHours < 24) {
+    if (d.getDate() === now.getDate()) {
+      return `Today, ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+  }
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function renderUserActivityTab(panel) {
+  getSeededActivities();
+  
+  const logs = (state.activityLog || [])
+    .filter(log => log && log.userId === state.currentUser.id)
+    .sort((a, b) => new Date(b.time) - new Date(a.time));
+    
+  panel.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; border-bottom: 1.5px solid var(--color-border); padding-bottom: 12px;">
+      <h2 style="margin: 0; border: none; padding: 0;">User Activity</h2>
+      ${logs.length ? `<button onclick="handleClearAllLogs()" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: #d32f2f; color: #d32f2f; cursor: pointer;">🧹 Clear All</button>` : ''}
+    </div>
+    
+    <!-- Filter Buttons -->
+    <div class="activity-filters" style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+      <button class="filter-btn active" onclick="filterActivityLogs('all', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--color-gold); background: var(--color-gold); color: #fff; font-size: 0.8rem; cursor: pointer; font-weight: bold;">All</button>
+      <button class="filter-btn" onclick="filterActivityLogs('interest', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-dark); font-size: 0.8rem; cursor: pointer;">Interests</button>
+      <button class="filter-btn" onclick="filterActivityLogs('shortlist', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-dark); font-size: 0.8rem; cursor: pointer;">Shortlists</button>
+      <button class="filter-btn" onclick="filterActivityLogs('view', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-dark); font-size: 0.8rem; cursor: pointer;">Profile Views</button>
+      <button class="filter-btn" onclick="filterActivityLogs('share', this)" style="padding: 6px 14px; border-radius: 20px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-dark); font-size: 0.8rem; cursor: pointer;">Shares</button>
+    </div>
+    
+    <div id="activity-timeline-container">
+      ${renderTimelineHtml(logs)}
+    </div>
+  `;
+}
+
+function renderTimelineHtml(logs) {
+  if (!logs || logs.length === 0) {
+    return `<p style="color: var(--color-text-muted); text-align: center; padding: 40px 0;">No activities found.</p>`;
+  }
+  
+  const getIcon = (type) => {
+    switch (type) {
+      case 'interest': return '✉';
+      case 'shortlist': return '⭐';
+      case 'view': return '👁';
+      case 'share': return '📄';
+      case 'auth': return '🔑';
+      default: return '📋';
+    }
+  };
+  
+  const getColor = (type) => {
+    switch (type) {
+      case 'interest': return '#8b002c';
+      case 'shortlist': return '#f57f17';
+      case 'view': return '#0288d1';
+      case 'share': return '#00acc1';
+      case 'auth': return '#2e7d32';
+      default: return '#757575';
+    }
+  };
+
+  return `
+    <div class="activity-timeline" style="position: relative; padding-left: 20px; border-left: 2px solid var(--color-border); display: flex; flex-direction: column; gap: 20px; margin-left: 10px;">
+      ${logs.map((log, idx) => `
+        <div class="activity-item" data-type="${log.type}" style="position: relative; display: flex; align-items: flex-start; gap: 16px;">
+          <!-- Timeline point icon -->
+          <div style="position: absolute; left: -31px; top: 2px; width: 22px; height: 22px; border-radius: 50%; background: ${getColor(log.type)}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; border: 2px solid #fff; box-shadow: var(--shadow-sm);">
+            ${getIcon(log.type)}
+          </div>
+          <!-- Activity details -->
+          <div style="flex: 1; background: #fafafa; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <p style="margin: 0 0 4px 0; font-size: 0.9rem; font-weight: 500; color: var(--color-text-dark);">${log.text}</p>
+              <span style="font-size: 0.75rem; color: var(--color-text-muted);">${formatActivityTime(log.time)}</span>
+            </div>
+            <button onclick="handleDeleteLog(${idx})" style="background: transparent; border: none; color: var(--color-text-muted); cursor: pointer; padding: 4px; font-size: 0.95rem;" onmouseover="this.style.color='#d32f2f'" onmouseout="this.style.color='var(--color-text-muted)'">✕</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+window.filterActivityLogs = function(type, btn) {
+  const filterRow = btn.parentElement;
+  filterRow.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.borderColor = 'var(--color-border)';
+    b.style.color = 'var(--color-text-dark)';
+    b.style.fontWeight = 'normal';
+  });
+  btn.classList.add('active');
+  btn.style.background = 'var(--color-gold)';
+  btn.style.borderColor = 'var(--color-gold)';
+  btn.style.color = '#fff';
+  btn.style.fontWeight = 'bold';
+  
+  const items = document.querySelectorAll('.activity-item');
+  items.forEach(item => {
+    if (type === 'all' || item.getAttribute('data-type') === type) {
+      item.style.display = 'flex';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+};
+
+window.handleClearAllLogs = function() {
+  if (confirm('Are you sure you want to clear all your activity logs? This cannot be undone.')) {
+    state.activityLog = state.activityLog.filter(log => log.userId !== state.currentUser.id);
+    stateActions.saveAll();
+    switchDashboardTab('activity');
+    showToast('Activity logs cleared successfully.');
+  }
+};
+
+window.handleDeleteLog = function(index) {
+  const userLogs = state.activityLog.filter(log => log.userId === state.currentUser.id);
+  const logToDelete = userLogs[index];
+  if (logToDelete) {
+    const globalIdx = state.activityLog.indexOf(logToDelete);
+    if (globalIdx > -1) {
+      state.activityLog.splice(globalIdx, 1);
+      stateActions.saveAll();
+      switchDashboardTab('activity');
+      showToast('Activity log entry removed.');
+    }
+  }
 };
 
 function getImageDataUrl(url) {
@@ -2838,6 +3047,10 @@ function renderProfileDetails(container, profileId) {
     return;
   }
   
+  if (state.currentUser && state.currentUser.id !== profile.id) {
+    window.logUserActivity('view', `Viewed profile of ${profile.name}`);
+  }
+  
   const isShortlisted = state.shortlisted.includes(profile.id);
   const isInterestSent = state.interestsSent.includes(profile.id);
   const avatar = profile.photo || getSvgAvatar(profile.gender, profile.id, profile.name);
@@ -3378,6 +3591,7 @@ function renderDashboard(container) {
           <li><a href="/dashboard?tab=interests" id="db-tab-interests">✉ Received Interests</a></li>
           <li><a href="/dashboard?tab=shortlisted" id="db-tab-shortlisted">⭐ Shortlisted Profiles</a></li>
           ${isGoldOrDiamond ? `<li><a href="/dashboard?tab=messages" id="db-tab-messages">💬 Chat Messages</a></li>` : ''}
+          <li><a href="/dashboard?tab=activity" id="db-tab-activity">📋 User Activity</a></li>
           <li><a href="/dashboard?tab=edit" id="db-tab-edit">✏ Edit Profile</a></li>
         </ul>
       </aside>
@@ -3621,6 +3835,10 @@ function switchDashboardTab(tabName) {
       }, 50);
     }
     break;
+      
+    case 'activity':
+      renderUserActivityTab(panel);
+      break;
       
     case 'edit':
       panel.innerHTML = `
@@ -5432,7 +5650,11 @@ function handleQuickSearch(e) {
 // Shortlist toggle
 function handleToggleShortlist(id, updateDetailsPage = false) {
   stateActions.toggleShortlist(id);
-  const isShortlisted = state.shortlisted.includes(id);
+  const isShortlisted = state.shortlisted.map(Number).includes(Number(id));
+  const partner = state.profiles.find(p => p.id === Number(id));
+  if (partner) {
+    window.logUserActivity('shortlist', isShortlisted ? `Added ${partner.name} to Shortlisted Profiles` : `Removed ${partner.name} from Shortlisted Profiles`);
+  }
   showToast(isShortlisted ? 'Profile added to shortlist' : 'Profile removed from shortlist');
   
   if (updateDetailsPage) {
@@ -5462,6 +5684,10 @@ function handleSendInterest(id, updateDetailsPage = false) {
   }
   
   stateActions.sendInterest(id);
+  const partner = state.profiles.find(p => p.id === Number(id));
+  if (partner) {
+    window.logUserActivity('interest', `Sent Interest Request to ${partner.name}`);
+  }
   showToast('Interest Request sent successfully!');
   
   if (updateDetailsPage) {
@@ -5485,6 +5711,10 @@ function handleCardToggleShortlist(id, btn) {
   }
   stateActions.toggleShortlist(id);
   const isShort = state.shortlisted.map(Number).includes(Number(id));
+  const partner = state.profiles.find(p => p.id === Number(id));
+  if (partner) {
+    window.logUserActivity('shortlist', isShort ? `Added ${partner.name} to Shortlisted Profiles` : `Removed ${partner.name} from Shortlisted Profiles`);
+  }
   if (btn) {
     if (isShort) {
       btn.innerHTML = '⭐ Shortlisted';
@@ -6002,6 +6232,7 @@ function handleEmailLogin(e) {
   
   const user = stateActions.loginUser(email, pass);
   if (user) {
+    window.logUserActivity('auth', 'Logged in successfully');
     showToast(`Successfully logged in as ${user.name}`);
     closeModal(true);
     
