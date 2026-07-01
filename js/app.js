@@ -6143,9 +6143,9 @@ function filterAdminUsers() {
               </td>
               <td>
                 ${(p.role === 'admin' || p.isAdmin) ? `
-                  <span style="font-size: 1.15rem; cursor: help;" title="Administrator User">👑</span>
+                  <span class="badge-status" style="background:#e8eaf6; color:#3f51b5; font-weight: bold;">ADMIN</span>
                 ` : `
-                  <span style="font-size: 1.15rem; cursor: help;" title="Registered Member">👤</span>
+                  <span class="badge-status" style="background:#eceff1; color:#37474f;">MEMBER</span>
                 `}
               </td>
               <td>
