@@ -505,6 +505,11 @@ async function loadStateFromServer() {
           }
         });
       }
+      
+      // Save plans update back to server if loaded server plans do not match initialPlans
+      if (JSON.stringify(serverState.plans) !== JSON.stringify(initialPlans)) {
+        await saveStateToServer(true);
+      }
     }
   } catch (e) {
     console.error("Failed to load state from SQLite server, using local defaults:", e);
@@ -577,13 +582,7 @@ const state = {
   emailTemplates: storage.get('emailTemplates', initialEmailTemplates),
   ads: storage.get('ads', initialAds)
 };
-
-// Force update plans array to match the requested design
-state.plans = initialPlans;
-storage.cache.plans = initialPlans;
-storage.set('plans', initialPlans);
-saveStateToServer();
-
+// Plans array design synced inside loadStateFromServer
 // Symmetrical database migration: convert old single-number keys to composite keys
 if (state.activeChats && typeof state.activeChats === 'object') {
   let migrated = false;
