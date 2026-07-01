@@ -1146,6 +1146,8 @@ function makeProfileCard(profile) {
   const isShortlisted = state.shortlisted && state.shortlisted.map(Number).includes(Number(profile.id));
   
   const isLoggedIn = !!state.currentUser;
+  const userMembership = state.currentUser ? (state.currentUser.membership || '').toLowerCase() : '';
+  const isGoldOrDiamond = userMembership === 'gold' || userMembership === 'diamond';
   
   return `
     <div class="profile-card only-photo" data-id="${profile.id}" onclick="navigateTo('/profile/' + profile.id)" style="cursor: pointer; height: 320px; position: relative; overflow: hidden;">
@@ -1186,8 +1188,10 @@ function makeProfileCard(profile) {
               `}
             </div>
             
-            <!-- Share Biodata Action Button -->
-            <button onclick="event.stopPropagation(); handleShareBiodataFromCard(${profile.id})" class="btn-share-biodata-card" style="width: 100%; padding: 8px; margin-top: 8px; border-radius: 4px; border: 1.5px solid #00acc1; background: #00acc1; color: #fff; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2); box-sizing: border-box; text-align: center; display: block;">📄 Share Biodata</button>
+            <!-- Share Biodata Action Button (GOLD & DIAMOND members only) -->
+            ${isGoldOrDiamond ? `
+              <button onclick="event.stopPropagation(); handleShareBiodataFromCard(${profile.id})" class="btn-share-biodata-card" style="width: 100%; padding: 8px; margin-top: 8px; border-radius: 4px; border: 1.5px solid #00acc1; background: #00acc1; color: #fff; font-weight: bold; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.2); box-sizing: border-box; text-align: center; display: block;">📄 Share Biodata</button>
+            ` : ''}
           ` : `
             <!-- Send Interest Action Button (Full Width for Guest) -->
             ${isInterestSent ? `
