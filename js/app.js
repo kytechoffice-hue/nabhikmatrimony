@@ -6123,7 +6123,6 @@ function filterAdminUsers() {
             <th>ID</th>
             <th>Name</th>
             <th>Gender</th>
-            <th>Membership</th>
             <th>Status</th>
             <th>Role</th>
             <th>Actions</th>
@@ -6135,7 +6134,6 @@ function filterAdminUsers() {
               <td>#NB-${1000 + p.id}</td>
               <td><strong>${p.name}</strong></td>
               <td>${p.gender}</td>
-              <td><span class="badge-plan ${p.membership === 'Free' ? 'badge-pending' : 'badge-approved'}" style="${p.membership === 'Free' || !p.membership ? 'background:#efebe9; color:#5d4037;' : ''}">${p.membership || (p.role === 'admin' ? 'Admin' : 'Free')}</span></td>
               <td>
                 ${p.suspended ? `
                   <span class="badge-status badge-pending" style="background:#efebe9; color:#5d4037;">Suspended</span>
@@ -6163,13 +6161,12 @@ function filterAdminUsers() {
                   ` : `
                     <button onclick="handleAdminApprove(${p.id})" class="admin-action-btn btn-approve" title="Approve Member">✅</button>
                   `}
-                  <button onclick="handleAdminResetPassword(${p.id})" class="admin-action-btn" style="background:#f3e5f5; color:#4a148c;" title="Reset Password">🔑</button>
                   <button onclick="handleAdminDelete(${p.id})" class="admin-action-btn btn-delete" title="Delete Member">🗑️</button>
                 </div>
               </td>
             </tr>
           `).join('')}
-          ${filtered.length === 0 ? '<tr><td colspan="7">No matching users found.</td></tr>' : ''}
+          ${filtered.length === 0 ? '<tr><td colspan="6">No matching users found.</td></tr>' : ''}
         </tbody>
       </table>
     `;
