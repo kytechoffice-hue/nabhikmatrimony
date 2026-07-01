@@ -3359,36 +3359,16 @@ function switchDashboardTab(tabName) {
     }
       
     case 'shortlisted': {
-      const shortlistedByIds = (state.shortlistedBy || []).map(Number);
-      const shortlistedByProfiles = state.profiles.filter(p => p && p.verified && shortlistedByIds.includes(Number(p.id)));
-      
-      const myShortlistIds = (state.shortlisted || []).map(Number);
-      const myShortlistProfiles = state.profiles.filter(p => p && p.verified && p.id !== state.currentUser.id && myShortlistIds.includes(Number(p.id)));
+      const shortlistedIds = (state.shortlisted || []).map(Number);
+      const shortlistedProfiles = state.profiles.filter(p => p && p.verified && shortlistedIds.includes(Number(p.id)));
       
       panel.innerHTML = `
-        <h2 style="margin-bottom: 24px;">Shortlist Management</h2>
-        
-        <div style="display: grid; grid-template-columns: 1fr; gap: 32px;">
-          <!-- Shortlisted By Section -->
-          <div>
-            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📥 Shortlisted By (${shortlistedByProfiles.length})</h3>
-            ${shortlistedByProfiles.length ? `
-              <div class="search-results-grid">${shortlistedByProfiles.map(p => makeProfileCard(p)).join('')}</div>
-            ` : `
-              <p style="color: var(--color-text-muted); font-size: 0.9rem;">No members have shortlisted you yet.</p>
-            `}
-          </div>
-          
-          <!-- My Shortlist Section -->
-          <div>
-            <h3 style="font-size: 1.15rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 12px; border-bottom: 2px solid var(--color-border); padding-bottom: 6px;">📤 My Shortlist (${myShortlistProfiles.length})</h3>
-            ${myShortlistProfiles.length ? `
-              <div class="search-results-grid">${myShortlistProfiles.map(p => makeProfileCard(p)).join('')}</div>
-            ` : `
-              <p style="color: var(--color-text-muted); font-size: 0.9rem;">Your shortlist is empty. Start exploring profiles!</p>
-            `}
-          </div>
-        </div>
+        <h2>Shortlisted Profiles</h2>
+        ${shortlistedProfiles.length ? `
+          <div class="search-results-grid">${shortlistedProfiles.map(p => makeProfileCard(p)).join('')}</div>
+        ` : `
+          <p style="color: var(--color-text-muted);">Your shortlist is empty. Start exploring profiles!</p>
+        `}
       `;
       break;
     }
