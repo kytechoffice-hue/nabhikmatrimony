@@ -445,46 +445,70 @@ const storage = {
   }
 };
 
+window.isStateLoaded = false;
+
 let saveTimeout = null;
 function saveStateToServer(immediate = false) {
-  // Populate cache from current state
-  if (typeof state !== 'undefined') {
-    Object.keys(state).forEach(key => {
-      storage.cache[key] = state[key];
-    });
+  if (!window.isStateLoaded) {
+    console.warn("Blocking save: Server state has not been loaded yet.");
+    return Promise.resolve({ error: "State not loaded" });
   }
-  
+
+  async function performSave() {
+    try {
+      // Fetch latest state from server to get other users' up-to-date info
+      const getRes = await fetch('/api/state');
+      const serverState = await getRes.json();
+      
+      if (serverState && serverState.profiles) {
+        const serverProfiles = serverState.profiles;
+        const ourProfile = state.currentUser;
+        if (ourProfile) {
+          const idx = serverProfiles.findIndex(p => p.id === ourProfile.id);
+          if (idx !== -1) {
+            // Update only the current user's profile in the list
+            serverProfiles[idx] = { ...serverProfiles[idx], ...ourProfile };
+          } else {
+            serverProfiles.push(ourProfile);
+          }
+        }
+        // Update local state and storage cache profiles list with the merged version
+        state.profiles = serverProfiles;
+        storage.cache.profiles = serverProfiles;
+      }
+    } catch (e) {
+      console.warn("Failed to merge profiles prior to save, proceeding with local state:", e);
+    }
+
+    // Populate cache from current state
+    if (typeof state !== 'undefined') {
+      Object.keys(state).forEach(key => {
+        storage.cache[key] = state[key];
+      });
+    }
+
+    try {
+      const res = await fetch('/api/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(storage.cache)
+      });
+      return await res.json();
+    } catch (e) {
+      console.error("Failed to save state to SQLite database:", e);
+      return { error: e.message };
+    }
+  }
+
   if (immediate) {
     if (saveTimeout) clearTimeout(saveTimeout);
-    return (async () => {
-      try {
-        const res = await fetch('/api/state', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(storage.cache)
-        });
-        return await res.json();
-      } catch (e) {
-        console.error("Failed to save state to SQLite database:", e);
-        return { error: e.message };
-      }
-    })();
+    return performSave();
   }
-  
+
   return new Promise((resolve) => {
     if (saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(async () => {
-      try {
-        const res = await fetch('/api/state', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(storage.cache)
-        });
-        resolve(await res.json());
-      } catch (e) {
-        console.error("Failed to save state to SQLite database:", e);
-        resolve({ error: e.message });
-      }
+    saveTimeout = setTimeout(() => {
+      performSave().then(resolve);
     }, 100);
   });
 }
@@ -493,9 +517,13 @@ async function loadStateFromServer() {
   try {
     const res = await fetch('/api/state');
     const serverState = await res.json();
+    
+    // Set load state flag to true so saves are now allowed
+    window.isStateLoaded = true;
+
     if (!serverState || Object.keys(serverState).length === 0) {
       // First time initialization: save seed state to server
-      await saveStateToServer();
+      await saveStateToServer(true);
     } else {
       // Load state from server
       Object.entries(serverState).forEach(([key, val]) => {
