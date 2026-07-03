@@ -168,36 +168,7 @@ function getSvgAvatar(gender, seedId, name) {
 }
 
 // Initial seed mock profile data
-const initialProfiles = [
-  {
-    id: 1,
-    gender: 'Male',
-    name: 'NMAdmin',
-    emailId: 'nmadmin',
-    mobile: '9999999999',
-    password: 'K9#vT!82@QmLpX7',
-    age: 35,
-    height: "5'10\"",
-    education: 'System Administrator',
-    profession: 'System Administrator',
-    location: 'Mumbai, Maharashtra',
-    religion: 'Hindu',
-    community: 'Nabhik',
-    income: '₹2,000,000 / Year',
-    familyType: 'Nuclear Family',
-    fatherName: 'Admin Father',
-    motherName: 'Admin Mother',
-    nativePlace: 'Mumbai, Maharashtra',
-    foodPreference: 'Vegetarian',
-    smokingDrinking: 'No Smoking / No Drinking',
-    hobbies: 'Technology, Reading',
-    verified: true,
-    featured: false,
-    isAdmin: true,
-    role: 'admin',
-    photo: ''
-  }
-];
+const initialProfiles = [];
 
 // Seed success stories
 const initialStories = [
