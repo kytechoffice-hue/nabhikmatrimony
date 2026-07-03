@@ -7033,6 +7033,11 @@ function handleAdminEditUser(id) {
   const overlay = document.getElementById('modal-system-overlay');
   if (!overlay) return;
 
+  overlay.style.alignItems = 'flex-start';
+  overlay.style.overflowY = 'auto';
+  overlay.style.padding = '40px 10px';
+  overlay.style.boxSizing = 'border-box';
+
   overlay.innerHTML = `
     <div class="modal-content" style="max-width: 500px; padding: 24px; position: relative; max-height: 90vh; overflow-y: auto;">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
