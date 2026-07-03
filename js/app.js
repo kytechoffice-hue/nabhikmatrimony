@@ -7034,7 +7034,7 @@ function handleAdminEditUser(id) {
   if (!overlay) return;
 
   overlay.innerHTML = `
-    <div class="modal-content" style="max-width: 500px; padding: 24px; position: relative;">
+    <div class="modal-content" style="max-width: 500px; padding: 24px; position: relative; max-height: 90vh; overflow-y: auto;">
       <button class="modal-close-btn" onclick="closeModal()">×</button>
       <h3 style="font-size: 1.3rem; color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 20px; border-bottom: 1.5px solid var(--color-border); padding-bottom: 8px;">
         Edit Member #NB-${1000 + profile.id}

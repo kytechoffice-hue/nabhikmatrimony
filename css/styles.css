@@ -2283,6 +2283,8 @@ input:checked + .admin-toggle-slider:before {
   position: relative;
   transform: translateY(20px);
   transition: transform var(--transition-smooth);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-overlay.active .modal-content {
