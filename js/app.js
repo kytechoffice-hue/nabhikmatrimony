@@ -1446,8 +1446,8 @@ function generateAndDownloadBiodataImage(user) {
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
-        <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
-        <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Property Details:</span><span style="color: #333333;">${user.propertyDetails || ''}</span></div>
+        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Property Details:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.propertyDetails || ''}</span></div>
       </div>
       
       <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
@@ -1788,8 +1788,8 @@ function generateBiodataDataUrl(user) {
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Property Details:</span><span style="color: #333333;">${user.propertyDetails || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Property Details:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.propertyDetails || ''}</span></div>
           </div>
           
           <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
@@ -4071,9 +4071,11 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
                 </div>
                 <div class="form-group">
-                  <label>Property Details</label>
-                  <input type="text" id="edit-property-details" value="${state.currentUser.propertyDetails || ''}" placeholder="e.g. Own Flat in Pune, 5 Acres land">
                 </div>
+              </div>
+              <div class="form-group">
+                <label>Property Details</label>
+                <textarea id="edit-property-details" placeholder="e.g. Own Flat in Pune, 5 Acres agriculture land in Satara, etc." style="width: 100%; min-height: 80px; box-sizing: border-box; padding: 10px; border: 1px solid var(--color-border); border-radius: 6px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.propertyDetails || ''}</textarea>
               </div>
             </div>
           </div>
