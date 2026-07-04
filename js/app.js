@@ -4779,7 +4779,10 @@ function switchAdminTab(tabName) {
     case 'users': {
       // Filters state placeholders in DOM
       panel.innerHTML = `
-        <h2>User Management</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--color-border); padding-bottom: 12px;">
+          <h2 style="margin: 0; border: none; padding: 0;">User Management</h2>
+          <button onclick="toggleAdminAddUserForm()" class="btn btn-primary" style="padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; height: 38px;">+ Add Member</button>
+        </div>
         
         <!-- Filters -->
         <div class="admin-filters-bar">
@@ -4823,7 +4826,6 @@ function switchAdminTab(tabName) {
             <label>Search Username</label>
             <input type="text" id="adm-filt-username" class="admin-input" placeholder="Enter username..." oninput="adminUsersCurrentPage = 1; filterAdminUsers()" style="height: 38px; border-radius: 6px; border: 1px solid var(--color-border); padding: 0 12px; font-size: 0.85rem; width: 160px; box-sizing: border-box;">
           </div>
-          <button onclick="toggleAdminAddUserForm()" class="btn-primary" style="padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; height:38px;">+ Add Member</button>
         </div>
 
         <!-- Add User Form Overlay -->
