@@ -3868,14 +3868,14 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
                 </div>
                 <div class="form-group">
-                  <label>Age</label>
-                  <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
+                  <label>Date of Birth</label>
+                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
                 </div>
               </div>
               <div class="form-row-2">
                 <div class="form-group">
-                  <label>Date of Birth</label>
-                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
+                  <label>Age</label>
+                  <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
                 </div>
                 <div class="form-group">
                   <label>Gender</label>
