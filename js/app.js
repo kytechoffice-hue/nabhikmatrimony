@@ -948,12 +948,11 @@ const stateActions = {
     return newProfile;
   },
   
-  loginUser(email, password) {
-    const emailLower = (email || '').trim().toLowerCase();
-    if (!emailLower) return null;
+  loginUser(username, password) {
+    const usernameLower = (username || '').trim().toLowerCase();
+    if (!usernameLower) return null;
     const found = state.profiles.find(p => p && (
-      (p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === emailLower) ||
-      (p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === emailLower)
+      p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === usernameLower
     ));
     if (found) {
       // Validate password
@@ -3312,8 +3311,8 @@ function openLoginModal() {
       <!-- Email Form -->
       <form id="login-email-form" onsubmit="handleEmailLogin(event)">
         <div class="form-group">
-          <label>${t('Email ID or Username', 'ईमेल आयडी किंवा युझरनेम')}</label>
-          <input type="text" id="login-email" required placeholder="${t('Enter Email ID or Username', 'ईमेल आयडी किंवा युझरनेम प्रविष्ट करा')}">
+          <label>${t('Username', 'युझरनेम')}</label>
+          <input type="text" id="login-username" required placeholder="${t('Enter Username', 'युझरनेम प्रविष्ट करा')}">
         </div>
         <div class="form-group">
           <label>${t('Password', 'पासवर्ड')}</label>
@@ -6258,13 +6257,13 @@ function handleRegistrationSubmit(e) {
   }
 }
 
-// Email Login submit
+// Username Login submit
 function handleEmailLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('login-email').value;
+  const username = document.getElementById('login-username').value;
   const pass = document.getElementById('login-password').value;
   
-  const user = stateActions.loginUser(email, pass);
+  const user = stateActions.loginUser(username, pass);
   if (user) {
     window.logUserActivity('auth', 'Logged in successfully');
     showToast(`Successfully logged in as ${user.name}`);
@@ -6273,7 +6272,7 @@ function handleEmailLogin(e) {
     const isAdmin = (
       user.isAdmin === true || 
       user.role === 'admin' || 
-      (user.emailId && user.emailId.toLowerCase().includes('admin'))
+      (user.username && user.username.toLowerCase().includes('admin'))
     );
     if (isAdmin) {
       navigateTo('/admin');
@@ -6281,7 +6280,7 @@ function handleEmailLogin(e) {
       navigateTo('/dashboard');
     }
   } else {
-    showToast('Invalid Email/Username or Password. Please try again.');
+    showToast('Invalid Username or Password. Please try again.');
   }
 }
 
