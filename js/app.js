@@ -1443,6 +1443,35 @@ window.previewEditPhoto = function(input) {
   }
 };
 
+// Global helper to preview uploaded document file dynamically and store base64 data
+window.previewDocumentFile = function(input, previewId, statusId) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      if (previewId) {
+        const preview = document.getElementById(previewId);
+        if (preview) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        if (previewId === 'edit-id-proof-preview') {
+          const downloadBtn = document.getElementById('edit-id-proof-download');
+          if (downloadBtn) {
+            downloadBtn.href = e.target.result;
+            downloadBtn.style.display = 'inline-flex';
+          }
+        }
+      }
+      const status = document.getElementById(statusId);
+      if (status) {
+        status.innerHTML = `<strong style="color: #2e7d32;">✓ Selected file: ${input.files[0].name}</strong>`;
+      }
+      input.dataset.base64 = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
 // Global helper to generate and download user marriage biodata as an image
 // Helper to automatically translate custom text using unauthenticated Google Translate API if Marathi is selected
 async function translateToMarathiIfNeeded(text, isMotherName = false) {
@@ -4649,6 +4678,29 @@ function switchDashboardTab(tabName) {
             </div>
           </div>
 
+          <!-- Document Verification -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordionSection(this)">
+              <h3>Document</h3>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="form-group">
+                <label>Aadhaar Card / Identity Proof (Image)</label>
+                <input type="file" accept="image/*" id="edit-id-proof" onchange="previewDocumentFile(this, 'edit-id-proof-preview', 'edit-id-proof-status')" style="padding: 8px 0; border: none; font-family: inherit; font-size: 0.9rem; display: block; margin-top: 4px;">
+                <span style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-top: 4px;" id="edit-id-proof-status">
+                  ${state.currentUser.idProof ? '<span style="color: #2e7d32; font-weight: 600;">✓ Document loaded successfully</span>' : 'No document uploaded yet.'}
+                </span>
+                <div style="display: flex; align-items: flex-end; gap: 12px; margin-top: 8px;">
+                  <img id="edit-id-proof-preview" src="${state.currentUser.idProof || ''}" style="width: 150px; height: auto; max-height: 100px; border-radius: 4px; border: 1px solid var(--color-border); object-fit: contain; display: ${state.currentUser.idProof ? 'block' : 'none'};">
+                  <a id="edit-id-proof-download" href="${state.currentUser.idProof || '#'}" download="identity_proof.png" class="plan-action-btn btn-gold-solid" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; display: ${state.currentUser.idProof ? 'inline-flex' : 'none'}; align-items: center; gap: 4px; text-decoration: none; width: auto; font-weight: 700; border: none; cursor: pointer;">
+                    📥 Download
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Contact Details -->
           <div class="accordion-item">
             <div class="accordion-header" onclick="toggleAccordionSection(this)">
@@ -7313,9 +7365,15 @@ function handleEditProfileSubmit(e) {
   const altContact2 = document.getElementById('edit-alt-contact-2').value;
   const relatives = document.getElementById('edit-relatives').value;
   
+  const idProofInput = document.getElementById('edit-id-proof');
+  const idProofBase64 = idProofInput ? idProofInput.dataset.base64 : null;
+
   const photoInput = document.getElementById('edit-photo');
   
   async function proceed(photoBase64) {
+    if (idProofBase64) {
+      state.currentUser.idProof = idProofBase64;
+    }
     // Populate state.currentUser
     state.currentUser.name = name;
     state.currentUser.username = username;
