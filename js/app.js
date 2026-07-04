@@ -463,6 +463,19 @@ function saveStateToServer(immediate = false) {
             // Admin is editing the database directly, keep local state as source of truth
             storage.cache.profiles = state.profiles;
           } else {
+            // Merge local relationship array updates (interests/shortlists) on other profiles
+            serverProfiles.forEach(sp => {
+              if (sp.id !== ourProfile.id) {
+                const localP = state.profiles.find(lp => lp.id === sp.id);
+                if (localP) {
+                  sp.interestsReceived = localP.interestsReceived || sp.interestsReceived || [];
+                  sp.interestsSent = localP.interestsSent || sp.interestsSent || [];
+                  sp.shortlisted = localP.shortlisted || sp.shortlisted || [];
+                  sp.shortlistedBy = localP.shortlistedBy || sp.shortlistedBy || [];
+                }
+              }
+            });
+
             const idx = serverProfiles.findIndex(p => p.id === ourProfile.id);
             if (idx !== -1) {
               // Update only the current user's profile in the list
@@ -1041,6 +1054,10 @@ const stateActions = {
     state.profiles.push(newProfile);
     // Log user in
     state.currentUser = newProfile;
+    state.interestsSent = newProfile.interestsSent || [];
+    state.interestsReceived = newProfile.interestsReceived || [];
+    state.shortlisted = newProfile.shortlisted || [];
+    state.shortlistedBy = newProfile.shortlistedBy || [];
     this.saveAll();
     return newProfile;
   },
@@ -4207,7 +4224,7 @@ function switchDashboardTab(tabName) {
       }
       
       const recMatches = state.profiles
-        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified)
+        .filter(p => p.gender.toLowerCase() !== state.currentUser.gender.toLowerCase() && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master')
         .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
         
       panel.innerHTML = `
@@ -4245,9 +4262,16 @@ function switchDashboardTab(tabName) {
         .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
       panel.innerHTML = `
         <h2>Compatible Matches</h2>
-        <div class="search-results-grid">
-          ${matchesList.map(p => makeProfileCard(p)).join('')}
-        </div>
+        ${matchesList.length ? `
+          <div class="search-results-grid">
+            ${matchesList.map(p => makeProfileCard(p)).join('')}
+          </div>
+        ` : `
+          <div style="text-align: center; padding: 40px 20px; background: #fff; border-radius: 8px; border: 1px solid var(--color-border); margin-top: 16px; box-shadow: var(--shadow-sm);">
+            <p style="font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 8px; font-weight: 600;">No compatible matches found yet.</p>
+            <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5; max-width: 480px; margin: 0 auto;">Please make sure your profile gender and partner expectations are set correctly. Admin approval may be pending for new opposite-gender profiles.</p>
+          </div>
+        `}
       `;
       break;
       
@@ -6982,17 +7006,40 @@ function confirmOtpCodeSubmit() {
   if (digits == window.otpVerificationCode) {
     closeModal(true);
     
-    // Check if user already exists using emailId
+    // Check if user already exists using mobile number or emailId
+    const mobile = window.tempRegData.mobile || '';
     const email = window.tempRegData.emailId || '';
-    const existingUser = state.profiles.find(p => p.emailId === email);
+    const existingUser = state.profiles.find(p => 
+      (mobile && p.mobile && String(p.mobile).trim() === String(mobile).trim()) ||
+      (email && p.emailId && p.emailId.toLowerCase() === email.toLowerCase())
+    );
     
     let user;
     if (existingUser) {
+      // Merge temp registration details to preserve the correct name, gender, etc. if logging in/registering
+      Object.assign(existingUser, {
+        name: window.tempRegData.name || existingUser.name,
+        gender: window.tempRegData.gender || existingUser.gender,
+        dob: window.tempRegData.dob || existingUser.dob,
+        mobile: window.tempRegData.mobile || existingUser.mobile,
+        emailId: window.tempRegData.emailId || existingUser.emailId,
+        location: window.tempRegData.location || existingUser.location,
+        education: window.tempRegData.education || existingUser.education,
+        profession: window.tempRegData.profession || existingUser.profession
+      });
       state.currentUser = existingUser;
+      state.interestsSent = existingUser.interestsSent || [];
+      state.interestsReceived = existingUser.interestsReceived || [];
+      state.shortlisted = existingUser.shortlisted || [];
+      state.shortlistedBy = existingUser.shortlistedBy || [];
       stateActions.saveAll();
       user = existingUser;
     } else {
       user = stateActions.registerUser(window.tempRegData);
+      state.interestsSent = [];
+      state.interestsReceived = [];
+      state.shortlisted = [];
+      state.shortlistedBy = [];
     }
     
     showToast(`Verification Successful! Logged in as ${user.name}`);
