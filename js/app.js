@@ -3896,6 +3896,8 @@ function switchDashboardTab(tabName) {
                   </select>
                 </div>
                 <div class="form-group">
+                  <label>Nickname</label>
+                  <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
                 </div>
               </div>
               <div class="form-group">
@@ -3926,8 +3928,6 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
                 </div>
                 <div class="form-group">
-                  <label>Nickname</label>
-                  <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
                 </div>
               </div>
               <div class="form-row-2">
