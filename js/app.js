@@ -4141,29 +4141,9 @@ function switchDashboardTab(tabName) {
               <span class="accordion-icon">▼</span>
             </div>
             <div class="accordion-content">
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Preferred Education</label>
-                  <input type="text" id="edit-partner-education" value="${state.currentUser.partnerEducation || ''}" placeholder="e.g. Graduate / Post Graduate">
-                </div>
-                <div class="form-group">
-                  <label>Preferred Profession</label>
-                  <input type="text" id="edit-partner-profession" value="${state.currentUser.partnerProfession || ''}" placeholder="e.g. IT Professional / Business">
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Family Values</label>
-                  <select id="edit-partner-values">
-                    <option value="Moderate" ${state.currentUser.partnerValues === 'Moderate' ? 'selected' : ''}>Moderate</option>
-                    <option value="Traditional" ${state.currentUser.partnerValues === 'Traditional' ? 'selected' : ''}>Traditional</option>
-                    <option value="Liberal" ${state.currentUser.partnerValues === 'Liberal' ? 'selected' : ''}>Liberal</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Other Expectations</label>
-                  <input type="text" id="edit-partner-expectations" value="${state.currentUser.partnerExpectations || ''}" placeholder="e.g. Simple nature, ready to settle in Pune">
-                </div>
+              <div class="form-group">
+                <label>Expectations</label>
+                <textarea id="edit-partner-expectations" rows="4" placeholder="e.g. Well educated, family-oriented, preferred location Pune/Mumbai, simple nature, etc." style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.partnerExpectations || ''}</textarea>
               </div>
             </div>
           </div>
@@ -6802,9 +6782,9 @@ function handleEditProfileSubmit(e) {
   const hobby3 = state.currentUser.hobby3 || '';
   const hobby4 = state.currentUser.hobby4 || '';
   
-  const partnerEducation = document.getElementById('edit-partner-education').value;
-  const partnerProfession = document.getElementById('edit-partner-profession').value;
-  const partnerValues = document.getElementById('edit-partner-values').value;
+  const partnerEducation = state.currentUser.partnerEducation || '';
+  const partnerProfession = state.currentUser.partnerProfession || '';
+  const partnerValues = state.currentUser.partnerValues || 'Moderate';
   const partnerExpectations = document.getElementById('edit-partner-expectations').value;
   
   const mobile = document.getElementById('edit-mobile').value;
