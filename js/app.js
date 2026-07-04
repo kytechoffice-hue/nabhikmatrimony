@@ -168,7 +168,32 @@ function getSvgAvatar(gender, seedId, name) {
 }
 
 // Initial seed mock profile data
-const initialProfiles = [];
+const initialProfiles = [
+  {
+    id: 5,
+    name: 'master',
+    emailId: 'master',
+    username: 'master',
+    password: '1234567890',
+    gender: 'Male',
+    age: 28,
+    height: "5'8\"",
+    education: 'B.E, Technical Lead',
+    profession: 'Technical Lead',
+    location: 'Mumbai, Maharashtra',
+    religion: 'Hindu',
+    community: 'Nabhik',
+    income: '₹1,500,000 / Year',
+    verified: true,
+    membership: 'Free',
+    role: 'master',
+    isAdmin: true,
+    interestsSent: [],
+    interestsReceived: [],
+    shortlisted: [],
+    shortlistedBy: []
+  }
+];
 
 // Seed success stories
 const initialStories = [
@@ -512,6 +537,58 @@ async function loadStateFromServer() {
         
         // Sanitize/ensure correct roles and normalize arrays for all profiles
         if (state.profiles && Array.isArray(state.profiles)) {
+          // Self-healing master profile seeder/repair
+          let master = state.profiles.find(p => p && (p.username === 'master' || p.emailId === 'master' || (p.name && p.name.toLowerCase() === 'master')));
+          if (!master) {
+            master = {
+              id: 5,
+              name: 'master',
+              emailId: 'master',
+              username: 'master',
+              password: '1234567890',
+              gender: 'Male',
+              age: 28,
+              height: "5'8\"",
+              education: 'B.E, Technical Lead',
+              profession: 'Technical Lead',
+              location: 'Mumbai, Maharashtra',
+              religion: 'Hindu',
+              community: 'Nabhik',
+              income: '₹1,500,000 / Year',
+              verified: true,
+              membership: 'Free',
+              role: 'master',
+              isAdmin: true,
+              interestsSent: [],
+              interestsReceived: [],
+              shortlisted: [],
+              shortlistedBy: []
+            };
+            state.profiles.push(master);
+            setTimeout(() => {
+              if (typeof stateActions !== 'undefined' && stateActions.saveAll) {
+                stateActions.saveAll();
+              }
+            }, 500);
+          } else {
+            let updated = false;
+            if (!master.password) {
+              master.password = '1234567890';
+              updated = true;
+            }
+            if (!master.username) {
+              master.username = 'master';
+              updated = true;
+            }
+            if (updated) {
+              setTimeout(() => {
+                if (typeof stateActions !== 'undefined' && stateActions.saveAll) {
+                  stateActions.saveAll();
+                }
+              }, 500);
+            }
+          }
+
           state.profiles.forEach(p => {
             if (p) {
               p.interestsSent = (p.interestsSent || []).map(Number);
