@@ -317,7 +317,7 @@ const initialPlans = [
     badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"></path></svg>`,
     tagline: 'for 30 Days',
     features: [
-      { text: '50 Connection Requests', included: true },
+      { text: '30 Connection Requests', included: true },
       { text: 'Basic Chat Functionality', included: true },
       { text: 'Prominent Profile Visibility', included: true },
       { text: 'Sophisticated Match Suggestions', included: true }
@@ -7526,8 +7526,8 @@ function renderSilverPlanDetails(container) {
             <div class="benefit-card">
               <div class="benefit-icon-wrapper">📨</div>
               <div>
-                <h3>50 Connection Requests</h3>
-                <p>Dispatch up to 50 connection requests to profiles that appeal to you, thereby boosting your prospects of swiftly discovering your ideal match.</p>
+                <h3>30 Connection Requests</h3>
+                <p>Dispatch up to 30 connection requests to profiles that appeal to you, thereby boosting your prospects of swiftly discovering your ideal match.</p>
               </div>
             </div>
             
@@ -7573,7 +7573,7 @@ function renderSilverPlanDetails(container) {
             <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹399<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 30 Days</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Economical Enhanced Experience</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
-              <li style="color: #fff;">50 Connection Requests</li>
+              <li style="color: #fff;">30 Connection Requests</li>
               <li style="color: #fff;">Basic Chat Functionality</li>
               <li style="color: #fff;">Prominent Profile Visibility</li>
               <li style="color: #fff;">Sophisticated Match Suggestions</li>
