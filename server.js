@@ -281,6 +281,65 @@ const server = http.createServer((req, res) => {
           res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
         }
       });
+    }
+  }
+
+  // Google Translate Proxy Endpoint (Bypasses CORS restrictions on the client side)
+  if (cleanUrl === '/api/translate') {
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        try {
+          const payload = JSON.parse(body);
+          const text = payload.text;
+          if (!text) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing text parameter' }));
+            return;
+          }
+          
+          const https = require('https');
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=mr&dt=t&q=${encodeURIComponent(text)}`;
+          
+          https.get(url, (apiRes) => {
+            let apiData = '';
+            apiRes.on('data', d => {
+              apiData += d;
+            });
+            apiRes.on('end', () => {
+              try {
+                 const parsed = JSON.parse(apiData);
+                 if (parsed && parsed[0] && Array.isArray(parsed[0])) {
+                   let fullTranslated = '';
+                   parsed[0].forEach(segment => {
+                     if (segment && segment[0]) {
+                       fullTranslated += segment[0];
+                     }
+                   });
+                   res.writeHead(200, { 'Content-Type': 'application/json' });
+                   res.end(JSON.stringify({ translated: fullTranslated }));
+                 } else {
+                   res.writeHead(200, { 'Content-Type': 'application/json' });
+                   res.end(JSON.stringify({ translated: text }));
+                 }
+               } catch (e) {
+                 res.writeHead(200, { 'Content-Type': 'application/json' });
+                 res.end(JSON.stringify({ translated: text }));
+               }
+            });
+          }).on('error', (err) => {
+            console.error('[TRANSLATE] Error calling Google Translate API:', err.message);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ translated: text }));
+          });
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
+        }
+      });
       return;
     }
   }

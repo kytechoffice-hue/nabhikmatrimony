@@ -1444,8 +1444,170 @@ window.previewEditPhoto = function(input) {
 };
 
 // Global helper to generate and download user marriage biodata as an image
-window.downloadUserBiodata = function() {
-  const user = state.currentUser;
+// Helper to automatically translate custom text using unauthenticated Google Translate API if Marathi is selected
+async function translateToMarathiIfNeeded(text, isMotherName = false) {
+  if (!text) return '';
+  const currentLang = localStorage.getItem('app_lang') || 'mr';
+  if (currentLang !== 'mr') return text;
+
+  // If the text already contains Marathi characters, keep it as is
+  if (/[\u0900-\u097F]/.test(text)) {
+    return translateTextWordsIfMarathi(text, isMotherName);
+  }
+
+  let translated = text;
+  try {
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    if (data && data.translated) {
+      translated = data.translated;
+    }
+  } catch (e) {
+    console.error("Translation proxy API failure for text:", text, e);
+  }
+
+  return translateTextWordsIfMarathi(translated, isMotherName);
+}
+
+// Helper to translate text words if Marathi is selected
+function translateTextWordsIfMarathi(text, isMotherName = false) {
+  if (!text) return '';
+  const currentLang = localStorage.getItem('app_lang') || 'mr';
+  if (currentLang !== 'mr') return text;
+
+  let str = String(text);
+  
+  if (isMotherName) {
+    str = str.replace(/\bMiss\b\.?/gi, 'सौ.');
+    str = str.replace(/\bMis\b\.?/gi, 'सौ.');
+  }
+
+  // Replace common titles and occupations
+  const replacements = [
+    { pattern: /\bMr\b\.?/gi, replacement: 'श्री.' },
+    { pattern: /\bMrs\b\.?/gi, replacement: 'सौ.' },
+    { pattern: /\bMiss\b\.?/gi, replacement: 'कु.' },
+    { pattern: /\bMis\b\.?/gi, replacement: 'सौ.' },
+    { pattern: /\bHousewife\b/gi, replacement: 'गृहिणी' },
+    { pattern: /\bService\b/gi, replacement: 'नोकरी' },
+    { pattern: /\bBusiness\b/gi, replacement: 'व्यवसाय' },
+    { pattern: /\bFarmer\b/gi, replacement: 'शेतकरी' },
+    { pattern: /\bRetired\b/gi, replacement: 'सेवानिवृत्त' },
+    { pattern: /\bPrivate\b/gi, replacement: 'खाजगी' },
+    { pattern: /\bGovernment\b/gi, replacement: 'शासकीय' },
+    { pattern: /\bAcr\b/gi, replacement: 'एकर' },
+    { pattern: /\bAcre\b/gi, replacement: 'एकर' },
+    { pattern: /\bLand\b/gi, replacement: 'जमीन' },
+    { pattern: /\bOwn\b/gi, replacement: 'स्वतःचे' },
+    { pattern: /\bHouse\b/gi, replacement: 'घर' },
+    { pattern: /\bShop\b/gi, replacement: 'दुकान' },
+    { pattern: /\bProfessional\b/gi, replacement: 'व्यावसायिक' },
+    { pattern: /\bHair\b/gi, replacement: 'केस' },
+    { pattern: /\bBeauty\b/gi, replacement: 'सौंदर्य' },
+    { pattern: /\bArtist\b/gi, replacement: 'कलाकार' },
+    { pattern: /\bYes\b/gi, replacement: 'होय' },
+    { pattern: /\bNo\b/gi, replacement: 'नाही' },
+    
+    // Day translations
+    { pattern: /\bSunday\b/gi, replacement: 'रविवार' },
+    { pattern: /\bMonday\b/gi, replacement: 'सोमवार' },
+    { pattern: /\bTuesday\b/gi, replacement: 'मंगळवार' },
+    { pattern: /\bWednesday\b/gi, replacement: 'बुधवार' },
+    { pattern: /\bThursday\b/gi, replacement: 'गुरुवार' },
+    { pattern: /\bFriday\b/gi, replacement: 'शुक्रवार' },
+    { pattern: /\bSaturday\b/gi, replacement: 'शनिवार' },
+
+    // Rashi translations
+    { pattern: /\bAries\b/gi, replacement: 'मेष' },
+    { pattern: /\bTaurus\b/gi, replacement: 'वृषभ' },
+    { pattern: /\bGemini\b/gi, replacement: 'मिथुन' },
+    { pattern: /\bCancer\b/gi, replacement: 'कर्क' },
+    { pattern: /\bLeo\b/gi, replacement: 'सिंह' },
+    { pattern: /\bVirgo\b/gi, replacement: 'कन्या' },
+    { pattern: /\bLibra\b/gi, replacement: 'तूळ' },
+    { pattern: /\bScorpio\b/gi, replacement: 'वृश्चिक' },
+    { pattern: /\bSagittarius\b/gi, replacement: 'धनु' },
+    { pattern: /\bCapricorn\b/gi, replacement: 'मकर' },
+    { pattern: /\bAquarius\b/gi, replacement: 'कुंभ' },
+    { pattern: /\bPisces\b/gi, replacement: 'मीन' },
+
+    // Gana translations
+    { pattern: /\bDev Gana\b/gi, replacement: 'देव गण' },
+    { pattern: /\bDeva Gana\b/gi, replacement: 'देव गण' },
+    { pattern: /\bManushya Gana\b/gi, replacement: 'मनुष्य गण' },
+    { pattern: /\bRakshak Gana\b/gi, replacement: 'राक्षस गण' },
+    { pattern: /\bRakshas Gana\b/gi, replacement: 'राक्षस गण' },
+    { pattern: /\bDev\b/gi, replacement: 'देव' },
+    { pattern: /\bManushya\b/gi, replacement: 'मनुष्य' },
+    { pattern: /\bRakshak\b/gi, replacement: 'राक्षस' },
+    { pattern: /\bRakshas\b/gi, replacement: 'राक्षस' }
+  ];
+
+  replacements.forEach(r => {
+    str = str.replace(r.pattern, r.replacement);
+  });
+
+  return str;
+}
+
+// Helper to translate field values if Marathi is selected
+function translateValueIfMarathi(val, type, gender) {
+  if (!val) return '';
+  const currentLang = localStorage.getItem('app_lang') || 'mr';
+  if (currentLang !== 'mr') return val;
+
+  const str = String(val).trim();
+  const lower = str.toLowerCase();
+
+  // Gender translation
+  if (type === 'gender') {
+    if (lower === 'male') return 'मुलगा';
+    if (lower === 'female') return 'मुलगी';
+  }
+
+  // Marital Status translation
+  if (type === 'maritalStatus') {
+    if (lower === 'unmarried' || lower === 'single') return 'अविवाहित';
+    if (lower === 'divorced') return 'घटस्फोटित';
+    if (lower === 'widowed') {
+      return gender === 'Female' ? 'विधवा' : 'विधुर';
+    }
+  }
+
+  // Religion translation
+  if (type === 'religion') {
+    if (lower === 'hindu') return 'हिंदू';
+  }
+
+  // Caste translation
+  if (type === 'caste') {
+    if (lower === 'nabhik') return 'नाभिक';
+  }
+
+  // Complexion translation
+  if (type === 'complexion') {
+    if (lower === 'fair') return gender === 'Female' ? 'गोरी' : 'गोरा';
+    if (lower === 'medium' || lower === 'wheatish') return 'गव्हाळ';
+    if (lower === 'dark') return gender === 'Female' ? 'सावळी' : 'सावळा';
+  }
+
+  // General "None" translation
+  if (lower === 'none' || lower === 'no') {
+    return 'नाही';
+  }
+
+  return val;
+}
+
+// Global helper to generate and download user marriage biodata as an image
+window.downloadUserBiodata = function(targetUser) {
+  const user = targetUser || state.currentUser;
   if (!user) return;
 
   showToast("Preparing your biodata image, please wait...");
@@ -1466,8 +1628,33 @@ window.downloadUserBiodata = function() {
   }
 };
 
-function generateAndDownloadBiodataImage(user) {
-  const avatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
+async function generateAndDownloadBiodataImage(user) {
+  const isMr = (localStorage.getItem('app_lang') || 'mr') === 'mr';
+  const tUser = { ...user };
+  if (isMr) {
+    showToast("Translating biodata details to Marathi...");
+    tUser.name = await translateToMarathiIfNeeded(user.name);
+    tUser.dayOfBirth = await translateToMarathiIfNeeded(user.dayOfBirth);
+    tUser.birthPlace = await translateToMarathiIfNeeded(user.birthPlace);
+    tUser.religion = await translateToMarathiIfNeeded(user.religion);
+    tUser.caste = await translateToMarathiIfNeeded(user.caste || user.community);
+    tUser.nickname = await translateToMarathiIfNeeded(user.nickname); // deity
+    tUser.zodiac = await translateToMarathiIfNeeded(user.zodiac);
+    tUser.gana = await translateToMarathiIfNeeded(user.gana);
+    tUser.complexion = await translateToMarathiIfNeeded(user.complexion);
+    tUser.qualification = await translateToMarathiIfNeeded(user.qualification);
+    tUser.profession = await translateToMarathiIfNeeded(user.profession);
+    tUser.company = await translateToMarathiIfNeeded(user.company);
+    tUser.propertyDetails = await translateToMarathiIfNeeded(user.propertyDetails);
+    tUser.fatherName = await translateToMarathiIfNeeded(user.fatherName);
+    tUser.motherName = await translateToMarathiIfNeeded(user.motherName, true);
+    tUser.brothers = await translateToMarathiIfNeeded(user.brothers);
+    tUser.sisters = await translateToMarathiIfNeeded(user.sisters);
+    tUser.address = await translateToMarathiIfNeeded(user.address);
+    tUser.relatives = await translateToMarathiIfNeeded(user.relatives);
+  }
+
+  const avatar = tUser.photo || getSvgAvatar(tUser.gender, tUser.id, tUser.name);
 
   // Create a container for rendering the biodata card hidden from normal viewport
   const container = document.createElement('div');
@@ -1476,12 +1663,12 @@ function generateAndDownloadBiodataImage(user) {
   container.style.left = '-9999px';
   container.style.width = '700px';
   container.style.backgroundColor = '#fdfaf2';
-  container.style.padding = '40px';
+  container.style.padding = '25px';
   container.style.fontFamily = "'Georgia', serif";
   container.style.color = '#4a0a10';
   container.style.boxSizing = 'border-box';
   
-  const isFemale = user.gender === 'Female';
+  const isFemale = tUser.gender === 'Female';
   const nameLabel = t('Full Name', isFemale ? 'मुलीचे नाव' : 'मुलाचे नाव');
   const dobLabel = t('Date of Birth', 'जन्म तारीख');
   const timeLabel = t('Time of Birth', 'जन्म वेळ');
@@ -1527,35 +1714,35 @@ function generateAndDownloadBiodataImage(user) {
 
   // Custom styled HTML markup inside container matching the design layout
   container.innerHTML = `
-    <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -12px; padding: 45px 35px; background-color: #ffffff; box-sizing: border-box; position: relative;">
+    <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -10px; padding: 32px 25px; background-color: #ffffff; box-sizing: border-box; position: relative;">
       
       <!-- Golden Traditional Corner Ornaments -->
-      <svg style="position: absolute; top: 15px; left: 15px; width: 50px; height: 50px;" viewBox="0 0 50 50">
+      <svg style="position: absolute; top: 12px; left: 12px; width: 40px; height: 40px;" viewBox="0 0 50 50">
         <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; top: 15px; right: 15px; width: 50px; height: 50px; transform: scaleX(-1);" viewBox="0 0 50 50">
+      <svg style="position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; transform: scaleX(-1);" viewBox="0 0 50 50">
         <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; bottom: 15px; left: 15px; width: 50px; height: 50px; transform: scaleY(-1);" viewBox="0 0 50 50">
+      <svg style="position: absolute; bottom: 12px; left: 12px; width: 40px; height: 40px; transform: scaleY(-1);" viewBox="0 0 50 50">
         <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; transform: scale(-1);" viewBox="0 0 50 50">
+      <svg style="position: absolute; bottom: 12px; right: 12px; width: 40px; height: 40px; transform: scale(-1);" viewBox="0 0 50 50">
         <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
         <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
 
       <!-- Three-Image Header (Ganesha, Sant Sena Maharaj, Tuljabhavani) -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 10px auto; width: 100%; max-width: 500px; padding: 0 20px; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 6px auto; width: 100%; max-width: 450px; padding: 0 15px; box-sizing: border-box;">
         <!-- Left Side: Lord Ganesha (SVG Vector) -->
-        <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <svg viewBox="0 0 100 100" width="70" height="70" style="display: block;">
+        <div style="width: 55px; height: 75px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 100 100" width="55" height="55" style="display: block;">
             <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
             <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
             <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
@@ -1572,42 +1759,42 @@ function generateAndDownloadBiodataImage(user) {
         
         <!-- Center: Sant Sena Maharaj -->
         <div style="text-align: center; flex-shrink: 0;">
-          <img src="/images/sena_maharaj.jpg" style="width: 80px; height: 100px; object-fit: contain; display: block; border-radius: 4px;">
+          <img src="/images/sena_maharaj.jpg" style="width: 65px; height: 80px; object-fit: contain; display: block; border-radius: 4px;">
         </div>
         
         <!-- Right Side: Tuljabhavani -->
-        <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <img src="/images/tuljabhavani.jpg" style="width: 70px; height: 90px; object-fit: contain; display: block; border-radius: 4px;">
+        <div style="width: 55px; height: 75px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <img src="/images/tuljabhavani.jpg" style="width: 55px; height: 75px; object-fit: contain; display: block; border-radius: 4px;">
         </div>
       </div>
       
-      <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
+      <div style="text-align: center; color: #8b0c16; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
         ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
       </div>
-      <h1 style="text-align: center; color: #8b0c16; margin: 0 0 20px 0; font-size: 1.8rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 10px;">
+      <h1 style="text-align: center; color: #8b0c16; margin: 0 0 12px 0; font-size: 1.5rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 6px;">
         ${t('BIODATA', 'बायोडाटा')}
       </h1>
       
       <!-- Details & Photo Layout -->
       <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
         <div style="flex: 1; display: flex; flex-direction: column;">
-          ${makeRow(nameLabel, user.name)}
-          ${makeRow(dobLabel, user.dob ? `${formatDobToDdMmYyyy(user.dob)} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
-          ${makeRow(timeLabel, user.timeOfBirth)}
-          ${makeRow(placeLabel, user.birthPlace)}
-          ${makeRow(religionLabel, user.religion)}
-          ${makeRow(casteLabel, user.caste || user.community)}
-          ${makeRow(deityLabel, user.nickname ? user.nickname : '')}
-          ${makeRow(zodiacLabel, user.zodiac)}
-          ${makeRow(ganaLabel, user.gana)}
-          ${makeRow(heightLabel, user.height)}
-          ${makeRow(complexionLabel, user.complexion)}
-          ${makeRow(bloodGroupLabel, user.bloodGroup)}
-          ${makeRow(educationLabel, user.qualification)}
-          ${makeRow(professionLabel, user.profession)}
-          ${makeRow(companyLabel, user.company)}
-          ${makeRow(incomeLabel, user.income)}
-          ${makeRow(propertyLabel, user.propertyDetails)}
+          ${makeRow(nameLabel, tUser.name)}
+          ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth || (tUser.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(tUser.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(tUser.dob).getDay()]) + ')' : '')}` : '')}
+          ${makeRow(timeLabel, tUser.timeOfBirth)}
+          ${makeRow(placeLabel, tUser.birthPlace)}
+          ${makeRow(religionLabel, tUser.religion)}
+          ${makeRow(casteLabel, tUser.caste || tUser.community)}
+          ${makeRow(deityLabel, tUser.nickname ? tUser.nickname : '')}
+          ${makeRow(zodiacLabel, tUser.zodiac)}
+          ${makeRow(ganaLabel, tUser.gana)}
+          ${makeRow(heightLabel, tUser.height)}
+          ${makeRow(complexionLabel, tUser.complexion)}
+          ${makeRow(bloodGroupLabel, tUser.bloodGroup)}
+          ${makeRow(educationLabel, tUser.qualification)}
+          ${makeRow(professionLabel, tUser.profession)}
+          ${makeRow(companyLabel, tUser.company)}
+          ${makeRow(incomeLabel, tUser.income)}
+          ${makeRow(propertyLabel, tUser.propertyDetails)}
         </div>
         
         ${avatar ? `
@@ -1627,10 +1814,10 @@ function generateAndDownloadBiodataImage(user) {
         </h3>
       </div>
       <div style="display: flex; flex-direction: column;">
-        ${makeRow(fatherLabel, user.fatherName)}
-        ${makeRow(motherLabel, user.motherName)}
-        ${makeRow(brothersLabel, user.brothers)}
-        ${makeRow(sistersLabel, user.sisters)}
+        ${makeRow(fatherLabel, tUser.fatherName)}
+        ${makeRow(motherLabel, tUser.motherName)}
+        ${makeRow(brothersLabel, tUser.brothers)}
+        ${makeRow(sistersLabel, tUser.sisters)}
       </div>
 
       <!-- Contact details -->
@@ -1640,17 +1827,17 @@ function generateAndDownloadBiodataImage(user) {
         </h3>
       </div>
       <div style="display: flex; flex-direction: column;">
-        ${makeRow(addressLabel, user.address)}
-        ${makeRow(mobileLabel, user.mobile)}
-        ${makeRow(emailLabel, user.emailId)}
-        ${makeRow(altContact1Label, user.altContact1)}
-        ${makeRow(altContact2Label, user.altContact2)}
-        ${makeRow(relativesLabel, user.relatives)}
+        ${makeRow(addressLabel, tUser.address)}
+        ${makeRow(mobileLabel, tUser.mobile)}
+        ${makeRow(emailLabel, tUser.emailId)}
+        ${makeRow(altContact1Label, tUser.altContact1)}
+        ${makeRow(altContact2Label, tUser.altContact2)}
+        ${makeRow(relativesLabel, tUser.relatives)}
       </div>
       
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(179, 143, 59, 0.5); padding-top: 8px; margin-top: 25px; font-size: 0.85rem; color: #8b0c16; font-family: 'Open Sans', sans-serif; font-weight: bold;">
         <div>WhatsApp: +91 91378 22376 / 9834319658</div>
-        <div>Generated From: nabhikmatrimony.com</div>
+        <div>${t('Generated From:', 'द्वारे तयार केलेले:')} nabhikmatrimony.com</div>
       </div>
       
       <div style="text-align: center; color: #b38f3b; margin-top: 15px; font-size: 1.1rem;">✦ ⚜ ✦</div>
@@ -1913,9 +2100,33 @@ function getImageDataUrl(url) {
   });
 }
 
-function generateBiodataDataUrl(user) {
+async function generateBiodataDataUrl(user) {
+  const isMr = (localStorage.getItem('app_lang') || 'mr') === 'mr';
+  const tUser = { ...user };
+  if (isMr) {
+    tUser.name = await translateToMarathiIfNeeded(user.name);
+    tUser.dayOfBirth = await translateToMarathiIfNeeded(user.dayOfBirth);
+    tUser.birthPlace = await translateToMarathiIfNeeded(user.birthPlace);
+    tUser.religion = await translateToMarathiIfNeeded(user.religion);
+    tUser.caste = await translateToMarathiIfNeeded(user.caste || user.community);
+    tUser.nickname = await translateToMarathiIfNeeded(user.nickname); // deity
+    tUser.zodiac = await translateToMarathiIfNeeded(user.zodiac);
+    tUser.gana = await translateToMarathiIfNeeded(user.gana);
+    tUser.complexion = await translateToMarathiIfNeeded(user.complexion);
+    tUser.qualification = await translateToMarathiIfNeeded(user.qualification);
+    tUser.profession = await translateToMarathiIfNeeded(user.profession);
+    tUser.company = await translateToMarathiIfNeeded(user.company);
+    tUser.propertyDetails = await translateToMarathiIfNeeded(user.propertyDetails);
+    tUser.fatherName = await translateToMarathiIfNeeded(user.fatherName);
+    tUser.motherName = await translateToMarathiIfNeeded(user.motherName, true);
+    tUser.brothers = await translateToMarathiIfNeeded(user.brothers);
+    tUser.sisters = await translateToMarathiIfNeeded(user.sisters);
+    tUser.address = await translateToMarathiIfNeeded(user.address);
+    tUser.relatives = await translateToMarathiIfNeeded(user.relatives);
+  }
+
   return new Promise((resolve, reject) => {
-    const originalAvatar = user.photo || getSvgAvatar(user.gender, user.id, user.name);
+    const originalAvatar = tUser.photo || getSvgAvatar(tUser.gender, tUser.id, tUser.name);
     
     getImageDataUrl(originalAvatar).then(avatar => {
       // Create a container for rendering the biodata card hidden from normal viewport
@@ -1925,12 +2136,12 @@ function generateBiodataDataUrl(user) {
       container.style.left = '-9999px';
       container.style.width = '700px';
       container.style.backgroundColor = '#fdfaf2';
-      container.style.padding = '40px';
+      container.style.padding = '25px';
       container.style.fontFamily = "'Georgia', serif";
       container.style.color = '#4a0a10';
       container.style.boxSizing = 'border-box';
       
-      const isFemale = user.gender === 'Female';
+      const isFemale = tUser.gender === 'Female';
       const nameLabel = t('Full Name', isFemale ? 'मुलीचे नाव' : 'मुलाचे नाव');
       const dobLabel = t('Date of Birth', 'जन्म तारीख');
       const timeLabel = t('Time of Birth', 'जन्म वेळ');
@@ -1976,35 +2187,35 @@ function generateBiodataDataUrl(user) {
 
       // Custom styled HTML markup inside container matching the design layout
       container.innerHTML = `
-        <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -12px; padding: 45px 35px; background-color: #ffffff; box-sizing: border-box; position: relative;">
+        <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -10px; padding: 32px 25px; background-color: #ffffff; box-sizing: border-box; position: relative;">
           
           <!-- Golden Traditional Corner Ornaments -->
-          <svg style="position: absolute; top: 15px; left: 15px; width: 50px; height: 50px;" viewBox="0 0 50 50">
+          <svg style="position: absolute; top: 12px; left: 12px; width: 40px; height: 40px;" viewBox="0 0 50 50">
             <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; top: 15px; right: 15px; width: 50px; height: 50px; transform: scaleX(-1);" viewBox="0 0 50 50">
+          <svg style="position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; transform: scaleX(-1);" viewBox="0 0 50 50">
             <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; bottom: 15px; left: 15px; width: 50px; height: 50px; transform: scaleY(-1);" viewBox="0 0 50 50">
+          <svg style="position: absolute; bottom: 12px; left: 12px; width: 40px; height: 40px; transform: scaleY(-1);" viewBox="0 0 50 50">
             <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; transform: scale(-1);" viewBox="0 0 50 50">
+          <svg style="position: absolute; bottom: 12px; right: 12px; width: 40px; height: 40px; transform: scale(-1);" viewBox="0 0 50 50">
             <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
             <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
 
           <!-- Three-Image Header (Ganesha, Sant Sena Maharaj, Tuljabhavani) -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 10px auto; width: 100%; max-width: 500px; padding: 0 20px; box-sizing: border-box;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 6px auto; width: 100%; max-width: 450px; padding: 0 15px; box-sizing: border-box;">
             <!-- Left Side: Lord Ganesha (SVG Vector) -->
-            <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <svg viewBox="0 0 100 100" width="70" height="70" style="display: block;">
+            <div style="width: 55px; height: 75px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg viewBox="0 0 100 100" width="55" height="55" style="display: block;">
                 <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
                 <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
                 <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
@@ -2021,42 +2232,42 @@ function generateBiodataDataUrl(user) {
             
             <!-- Center: Sant Sena Maharaj -->
             <div style="text-align: center; flex-shrink: 0;">
-              <img src="/images/sena_maharaj.jpg" style="width: 80px; height: 100px; object-fit: contain; display: block; border-radius: 4px;">
+              <img src="/images/sena_maharaj.jpg" style="width: 65px; height: 80px; object-fit: contain; display: block; border-radius: 4px;">
             </div>
             
             <!-- Right Side: Tuljabhavani -->
-            <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <img src="/images/tuljabhavani.jpg" style="width: 70px; height: 90px; object-fit: contain; display: block; border-radius: 4px;">
+            <div style="width: 55px; height: 75px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <img src="/images/tuljabhavani.jpg" style="width: 55px; height: 75px; object-fit: contain; display: block; border-radius: 4px;">
             </div>
           </div>
           
-          <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
+          <div style="text-align: center; color: #8b0c16; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
             ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
           </div>
-          <h1 style="text-align: center; color: #8b0c16; margin: 0 0 20px 0; font-size: 1.8rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 10px;">
+          <h1 style="text-align: center; color: #8b0c16; margin: 0 0 12px 0; font-size: 1.5rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 6px;">
             ${t('BIODATA', 'बायोडाटा')}
           </h1>
           
           <!-- Details & Photo Layout -->
           <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
             <div style="flex: 1; display: flex; flex-direction: column;">
-              ${makeRow(nameLabel, user.name)}
-              ${makeRow(dobLabel, user.dob ? `${formatDobToDdMmYyyy(user.dob)} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
-              ${makeRow(timeLabel, user.timeOfBirth)}
-              ${makeRow(placeLabel, user.birthPlace)}
-              ${makeRow(religionLabel, user.religion)}
-              ${makeRow(casteLabel, user.caste || user.community)}
-              ${makeRow(deityLabel, user.nickname ? user.nickname : '')}
-              ${makeRow(zodiacLabel, user.zodiac)}
-              ${makeRow(ganaLabel, user.gana)}
-              ${makeRow(heightLabel, user.height)}
-              ${makeRow(complexionLabel, user.complexion)}
-              ${makeRow(bloodGroupLabel, user.bloodGroup)}
-              ${makeRow(educationLabel, user.qualification)}
-              ${makeRow(professionLabel, user.profession)}
-              ${makeRow(companyLabel, user.company)}
-              ${makeRow(incomeLabel, user.income)}
-              ${makeRow(propertyLabel, user.propertyDetails)}
+              ${makeRow(nameLabel, tUser.name)}
+              ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth || (tUser.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(tUser.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(tUser.dob).getDay()]) + ')' : '')}` : '')}
+              ${makeRow(timeLabel, tUser.timeOfBirth)}
+              ${makeRow(placeLabel, tUser.birthPlace)}
+              ${makeRow(religionLabel, tUser.religion)}
+              ${makeRow(casteLabel, tUser.caste || tUser.community)}
+              ${makeRow(deityLabel, tUser.nickname ? tUser.nickname : '')}
+              ${makeRow(zodiacLabel, tUser.zodiac)}
+              ${makeRow(ganaLabel, tUser.gana)}
+              ${makeRow(heightLabel, tUser.height)}
+              ${makeRow(complexionLabel, tUser.complexion)}
+              ${makeRow(bloodGroupLabel, tUser.bloodGroup)}
+              ${makeRow(educationLabel, tUser.qualification)}
+              ${makeRow(professionLabel, tUser.profession)}
+              ${makeRow(companyLabel, tUser.company)}
+              ${makeRow(incomeLabel, tUser.income)}
+              ${makeRow(propertyLabel, tUser.propertyDetails)}
             </div>
             
             ${avatar ? `
@@ -2076,10 +2287,10 @@ function generateBiodataDataUrl(user) {
             </h3>
           </div>
           <div style="display: flex; flex-direction: column;">
-            ${makeRow(fatherLabel, user.fatherName)}
-            ${makeRow(motherLabel, user.motherName)}
-            ${makeRow(brothersLabel, user.brothers)}
-            ${makeRow(sistersLabel, user.sisters)}
+            ${makeRow(fatherLabel, tUser.fatherName)}
+            ${makeRow(motherLabel, tUser.motherName)}
+            ${makeRow(brothersLabel, tUser.brothers)}
+            ${makeRow(sistersLabel, tUser.sisters)}
           </div>
 
           <!-- Contact details -->
@@ -2089,17 +2300,17 @@ function generateBiodataDataUrl(user) {
             </h3>
           </div>
           <div style="display: flex; flex-direction: column;">
-            ${makeRow(addressLabel, user.address)}
-            ${makeRow(mobileLabel, user.mobile)}
-            ${makeRow(emailLabel, user.emailId)}
-            ${makeRow(altContact1Label, user.altContact1)}
-            ${makeRow(altContact2Label, user.altContact2)}
-            ${makeRow(relativesLabel, user.relatives)}
+            ${makeRow(addressLabel, tUser.address)}
+            ${makeRow(mobileLabel, tUser.mobile)}
+            ${makeRow(emailLabel, tUser.emailId)}
+            ${makeRow(altContact1Label, tUser.altContact1)}
+            ${makeRow(altContact2Label, tUser.altContact2)}
+            ${makeRow(relativesLabel, tUser.relatives)}
           </div>
           
           <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(179, 143, 59, 0.5); padding-top: 8px; margin-top: 25px; font-size: 0.85rem; color: #8b0c16; font-family: 'Open Sans', sans-serif; font-weight: bold;">
             <div>WhatsApp: +91 91378 22376 / 9834319658</div>
-            <div>Generated From: nabhikmatrimony.com</div>
+            <div>${t('Generated From:', 'द्वारे तयार केलेले:')} nabhikmatrimony.com</div>
           </div>
           
           <div style="text-align: center; color: #b38f3b; margin-top: 15px; font-size: 1.1rem;">✦ ⚜ ✦</div>
