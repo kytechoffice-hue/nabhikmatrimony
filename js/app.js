@@ -790,7 +790,7 @@ if (state.profiles) {
 
 // State Updates Helpers
 const stateActions = {
-  saveAll(immediate = false) {
+  saveAll(immediate = true) {
     if (state.currentUser) {
       state.currentUser.interestsSent = state.interestsSent;
       state.currentUser.interestsReceived = state.interestsReceived;
