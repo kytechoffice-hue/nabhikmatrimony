@@ -344,43 +344,6 @@ const initialPlans = [
     ctaText: 'Upgrade Now',
     active: true,
     featured: true
-  },
-  {
-    name: 'Platinum',
-    displayName: 'PLATINUM',
-    price: 1199,
-    period: 'for 12 Months',
-    badgeClass: 'platinum-badge',
-    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>`,
-    tagline: 'for 12 Months',
-    features: [
-      { text: 'Everything in Gold', included: true },
-      { text: 'Unlimited Chat Features', included: true },
-      { text: 'Featured Premium Profile', included: true },
-      { text: 'Platinum Verification Emblem', included: true },
-      { text: 'Priority Match Suggestions', included: true },
-      { text: 'WhatsApp Priority Support', included: true }
-    ],
-    ctaText: 'Become Premium',
-    active: true
-  },
-  {
-    name: 'Premium Assisted',
-    displayName: 'PREMIUM ASSISTED',
-    price: 4999,
-    period: 'for 12 Months',
-    badgeClass: 'assisted-badge',
-    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>`,
-    tagline: 'for 12 Months',
-    features: [
-      { text: 'Dedicated Relationship Facilitator', included: true },
-      { text: 'Curated Match Suggestions', included: true },
-      { text: 'Unlimited Premier Access', included: true },
-      { text: 'Enhanced Profile Visibility', included: true },
-      { text: 'Family Support Facilitation', included: true }
-    ],
-    ctaText: 'Upgrade Now',
-    active: true
   }
 ];
 
@@ -2199,11 +2162,9 @@ function initRouter() {
       renderGoldPlanDetails(appView);
       break;
     case '/membership/platinum':
-      renderPlatinumPlanDetails(appView);
-      break;
     case '/membership/assisted':
     case '/membrship/assisted':
-      renderPremiumAssistedPlanDetails(appView);
+      navigateTo('/membership');
       break;
     case '/stories':
       renderStories(appView);
@@ -3188,8 +3149,8 @@ function renderProfileDetails(container, profileId) {
           } else if (userMem === 'Silver') {
             return `
               <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
-                <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Direct Contact Details Locked (Gold & Above)</h4>
-                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">You are currently on the Silver Plan. Direct contact details and Kundali matching options are exclusive for Gold, Platinum & Premium Assisted members.</p>
+                <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Direct Contact Details Locked</h4>
+                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">You are currently on the Silver Plan. Direct contact details and Kundali matching options are exclusive for Gold members.</p>
                 <a href="/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to Gold Plan</a>
               </div>
             `;
@@ -3197,7 +3158,7 @@ function renderProfileDetails(container, profileId) {
             return `
               <div class="profile-info-section" style="background-color: var(--color-cream); border: 1.5px dashed var(--color-gold); border-radius: var(--border-radius-sm); padding: 24px; text-align: center;">
                 <h4 style="color: var(--color-maroon); font-family: var(--font-serif); margin-bottom: 8px;">🔑 Partner Preferences & Contacts Locked</h4>
-                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">Contact numbers, biodata PDF download, and matching kundali options are exclusive for Gold & Platinum members.</p>
+                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">Contact numbers, biodata PDF download, and matching kundali options are exclusive for Gold members.</p>
                 <a href="/membership" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.85rem;">Upgrade to View Contact</a>
               </div>
             `;
@@ -4300,8 +4261,6 @@ function renderMembership(container) {
     let planClass = 'plan-free';
     if (p.name === 'Silver') planClass = 'plan-silver';
     else if (p.name === 'Gold') planClass = 'plan-gold';
-    else if (p.name === 'Platinum') planClass = 'plan-platinum';
-    else if (p.name === 'Premium Assisted') planClass = 'plan-assisted';
     
     // Determine button text and action
     let btnHtml = '';
@@ -4329,26 +4288,6 @@ function renderMembership(container) {
         mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
         mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-action-btn btn-gold-solid">Upgrade Now</button>`;
-      }
-      btnHtml = mainBtn;
-    } else if (p.name === 'Platinum') {
-      let mainBtn = '';
-      if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
-      } else if (isCurrent) {
-        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
-      } else {
-        mainBtn = `<button onclick="handleSelectPlan('Platinum', 1199)" class="plan-action-btn">Become Premium</button>`;
-      }
-      btnHtml = mainBtn;
-    } else if (p.name === 'Premium Assisted') {
-      let mainBtn = '';
-      if (!state.currentUser) {
-        mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
-      } else if (isCurrent) {
-        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
-      } else {
-        mainBtn = `<button onclick="handleSelectPlan('Premium Assisted', 4999)" class="plan-action-btn">Upgrade Now</button>`;
       }
       btnHtml = mainBtn;
     } else {
@@ -4886,8 +4825,6 @@ function switchAdminTab(tabName) {
               <option value="Free">Free</option>
               <option value="Silver">Silver</option>
               <option value="Gold">Gold</option>
-              <option value="Platinum">Platinum</option>
-              <option value="Premium Assisted">Premium Assisted</option>
             </select>
           </div>
           <div class="admin-filter-item">
@@ -4944,8 +4881,6 @@ function switchAdminTab(tabName) {
                   <option value="Free">Free Plan</option>
                   <option value="Silver">Silver Plan</option>
                   <option value="Gold">Gold Plan</option>
-                  <option value="Platinum">Platinum Plan</option>
-                  <option value="Premium Assisted">Premium Assisted</option>
                 </select>
               </div>
               <div class="admin-form-group">
@@ -7106,8 +7041,6 @@ function handleAdminEditUser(id) {
                 <option value="Free" ${profile.membership === 'Free' ? 'selected' : ''}>Free</option>
                 <option value="Silver" ${profile.membership === 'Silver' ? 'selected' : ''}>Silver</option>
                 <option value="Gold" ${profile.membership === 'Gold' ? 'selected' : ''}>Gold</option>
-                <option value="Platinum" ${profile.membership === 'Platinum' ? 'selected' : ''}>Platinum</option>
-                <option value="Premium Assisted" ${profile.membership === 'Premium Assisted' ? 'selected' : ''}>Premium Assisted</option>
               </select>
             </div>
           </div>
@@ -8157,8 +8090,8 @@ function updatePageSEO(path, params) {
       break;
     case '/membership':
       title = "Premium Membership Plans | Upgrade Nabhik Matrimonial";
-      description = "Upgrade your profile with Free, Silver, Gold, Platinum, or Premium Assisted membership plans to unlock direct contacts, chats, and family assistance.";
-      keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, platinum plan, assisted matchmaking plan";
+      description = "Upgrade your profile with Free, Silver, or Gold membership plans to unlock direct contacts, chats, and family assistance.";
+      keywords = "matrimony pricing plans, premium membership, unlock contacts, gold matrimony membership, silver plan";
       break;
     case '/membership/free':
       title = "Free Membership Plan | Nabhik Matrimonial";
