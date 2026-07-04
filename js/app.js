@@ -3869,6 +3869,16 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
                 </div>
                 <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" id="edit-username" value="${state.currentUser.username || ''}" required>
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="text" id="edit-password" value="${state.currentUser.password || ''}" required>
+                </div>
+                <div class="form-group">
                   <label>Date of Birth</label>
                   <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="
                     const dobVal = this.value;
@@ -3900,8 +3910,6 @@ function switchDashboardTab(tabName) {
                     <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male (Groom)</option>
                   </select>
                 </div>
-              </div>
-              <div class="form-row-2">
                 <div class="form-group">
                   <label>Marital Status</label>
                   <select id="edit-marital-status">
@@ -3911,9 +3919,13 @@ function switchDashboardTab(tabName) {
                     <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
                   </select>
                 </div>
+              </div>
+              <div class="form-row-2">
                 <div class="form-group">
                   <label>Nickname</label>
                   <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
+                </div>
+                <div class="form-group">
                 </div>
               </div>
               <div class="form-group">
@@ -6739,6 +6751,8 @@ function handleEditProfileSubmit(e) {
   
   // Extract all fields
   const name = document.getElementById('edit-name').value;
+  const username = document.getElementById('edit-username').value;
+  const password = document.getElementById('edit-password').value;
   const age = document.getElementById('edit-age').value;
   const dob = document.getElementById('edit-dob').value;
   const dayOfBirth = document.getElementById('edit-day-of-birth').value;
@@ -6789,6 +6803,8 @@ function handleEditProfileSubmit(e) {
   async function proceed(photoBase64) {
     // Populate state.currentUser
     state.currentUser.name = name;
+    state.currentUser.username = username;
+    state.currentUser.password = password;
     state.currentUser.age = age;
     state.currentUser.dob = dob;
     state.currentUser.gender = gender;
