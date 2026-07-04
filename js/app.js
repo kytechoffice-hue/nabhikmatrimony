@@ -4132,71 +4132,7 @@ function switchDashboardTab(tabName) {
             </div>
           </div>
 
-          <!-- Lifestyle -->
-          <div class="accordion-item">
-            <div class="accordion-header" onclick="toggleAccordionSection(this)">
-              <h3>Lifestyle</h3>
-              <span class="accordion-icon">▼</span>
-            </div>
-            <div class="accordion-content">
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Food Preference (Vegetarian/Non-Vegetarian)</label>
-                  <select id="edit-food">
-                    <option value="Vegetarian" ${state.currentUser.foodPreference === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
-                    <option value="Non-Vegetarian" ${state.currentUser.foodPreference === 'Non-Vegetarian' ? 'selected' : ''}>Non-Vegetarian</option>
-                    <option value="Eggetarian" ${state.currentUser.foodPreference === 'Eggetarian' ? 'selected' : ''}>Eggetarian</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Smoking Habit</label>
-                  <select id="edit-smoking">
-                    <option value="No" ${state.currentUser.smoking === 'No' ? 'selected' : ''}>No</option>
-                    <option value="Yes" ${state.currentUser.smoking === 'Yes' ? 'selected' : ''}>Yes</option>
-                    <option value="Occasionally" ${state.currentUser.smoking === 'Occasionally' ? 'selected' : ''}>Occasionally</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Drinking Habit</label>
-                <select id="edit-drinking">
-                  <option value="No" ${state.currentUser.drinking === 'No' ? 'selected' : ''}>No</option>
-                  <option value="Yes" ${state.currentUser.drinking === 'Yes' ? 'selected' : ''}>Yes</option>
-                  <option value="Socially" ${state.currentUser.drinking === 'Socially' ? 'selected' : ''}>Socially</option>
-                </select>
-              </div>
-            </div>
-          </div>
 
-          <!-- Hobbies -->
-          <div class="accordion-item">
-            <div class="accordion-header" onclick="toggleAccordionSection(this)">
-              <h3>Hobbies</h3>
-              <span class="accordion-icon">▼</span>
-            </div>
-            <div class="accordion-content">
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Hobby 1</label>
-                  <input type="text" id="edit-hobby-1" value="${state.currentUser.hobby1 || ''}">
-                </div>
-                <div class="form-group">
-                  <label>Hobby 2</label>
-                  <input type="text" id="edit-hobby-2" value="${state.currentUser.hobby2 || ''}">
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Hobby 3</label>
-                  <input type="text" id="edit-hobby-3" value="${state.currentUser.hobby3 || ''}">
-                </div>
-                <div class="form-group">
-                  <label>Hobby 4</label>
-                  <input type="text" id="edit-hobby-4" value="${state.currentUser.hobby4 || ''}">
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Partner Expectations -->
           <div class="accordion-item">
@@ -6854,16 +6790,17 @@ function handleEditProfileSubmit(e) {
   const mother = document.getElementById('edit-mother').value;
   const brothers = document.getElementById('edit-brothers').value;
   const sisters = document.getElementById('edit-sisters').value;
-  const familyType = document.getElementById('edit-family-type').value;
   
-  const food = document.getElementById('edit-food').value;
-  const smoking = document.getElementById('edit-smoking').value;
-  const drinking = document.getElementById('edit-drinking').value;
+  const familyType = state.currentUser.familyType || 'Nuclear';
   
-  const hobby1 = document.getElementById('edit-hobby-1').value;
-  const hobby2 = document.getElementById('edit-hobby-2').value;
-  const hobby3 = document.getElementById('edit-hobby-3').value;
-  const hobby4 = document.getElementById('edit-hobby-4').value;
+  const food = state.currentUser.foodPreference || 'Vegetarian';
+  const smoking = state.currentUser.smoking || 'No';
+  const drinking = state.currentUser.drinking || 'No';
+  
+  const hobby1 = state.currentUser.hobby1 || '';
+  const hobby2 = state.currentUser.hobby2 || '';
+  const hobby3 = state.currentUser.hobby3 || '';
+  const hobby4 = state.currentUser.hobby4 || '';
   
   const partnerEducation = document.getElementById('edit-partner-education').value;
   const partnerProfession = document.getElementById('edit-partner-profession').value;
