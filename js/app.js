@@ -956,14 +956,11 @@ const stateActions = {
       (p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === emailLower)
     ));
     if (found) {
-      // Validate password if one is defined for this profile
-      if (found.password) {
-        if (password !== found.password) {
-          // For backward-compatibility with tests that do not input a password for normal users
-          if (emailLower === 'nmadmin' || (password !== undefined && password !== null && password !== '')) {
-            return null;
-          }
-        }
+      // Validate password
+      const userPassword = found.password || '';
+      const enteredPassword = password || '';
+      if (userPassword !== enteredPassword) {
+        return null;
       }
       state.currentUser = found;
       state.interestsSent = found.interestsSent || [];
@@ -972,42 +969,6 @@ const stateActions = {
       state.shortlistedBy = found.shortlistedBy || [];
       this.saveAll();
       return found;
-    }
-    // Fallback: If no match but valid string, seed mock user
-    if (email) {
-      const name = email.split('@')[0];
-      const isMaster = name.toLowerCase() === 'master';
-      const isAdminUser = name.toLowerCase() === 'admin' || name.toLowerCase() === 'nmadmin';
-      const mockUser = {
-        id: Math.max(...state.profiles.filter(p => p && typeof p.id === 'number').map(p => p.id), 0) + 1,
-        name: name,
-        emailId: email,
-        gender: 'Male',
-        age: 28,
-        height: "5'8\"",
-        education: 'B.E, Technical Lead',
-        profession: 'Technical Lead',
-        location: 'Mumbai, Maharashtra',
-        religion: 'Hindu',
-        community: 'Nabhik',
-        income: '₹1,500,000 / Year',
-        verified: true,
-        membership: 'Free',
-        isAdmin: isMaster || isAdminUser,
-        role: isMaster ? 'master' : (isAdminUser ? 'admin' : 'member'),
-        interestsSent: [],
-        interestsReceived: [],
-        shortlisted: [],
-        shortlistedBy: []
-      };
-      state.profiles.push(mockUser);
-      state.currentUser = mockUser;
-      state.interestsSent = [];
-      state.interestsReceived = [];
-      state.shortlisted = [];
-      state.shortlistedBy = [];
-      this.saveAll();
-      return mockUser;
     }
     return null;
   },
@@ -6318,7 +6279,7 @@ function handleEmailLogin(e) {
       navigateTo('/dashboard');
     }
   } else {
-    showToast('Error logging in. Try again.');
+    showToast('Invalid Email/Username or Password. Please try again.');
   }
 }
 
