@@ -1429,7 +1429,7 @@ function generateAndDownloadBiodataImage(user) {
         <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Weight:</span><span style="color: #333333;">${user.weight || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
         </div>
@@ -1767,7 +1767,7 @@ function generateBiodataDataUrl(user) {
             <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
-              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Weight:</span><span style="color: #333333;">${user.weight || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
             </div>
@@ -3926,8 +3926,8 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
                 </div>
                 <div class="form-group">
-                  <label>Weight</label>
-                  <input type="text" id="edit-weight" value="${state.currentUser.weight || ''}" placeholder="e.g. 65 kg">
+                  <label>Nickname</label>
+                  <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
                 </div>
               </div>
               <div class="form-row-2">
@@ -6720,7 +6720,7 @@ function handleEditProfileSubmit(e) {
   const gender = document.getElementById('edit-gender').value;
   const maritalStatus = document.getElementById('edit-marital-status').value;
   const height = document.getElementById('edit-height').value;
-  const weight = document.getElementById('edit-weight').value;
+  const nickname = document.getElementById('edit-nickname').value;
   const bloodGroup = document.getElementById('edit-blood-group').value;
   const nationality = document.getElementById('edit-nationality').value;
   const religion = document.getElementById('edit-religion').value;
@@ -6769,7 +6769,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.gender = gender;
     state.currentUser.maritalStatus = maritalStatus;
     state.currentUser.height = height;
-    state.currentUser.weight = weight;
+    state.currentUser.nickname = nickname;
     state.currentUser.bloodGroup = bloodGroup;
     state.currentUser.nationality = nationality;
     state.currentUser.religion = religion;
