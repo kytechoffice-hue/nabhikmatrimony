@@ -1446,7 +1446,8 @@ function generateAndDownloadBiodataImage(user) {
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
-        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+        <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+        <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Property Details:</span><span style="color: #333333;">${user.propertyDetails || ''}</span></div>
       </div>
       
       <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
@@ -1787,7 +1788,8 @@ function generateBiodataDataUrl(user) {
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Specialization:</span><span style="color: #333333;">${user.specialization || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Occupation:</span><span style="color: #333333;">${user.profession || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Company Name:</span><span style="color: #333333;">${user.company || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Annual Income:</span><span style="color: #333333;">${user.income || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Property Details:</span><span style="color: #333333;">${user.propertyDetails || ''}</span></div>
           </div>
           
           <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Family details</h3>
@@ -4063,9 +4065,15 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-company" value="${state.currentUser.company || ''}" placeholder="e.g. TCS / Self-Employed">
                 </div>
               </div>
-              <div class="form-group">
-                <label>Annual Income</label>
-                <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Annual Income</label>
+                  <input type="text" id="edit-income" value="${state.currentUser.income || ''}" placeholder="e.g. 6 Lakhs PA">
+                </div>
+                <div class="form-group">
+                  <label>Property Details</label>
+                  <input type="text" id="edit-property-details" value="${state.currentUser.propertyDetails || ''}" placeholder="e.g. Own Flat in Pune, 5 Acres land">
+                </div>
               </div>
             </div>
           </div>
@@ -6827,6 +6835,7 @@ function handleEditProfileSubmit(e) {
   const profession = document.getElementById('edit-profession').value;
   const company = document.getElementById('edit-company').value;
   const income = document.getElementById('edit-income').value;
+  const propertyDetails = document.getElementById('edit-property-details').value;
   
   const father = document.getElementById('edit-father').value;
   const mother = document.getElementById('edit-mother').value;
@@ -6886,6 +6895,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.profession = profession;
     state.currentUser.company = company;
     state.currentUser.income = income;
+    state.currentUser.propertyDetails = propertyDetails;
     
     state.currentUser.fatherName = father;
     state.currentUser.motherName = mother;
