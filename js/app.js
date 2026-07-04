@@ -902,6 +902,7 @@ const stateActions = {
       photo: userData.photo || '/images/member1.webp',
       createdDate: new Date().toISOString().split('T')[0],
       dob: userData.dob || '',
+      dayOfBirth: userData.dayOfBirth || '',
       username: userData.username || '',
       zodiac: userData.zodiac || '',
       nickname: userData.nickname || ''
@@ -1427,7 +1428,7 @@ function generateAndDownloadBiodataImage(user) {
         
         <!-- Right Column -->
         <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
@@ -1765,7 +1766,7 @@ function generateBiodataDataUrl(user) {
             
             <!-- Right Column -->
             <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
-              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
@@ -3869,14 +3870,29 @@ function switchDashboardTab(tabName) {
                 </div>
                 <div class="form-group">
                   <label>Date of Birth</label>
-                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="const ageEl = document.getElementById('edit-age'); if (ageEl) ageEl.value = calculateAge(this.value);">
+                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="
+                    const dobVal = this.value;
+                    if (dobVal) {
+                      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                      const dayName = days[new Date(dobVal).getDay()];
+                      document.getElementById('edit-day-of-birth').value = dayName || '';
+                      const ageEl = document.getElementById('edit-age');
+                      if (ageEl) ageEl.value = calculateAge(dobVal);
+                    }
+                  ">
                 </div>
               </div>
               <div class="form-row-2">
                 <div class="form-group">
+                  <label>Day of Birth</label>
+                  <input type="text" id="edit-day-of-birth" value="${state.currentUser.dayOfBirth || (state.currentUser.dob ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(state.currentUser.dob).getDay()] : '')}" readonly placeholder="Calculated from DOB">
+                </div>
+                <div class="form-group">
                   <label>Age</label>
                   <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
                 </div>
+              </div>
+              <div class="form-row-2">
                 <div class="form-group">
                   <label>Gender</label>
                   <select id="edit-gender">
@@ -4904,14 +4920,14 @@ function switchAdminTab(tabName) {
                 <input type="text" id="adm-add-location" class="admin-input" placeholder="Mumbai, Maharashtra" required>
               </div>
               <div class="admin-form-group">
-                <label>Age</label>
-                <input type="number" id="adm-add-age" class="admin-input" min="18" max="70" required>
-              </div>
-              <div class="admin-form-group">
                 <label>Date of Birth (DOB)</label>
                 <input type="date" id="adm-add-dob" class="admin-input" required onchange="
                   const dobVal = this.value;
                   if (dobVal) {
+                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const dayName = days[new Date(dobVal).getDay()];
+                    document.getElementById('adm-add-day-of-birth').value = dayName || '';
+
                     const birthDate = new Date(dobVal);
                     const today = new Date();
                     let computedAge = today.getFullYear() - birthDate.getFullYear();
@@ -4922,6 +4938,14 @@ function switchAdminTab(tabName) {
                     document.getElementById('adm-add-age').value = Math.max(18, computedAge);
                   }
                 ">
+              </div>
+              <div class="admin-form-group">
+                <label>Day of Birth</label>
+                <input type="text" id="adm-add-day-of-birth" class="admin-input" readonly placeholder="Calculated from DOB">
+              </div>
+              <div class="admin-form-group">
+                <label>Age</label>
+                <input type="number" id="adm-add-age" class="admin-input" min="18" max="70" required>
               </div>
               <div class="admin-form-group">
                 <label>Username</label>
@@ -6717,6 +6741,7 @@ function handleEditProfileSubmit(e) {
   const name = document.getElementById('edit-name').value;
   const age = document.getElementById('edit-age').value;
   const dob = document.getElementById('edit-dob').value;
+  const dayOfBirth = document.getElementById('edit-day-of-birth').value;
   const gender = document.getElementById('edit-gender').value;
   const maritalStatus = document.getElementById('edit-marital-status').value;
   const height = document.getElementById('edit-height').value;
@@ -6767,6 +6792,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.age = age;
     state.currentUser.dob = dob;
     state.currentUser.gender = gender;
+    state.currentUser.dayOfBirth = dayOfBirth;
     state.currentUser.maritalStatus = maritalStatus;
     state.currentUser.height = height;
     state.currentUser.nickname = nickname;
@@ -7039,12 +7065,13 @@ function handleAdminAddUserFormSubmit(e) {
   const verified = document.getElementById('adm-add-verified').value === 'true';
 
   const dob = document.getElementById('adm-add-dob').value;
+  const dayOfBirth = document.getElementById('adm-add-day-of-birth').value;
   const username = document.getElementById('adm-add-username').value;
   const password = document.getElementById('adm-add-password').value;
   const zodiac = document.getElementById('adm-add-zodiac').value;
   const nickname = document.getElementById('adm-add-nickname').value;
 
-  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified, dob, username, password, zodiac, nickname });
+  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified, dob, dayOfBirth, username, password, zodiac, nickname });
   showToast('Member successfully created!');
   switchAdminTab('users');
 }
@@ -7106,6 +7133,10 @@ function handleAdminEditUser(id) {
               <input type="date" id="edit-usr-dob" class="admin-input" value="${profile.dob || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;" onchange="
                 const dobVal = this.value;
                 if (dobVal) {
+                  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                  const dayName = days[new Date(dobVal).getDay()];
+                  document.getElementById('edit-usr-day-of-birth').value = dayName || '';
+
                   const birthDate = new Date(dobVal);
                   const today = new Date();
                   let computedAge = today.getFullYear() - birthDate.getFullYear();
@@ -7118,8 +7149,16 @@ function handleAdminEditUser(id) {
               ">
             </div>
             <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Day of Birth</label>
+              <input type="text" id="edit-usr-day-of-birth" class="admin-input" value="${profile.dayOfBirth || (profile.dob ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(profile.dob).getDay()] : '')}" readonly style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #f9f9f9;" placeholder="Calculated from DOB">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="admin-form-group">
               <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Age</label>
               <input type="number" id="edit-usr-age" class="admin-input" value="${profile.age || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            </div>
+            <div class="admin-form-group">
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -7171,6 +7210,7 @@ function handleAdminUpdateUserSubmit(e, id) {
   const membership = document.getElementById('edit-usr-membership').value;
   
   const dob = document.getElementById('edit-usr-dob').value;
+  const dayOfBirth = document.getElementById('edit-usr-day-of-birth').value;
   const age = parseInt(document.getElementById('edit-usr-age').value);
   const username = document.getElementById('edit-usr-username').value;
   const zodiac = document.getElementById('edit-usr-zodiac').value;
@@ -7187,6 +7227,7 @@ function handleAdminUpdateUserSubmit(e, id) {
     membership,
     isAdmin,
     dob,
+    dayOfBirth,
     age,
     username,
     zodiac,
@@ -7203,6 +7244,7 @@ function handleAdminUpdateUserSubmit(e, id) {
     state.currentUser.membership = membership;
     state.currentUser.isAdmin = isAdmin;
     state.currentUser.dob = dob;
+    state.currentUser.dayOfBirth = dayOfBirth;
     state.currentUser.age = age;
     state.currentUser.username = username;
     state.currentUser.zodiac = zodiac;
