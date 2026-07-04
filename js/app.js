@@ -952,7 +952,8 @@ const stateActions = {
     const usernameLower = (username || '').trim().toLowerCase();
     if (!usernameLower) return null;
     const found = state.profiles.find(p => p && (
-      p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === usernameLower
+      (p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === usernameLower) ||
+      (!p.username && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === usernameLower)
     ));
     if (found) {
       // Validate password
