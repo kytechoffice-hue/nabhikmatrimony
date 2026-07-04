@@ -323,7 +323,8 @@ const initialPlans = [
       { text: 'Sophisticated Match Suggestions', included: true }
     ],
     ctaText: 'Upgrade Now',
-    active: true
+    active: true,
+    featured: true
   },
   {
     name: 'Gold',
@@ -341,8 +342,7 @@ const initialPlans = [
       { text: 'See 50 Profiles in Plan.', included: true }
     ],
     ctaText: 'Upgrade Now',
-    active: true,
-    featured: true
+    active: true
   }
 ];
 
