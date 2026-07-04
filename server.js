@@ -36,7 +36,11 @@ function getEmailConfig() {
 }
 
 // Initialize SQLite database
-const db = new sqlite3.Database(path.join(PUBLIC_DIR, 'matrimony.db'));
+const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
+if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+}
+const db = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
 
 db.serialize(() => {
   db.run(`
