@@ -3863,21 +3863,21 @@ function switchDashboardTab(tabName) {
               <span class="accordion-icon">▲</span>
             </div>
             <div class="accordion-content active">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
+              </div>
               <div class="form-row-2">
-                <div class="form-group">
-                  <label>Full Name</label>
-                  <input type="text" id="edit-name" value="${state.currentUser.name || ''}" required>
-                </div>
                 <div class="form-group">
                   <label>Username</label>
                   <input type="text" id="edit-username" value="${state.currentUser.username || ''}" required>
                 </div>
-              </div>
-              <div class="form-row-2">
                 <div class="form-group">
                   <label>Password</label>
                   <input type="text" id="edit-password" value="${state.currentUser.password || ''}" required>
                 </div>
+              </div>
+              <div class="form-row-2">
                 <div class="form-group">
                   <label>Date of Birth</label>
                   <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="
@@ -3891,39 +3891,15 @@ function switchDashboardTab(tabName) {
                     }
                   ">
                 </div>
-              </div>
-              <div class="form-row-2">
                 <div class="form-group">
                   <label>Day of Birth</label>
                   <input type="text" id="edit-day-of-birth" value="${state.currentUser.dayOfBirth || (state.currentUser.dob ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(state.currentUser.dob).getDay()] : '')}" readonly placeholder="Calculated from DOB">
                 </div>
+              </div>
+              <div class="form-row-2">
                 <div class="form-group">
                   <label>Age</label>
                   <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Gender</label>
-                  <select id="edit-gender">
-                    <option value="Female" ${state.currentUser.gender === 'Female' ? 'selected' : ''}>Female (Bride)</option>
-                    <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male (Groom)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Marital Status</label>
-                  <select id="edit-marital-status">
-                    <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
-                    <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
-                    <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
-                    <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Nickname</label>
-                  <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
                 </div>
                 <div class="form-group">
                 </div>
@@ -3952,10 +3928,30 @@ function switchDashboardTab(tabName) {
             <div class="accordion-content">
               <div class="form-row-2">
                 <div class="form-group">
-                  <label>Height</label>
-                  <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
+                  <label>Gender</label>
+                  <select id="edit-gender">
+                    <option value="Female" ${state.currentUser.gender === 'Female' ? 'selected' : ''}>Female (Bride)</option>
+                    <option value="Male" ${state.currentUser.gender === 'Male' ? 'selected' : ''}>Male (Groom)</option>
+                  </select>
                 </div>
                 <div class="form-group">
+                  <label>Marital Status</label>
+                  <select id="edit-marital-status">
+                    <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
+                    <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
+                    <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
+                    <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Nickname</label>
+                  <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
+                </div>
+                <div class="form-group">
+                  <label>Height</label>
+                  <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
                 </div>
               </div>
               <div class="form-row-2">
