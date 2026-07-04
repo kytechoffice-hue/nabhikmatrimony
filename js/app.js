@@ -329,17 +329,17 @@ const initialPlans = [
   {
     name: 'Gold',
     displayName: 'GOLD',
-    price: 999,
-    period: 'for 6 Months',
+    price: 499,
+    period: 'for 30 Days',
     badgeClass: 'gold-badge',
     badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M3 20h18"></path></svg>`,
-    tagline: 'for 6 Months',
+    tagline: 'for 30 Days',
     features: [
       { text: 'View Contact Details', included: true },
       { text: 'Chat with Members', included: true },
       { text: 'Unlimited Search', included: true },
       { text: 'See Who Viewed You', included: true },
-      { text: 'See 50 Profiles in Plan.', included: true }
+      { text: 'Unlimited Profile Access', included: true }
     ],
     ctaText: 'Upgrade Now',
     active: true
@@ -4286,7 +4286,7 @@ function renderMembership(container) {
       } else if (isCurrent) {
         mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-action-btn btn-gold-solid">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Gold', 499)" class="plan-action-btn btn-gold-solid">Upgrade Now</button>`;
       }
       btnHtml = mainBtn;
     } else {
@@ -7638,7 +7638,7 @@ function renderGoldPlanDetails(container) {
   } else if (isCurrentPlanGold) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
-    priceCTA = `<button onclick="handleSelectPlan('Gold', 599)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+    priceCTA = `<button onclick="handleSelectPlan('Gold', 499)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
   }
 
   container.innerHTML = `
@@ -7670,8 +7670,8 @@ function renderGoldPlanDetails(container) {
             <div class="benefit-card">
               <div class="benefit-icon-wrapper">🖼️</div>
               <div>
-                <h3>View 30 Profiles</h3>
-                <p>Browse and explore up to 30 verified profiles during your membership. Find suitable matches based on your preferences and compatibility.</p>
+                <h3>Unlimited Profile Access</h3>
+                <p>Browse and explore all verified profiles during your membership without any restrictions.</p>
               </div>
             </div>
             
@@ -7714,10 +7714,10 @@ function renderGoldPlanDetails(container) {
           <!-- Pricing Summary Card -->
           <div class="sidebar-info-card dark-theme" style="text-align: center;">
             <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">GOLD PLAN</h3>
-            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹599<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 6 Months</span></div>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹499<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 30 Days</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Most Popular Membership Plan</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
-              <li style="color: #fff;">View 30 Profiles</li>
+              <li style="color: #fff;">Unlimited Profile Access</li>
               <li style="color: #fff;">Direct Contact Access</li>
               <li style="color: #fff;">Unlimited Chat Features</li>
               <li style="color: #fff;">Premium Profile Visibility</li>
