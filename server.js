@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
 
 const PORT = 8082;
@@ -35,20 +35,59 @@ function getEmailConfig() {
   return null;
 }
 
-// Initialize SQLite database
-const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
-if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
-}
-const db = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
+// Initialize MySQL configuration
+const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
+function getMysqlConfig() {
+  let config = {
+    host: process.env.MYSQL_HOST || 'localhost',
+    port: parseInt(process.env.MYSQL_PORT) || 3306,
+    user: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || '',
+    database: process.env.MYSQL_DATABASE || 'nabhik_matrimony'
+  };
 
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS nabhik_state (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )
-  `);
+  try {
+    if (fs.existsSync(MYSQL_CONFIG_FILE)) {
+      const raw = fs.readFileSync(MYSQL_CONFIG_FILE, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed) {
+        if (parsed.host && !process.env.MYSQL_HOST) config.host = parsed.host;
+        if (parsed.port && !process.env.MYSQL_PORT) config.port = parseInt(parsed.port);
+        if (parsed.user && !process.env.MYSQL_USER) config.user = parsed.user;
+        if (parsed.password && !process.env.MYSQL_PASSWORD) config.password = parsed.password;
+        if (parsed.database && !process.env.MYSQL_DATABASE) config.database = parsed.database;
+      }
+    }
+  } catch (e) {
+    console.error('[CONFIG] Error reading mysql_config.json:', e);
+  }
+  return config;
+}
+
+const mysqlConfig = getMysqlConfig();
+const pool = mysql.createPool({
+  host: mysqlConfig.host,
+  port: mysqlConfig.port,
+  user: mysqlConfig.user,
+  password: mysqlConfig.password,
+  database: mysqlConfig.database,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+// Initialize database table if not exists
+pool.query(`
+  CREATE TABLE IF NOT EXISTS nabhik_state (
+    \`key\` VARCHAR(255) PRIMARY KEY,
+    \`value\` LONGTEXT
+  )
+`, (err) => {
+  if (err) {
+    console.error('[DATABASE] Error initializing MySQL database table:', err);
+  } else {
+    console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
+  }
 });
 
 const MIME_TYPES = {
@@ -76,10 +115,10 @@ const server = http.createServer((req, res) => {
   // Clean query strings and hashes
   const cleanUrl = req.url.split('?')[0].split('#')[0];
 
-  // SQLite API Endpoints
+  // MySQL API Endpoints
   if (cleanUrl === '/api/state') {
     if (req.method === 'GET') {
-      db.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
+      pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
         if (err) {
           res.writeHead(500, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: err.message }));
@@ -105,21 +144,58 @@ const server = http.createServer((req, res) => {
       req.on('end', () => {
         try {
           const stateObj = JSON.parse(body);
-          db.serialize(() => {
-            db.run('BEGIN TRANSACTION');
-            const stmt = db.prepare('INSERT OR REPLACE INTO nabhik_state (key, value) VALUES (?, ?)');
-            Object.entries(stateObj).forEach(([key, value]) => {
-              stmt.run(key, JSON.stringify(value));
-            });
-            stmt.finalize();
-            db.run('COMMIT', (err) => {
-              if (err) {
+          pool.getConnection((connErr, connection) => {
+            if (connErr) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: connErr.message }));
+              return;
+            }
+            
+            connection.beginTransaction(beginTransactionErr => {
+              if (beginTransactionErr) {
+                connection.release();
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message }));
+                res.end(JSON.stringify({ error: beginTransactionErr.message }));
                 return;
               }
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ success: true }));
+              
+              const entries = Object.entries(stateObj);
+              let index = 0;
+              
+              function executeNext() {
+                if (index >= entries.length) {
+                  connection.commit(commitErr => {
+                    if (commitErr) {
+                      return connection.rollback(() => {
+                        connection.release();
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: commitErr.message }));
+                      });
+                    }
+                    connection.release();
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                  });
+                  return;
+                }
+                
+                const [key, value] = entries[index];
+                const valStr = JSON.stringify(value);
+                
+                connection.query('REPLACE INTO nabhik_state (`key`, `value`) VALUES (?, ?)', [key, valStr], (queryErr) => {
+                  if (queryErr) {
+                    return connection.rollback(() => {
+                      connection.release();
+                      res.writeHead(500, { 'Content-Type': 'application/json' });
+                      res.end(JSON.stringify({ error: queryErr.message }));
+                    });
+                  }
+                  index++;
+                  executeNext();
+                });
+              }
+              
+              executeNext();
             });
           });
         } catch (e) {
