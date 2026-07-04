@@ -1456,14 +1456,15 @@ function generateAndDownloadBiodataImage(user) {
         <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mother's Name:</span><span style="color: #333333;">${user.motherName || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Brothers:</span><span style="color: #333333;">${user.brothers || 'None'}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Sisters:</span><span style="color: #333333;">${user.sisters || 'None'}</span></div>
-        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Family Type:</span><span style="color: #333333;">${user.familyType || 'Nuclear'}</span></div>
       </div>
       
       <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Contact details</h3>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mobile Number:</span><span style="color: #333333;">${user.mobile || ''}</span></div>
         <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Email Address:</span><span style="color: #333333;">${user.emailId || ''}</span></div>
-        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Address:</span><span style="color: #333333;">${user.address || ''}</span></div>
+        ${user.altContact1 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 1:</span><span style="color: #333333;">${user.altContact1}</span></div>` : ''}
+        ${user.altContact2 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 2:</span><span style="color: #333333;">${user.altContact2}</span></div>` : ''}
+        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Address:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.address || ''}</span></div>
       </div>
       
       <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
@@ -1798,14 +1799,15 @@ function generateBiodataDataUrl(user) {
             <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mother's Name:</span><span style="color: #333333;">${user.motherName || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Brothers:</span><span style="color: #333333;">${user.brothers || 'None'}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Sisters:</span><span style="color: #333333;">${user.sisters || 'None'}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Family Type:</span><span style="color: #333333;">${user.familyType || 'Nuclear'}</span></div>
           </div>
           
           <h3 style="color: #5c0a13; border-bottom: 2px solid #d4af37; padding-bottom: 4px; margin: 24px 0 12px 0; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px;">Contact details</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px;">
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Mobile Number:</span><span style="color: #333333;">${user.mobile || ''}</span></div>
             <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Email Address:</span><span style="color: #333333;">${user.emailId || ''}</span></div>
-            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Address:</span><span style="color: #333333;">${user.address || ''}</span></div>
+            ${user.altContact1 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 1:</span><span style="color: #333333;">${user.altContact1}</span></div>` : ''}
+            ${user.altContact2 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 2:</span><span style="color: #333333;">${user.altContact2}</span></div>` : ''}
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Address:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.address || ''}</span></div>
           </div>
           
           <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
@@ -4107,12 +4109,19 @@ function switchDashboardTab(tabName) {
                   <input type="text" id="edit-sisters" value="${state.currentUser.sisters || ''}" placeholder="e.g. 1 (Unmarried) / None">
                 </div>
               </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Alternate Contact No. 1</label>
+                  <input type="text" id="edit-alt-contact-1" value="${state.currentUser.altContact1 || ''}" placeholder="e.g. 9876543210">
+                </div>
+                <div class="form-group">
+                  <label>Alternate Contact No. 2</label>
+                  <input type="text" id="edit-alt-contact-2" value="${state.currentUser.altContact2 || ''}" placeholder="e.g. 9876543211">
+                </div>
+              </div>
               <div class="form-group">
-                <label>Family Type</label>
-                <select id="edit-family-type">
-                  <option value="Nuclear" ${state.currentUser.familyType === 'Nuclear' ? 'selected' : ''}>Nuclear</option>
-                  <option value="Joint" ${state.currentUser.familyType === 'Joint' ? 'selected' : ''}>Joint</option>
-                </select>
+                <label>Address</label>
+                <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
               </div>
             </div>
           </div>
@@ -4233,10 +4242,6 @@ function switchDashboardTab(tabName) {
                   <label>Email Address</label>
                   <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
                 </div>
-              </div>
-              <div class="form-group">
-                <label>Residential Address</label>
-                <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
               </div>
             </div>
           </div>
@@ -6862,6 +6867,8 @@ function handleEditProfileSubmit(e) {
   const mobile = document.getElementById('edit-mobile').value;
   const email = document.getElementById('edit-email').value;
   const address = document.getElementById('edit-address').value;
+  const altContact1 = document.getElementById('edit-alt-contact-1').value;
+  const altContact2 = document.getElementById('edit-alt-contact-2').value;
   
   const photoInput = document.getElementById('edit-photo');
   
@@ -6925,6 +6932,8 @@ function handleEditProfileSubmit(e) {
     state.currentUser.emailId = email;
     state.currentUser.address = address;
     state.currentUser.location = address; // Backwards compatibility
+    state.currentUser.altContact1 = altContact1;
+    state.currentUser.altContact2 = altContact2;
     
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
