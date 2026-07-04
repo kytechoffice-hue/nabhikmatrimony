@@ -1591,7 +1591,12 @@ function generateAndDownloadBiodataImage(user) {
         ${makeRow(relativesLabel, user.relatives)}
       </div>
       
-      <div style="text-align: center; color: #b38f3b; margin-top: 25px; font-size: 1.1rem;">✦ ⚜ ✦</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(179, 143, 59, 0.5); padding-top: 8px; margin-top: 25px; font-size: 0.85rem; color: #8b0c16; font-family: 'Open Sans', sans-serif; font-weight: bold;">
+        <div>WhatsApp: +91 91378 22376 / 9834319658</div>
+        <div>Generated From: nabhikmatrimony.com</div>
+      </div>
+      
+      <div style="text-align: center; color: #b38f3b; margin-top: 15px; font-size: 1.1rem;">✦ ⚜ ✦</div>
     </div>
   `;
 
@@ -2020,7 +2025,12 @@ function generateBiodataDataUrl(user) {
             ${makeRow(relativesLabel, user.relatives)}
           </div>
           
-          <div style="text-align: center; color: #b38f3b; margin-top: 25px; font-size: 1.1rem;">✦ ⚜ ✦</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(179, 143, 59, 0.5); padding-top: 8px; margin-top: 25px; font-size: 0.85rem; color: #8b0c16; font-family: 'Open Sans', sans-serif; font-weight: bold;">
+            <div>WhatsApp: +91 91378 22376 / 9834319658</div>
+            <div>Generated From: nabhikmatrimony.com</div>
+          </div>
+          
+          <div style="text-align: center; color: #b38f3b; margin-top: 15px; font-size: 1.1rem;">✦ ⚜ ✦</div>
         </div>
       `;
 
