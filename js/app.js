@@ -903,6 +903,7 @@ const stateActions = {
       createdDate: new Date().toISOString().split('T')[0],
       dob: userData.dob || '',
       dayOfBirth: userData.dayOfBirth || '',
+      timeOfBirth: userData.timeOfBirth || '',
       username: userData.username || '',
       zodiac: userData.zodiac || '',
       nickname: userData.nickname || ''
@@ -1766,7 +1767,7 @@ function generateBiodataDataUrl(user) {
             
             <!-- Right Column -->
             <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
-              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}${user.timeOfBirth ? ' | ' + user.timeOfBirth : ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
@@ -3898,10 +3899,37 @@ function switchDashboardTab(tabName) {
               </div>
               <div class="form-row-2">
                 <div class="form-group">
-                  <label>Age</label>
-                  <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
+                  <label>Time of Birth</label>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <select id="edit-time-hour" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                      <option value="">Hour</option>
+                      ${Array.from({length: 12}, (_, i) => i + 1).map(h => {
+                        const tob = state.currentUser.timeOfBirth || '';
+                        const parts = tob.split(' ');
+                        const timeParts = (parts[0] || '').split(':');
+                        const hr = timeParts[0] || '';
+                        return `<option value="${h}" ${Number(hr) === h ? 'selected' : ''}>${h}</option>`;
+                      }).join('')}
+                    </select>
+                    <select id="edit-time-minute" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                      <option value="">Min</option>
+                      ${Array.from({length: 60}, (_, i) => String(i).padStart(2, '0')).map(m => {
+                        const tob = state.currentUser.timeOfBirth || '';
+                        const parts = tob.split(' ');
+                        const timeParts = (parts[0] || '').split(':');
+                        const mn = timeParts[1] || '';
+                        return `<option value="${m}" ${mn === m ? 'selected' : ''}>${m}</option>`;
+                      }).join('')}
+                    </select>
+                    <select id="edit-time-ampm" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                      <option value="AM" ${(state.currentUser.timeOfBirth || '').split(' ')[1] !== 'PM' ? 'selected' : ''}>AM</option>
+                      <option value="PM" ${(state.currentUser.timeOfBirth || '').split(' ')[1] === 'PM' ? 'selected' : ''}>PM</option>
+                    </select>
+                  </div>
                 </div>
                 <div class="form-group">
+                  <label>Age</label>
+                  <input type="number" id="edit-age" value="${state.currentUser.age || calculateAge(state.currentUser.dob) || ''}" required min="18" max="100">
                 </div>
               </div>
               <div class="form-group">
@@ -4950,6 +4978,23 @@ function switchAdminTab(tabName) {
               <div class="admin-form-group">
                 <label>Day of Birth</label>
                 <input type="text" id="adm-add-day-of-birth" class="admin-input" readonly placeholder="Calculated from DOB">
+              </div>
+              <div class="admin-form-group">
+                <label>Time of Birth</label>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                  <select id="adm-add-time-hour" class="admin-select" style="flex: 1;">
+                    <option value="">Hour</option>
+                    ${Array.from({length: 12}, (_, i) => i + 1).map(h => `<option value="${h}">${h}</option>`).join('')}
+                  </select>
+                  <select id="adm-add-time-minute" class="admin-select" style="flex: 1;">
+                    <option value="">Min</option>
+                    ${Array.from({length: 60}, (_, i) => String(i).padStart(2, '0')).map(m => `<option value="${m}">${m}</option>`).join('')}
+                  </select>
+                  <select id="adm-add-time-ampm" class="admin-select" style="flex: 1;">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
               </div>
               <div class="admin-form-group">
                 <label>Age</label>
@@ -6752,6 +6797,12 @@ function handleEditProfileSubmit(e) {
   const age = document.getElementById('edit-age').value;
   const dob = document.getElementById('edit-dob').value;
   const dayOfBirth = document.getElementById('edit-day-of-birth').value;
+  
+  const hourVal = document.getElementById('edit-time-hour').value;
+  const minVal = document.getElementById('edit-time-minute').value;
+  const ampmVal = document.getElementById('edit-time-ampm').value;
+  const timeOfBirth = (hourVal && minVal) ? `${hourVal}:${minVal} ${ampmVal}` : '';
+
   const gender = document.getElementById('edit-gender').value;
   const maritalStatus = document.getElementById('edit-marital-status').value;
   const height = document.getElementById('edit-height').value;
@@ -7078,12 +7129,18 @@ function handleAdminAddUserFormSubmit(e) {
 
   const dob = document.getElementById('adm-add-dob').value;
   const dayOfBirth = document.getElementById('adm-add-day-of-birth').value;
+  
+  const hourVal = document.getElementById('adm-add-time-hour').value;
+  const minVal = document.getElementById('adm-add-time-minute').value;
+  const ampmVal = document.getElementById('adm-add-time-ampm').value;
+  const timeOfBirth = (hourVal && minVal) ? `${hourVal}:${minVal} ${ampmVal}` : '';
+
   const username = document.getElementById('adm-add-username').value;
   const password = document.getElementById('adm-add-password').value;
   const zodiac = document.getElementById('adm-add-zodiac').value;
   const nickname = document.getElementById('adm-add-nickname').value;
 
-  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified, dob, dayOfBirth, username, password, zodiac, nickname });
+  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified, dob, dayOfBirth, timeOfBirth, username, password, zodiac, nickname });
   showToast('Member successfully created!');
   switchAdminTab('users');
 }
@@ -7102,6 +7159,13 @@ function handleAdminResetPassword(id) {
 function handleAdminEditUser(id) {
   const profile = state.profiles.find(p => p.id === id);
   if (!profile) return;
+
+  const tob = profile.timeOfBirth || '';
+  const parts = tob.split(' ');
+  const ampm = parts[1] || 'AM';
+  const timeParts = (parts[0] || '').split(':');
+  const hour = timeParts[0] || '';
+  const min = timeParts[1] || '';
 
   const overlay = document.getElementById('modal-system-overlay');
   if (!overlay) return;
@@ -7167,10 +7231,25 @@ function handleAdminEditUser(id) {
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="admin-form-group">
-              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Age</label>
-              <input type="number" id="edit-usr-age" class="admin-input" value="${profile.age || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Time of Birth</label>
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <select id="edit-usr-time-hour" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                  <option value="">Hour</option>
+                  ${Array.from({length: 12}, (_, i) => i + 1).map(h => `<option value="${h}" ${Number(hour) === h ? 'selected' : ''}>${h}</option>`).join('')}
+                </select>
+                <select id="edit-usr-time-minute" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                  <option value="">Min</option>
+                  ${Array.from({length: 60}, (_, i) => String(i).padStart(2, '0')).map(m => `<option value="${m}" ${min === m ? 'selected' : ''}>${m}</option>`).join('')}
+                </select>
+                <select id="edit-usr-time-ampm" style="flex: 1; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #fff;">
+                  <option value="AM" ${ampm === 'AM' ? 'selected' : ''}>AM</option>
+                  <option value="PM" ${ampm === 'PM' ? 'selected' : ''}>PM</option>
+                </select>
+              </div>
             </div>
             <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Age</label>
+              <input type="number" id="edit-usr-age" class="admin-input" value="${profile.age || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -7223,6 +7302,12 @@ function handleAdminUpdateUserSubmit(e, id) {
   
   const dob = document.getElementById('edit-usr-dob').value;
   const dayOfBirth = document.getElementById('edit-usr-day-of-birth').value;
+  
+  const hourVal = document.getElementById('edit-usr-time-hour').value;
+  const minVal = document.getElementById('edit-usr-time-minute').value;
+  const ampmVal = document.getElementById('edit-usr-time-ampm').value;
+  const timeOfBirth = (hourVal && minVal) ? `${hourVal}:${minVal} ${ampmVal}` : '';
+
   const age = parseInt(document.getElementById('edit-usr-age').value);
   const username = document.getElementById('edit-usr-username').value;
   const zodiac = document.getElementById('edit-usr-zodiac').value;
@@ -7240,6 +7325,7 @@ function handleAdminUpdateUserSubmit(e, id) {
     isAdmin,
     dob,
     dayOfBirth,
+    timeOfBirth,
     age,
     username,
     zodiac,
@@ -7257,6 +7343,7 @@ function handleAdminUpdateUserSubmit(e, id) {
     state.currentUser.isAdmin = isAdmin;
     state.currentUser.dob = dob;
     state.currentUser.dayOfBirth = dayOfBirth;
+    state.currentUser.timeOfBirth = timeOfBirth;
     state.currentUser.age = age;
     state.currentUser.username = username;
     state.currentUser.zodiac = zodiac;
