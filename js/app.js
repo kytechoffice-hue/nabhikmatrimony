@@ -4679,6 +4679,23 @@ function switchAdminTab(tabName) {
       const storiesCount = state.stories.length;
       const totalRevenue = state.revenueReport.totalRevenue;
 
+      // Extract real sent match requests (excluding master)
+      const realInterests = [];
+      state.profiles.forEach(sender => {
+        if (!sender || sender.role === 'master' || (sender.name && sender.name.toLowerCase() === 'master')) return;
+        const sentIds = sender.interestsSent || [];
+        sentIds.forEach(rid => {
+          const recipient = state.profiles.find(p => p && p.id === Number(rid));
+          if (recipient) {
+            realInterests.push({
+              sender: sender.name,
+              recipient: recipient.name
+            });
+          }
+        });
+      });
+      const recentMatchRequests = realInterests.reverse().slice(0, 5);
+
       const recentUsers = statsProfiles.slice(-3).reverse();
       const recentPayments = (state.payments || []).slice(-3).reverse();
       const recentTickets = (state.tickets || []).slice(-3).reverse();
@@ -4766,11 +4783,14 @@ function switchAdminTab(tabName) {
 
           <!-- New Match Requests -->
           <div class="admin-widget-card">
-            <h3>💖 New Match Requests (Simulated)</h3>
-            <ul style="list-style:none; font-size:0.9rem; padding:0;">
-              <li style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Rahul Patil</strong> sent interest to <strong>Priya Deshmukh</strong></li>
-              <li style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Sandeep Shinde</strong> sent interest to <strong>Ankita Pawar</strong></li>
-              <li style="padding:8px 0;"><strong>Amit Chavan</strong> sent interest to <strong>Neha Joshi</strong></li>
+            <h3>💖 New Match Requests</h3>
+            <ul style="list-style:none; font-size:0.9rem; padding:0; margin:0;">
+              ${recentMatchRequests.map((item, idx) => `
+                <li style="padding:8px 0; ${idx < recentMatchRequests.length - 1 ? 'border-bottom:1px solid #eee;' : ''}">
+                  <strong>${item.sender}</strong> sent interest to <strong>${item.recipient}</strong>
+                </li>
+              `).join('')}
+              ${recentMatchRequests.length === 0 ? '<li style="padding:8px 0; color:var(--color-text-muted); font-style:italic;">No match requests sent yet.</li>' : ''}
             </ul>
           </div>
 
