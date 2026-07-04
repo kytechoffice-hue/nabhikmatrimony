@@ -3466,7 +3466,7 @@ function renderRegister(container) {
           <div class="form-row-2">
             <div class="form-group">
               <label>${t('Email ID', 'ईमेल आयडी')}</label>
-              <input type="email" id="reg-email" required placeholder="info@example.com">
+              <input type="email" id="reg-email" placeholder="info@example.com">
             </div>
             <div class="form-group">
               <label>${t('Password', 'पासवर्ड')}</label>
@@ -4391,7 +4391,7 @@ function switchDashboardTab(tabName) {
                 </div>
                 <div class="form-group">
                   <label>Email Address</label>
-                  <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}" required>
+                  <input type="email" id="edit-email" value="${state.currentUser.emailId || ''}">
                 </div>
               </div>
             </div>
@@ -6511,8 +6511,24 @@ function handleRegistrationSubmit(e) {
       photo: photoBase64
     };
     
-    // Open Email verification mockup Modal
-    openOtpVerificationModal(email);
+    if (!email || email.trim() === '') {
+      // If email is empty, skip OTP verification entirely and complete registration
+      const user = stateActions.registerUser(window.tempRegData);
+      showToast(`Registration Successful! Logged in as ${user.name}`);
+      const isAdmin = (
+        user.isAdmin === true || 
+        user.role === 'admin' || 
+        (user.emailId && user.emailId.toLowerCase().includes('admin'))
+      );
+      if (isAdmin) {
+        navigateTo('/admin');
+      } else {
+        navigateTo('/dashboard?tab=overview');
+      }
+    } else {
+      // Open Email verification mockup Modal
+      openOtpVerificationModal(email);
+    }
   }
   
   if (photoInput && photoInput.files && photoInput.files[0]) {
