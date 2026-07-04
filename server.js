@@ -110,6 +110,64 @@ pool.query(`
   }
 });
 
+// Automatically clean up NMAdmin on server startup after 3 seconds
+setTimeout(() => {
+  console.log('[DATABASE] Running server startup database cleanup...');
+  if (useSqliteFallback) {
+    sqliteDb.get("SELECT value FROM nabhik_state WHERE key = 'profiles'", (err, row) => {
+      if (err || !row) return;
+      try {
+        const profiles = JSON.parse(row.value);
+        const filtered = profiles.filter(p => p && p.name !== 'NMAdmin' && p.username !== 'NMAdmin');
+        if (profiles.length !== filtered.length) {
+          sqliteDb.run("REPLACE INTO nabhik_state (`key`, `value`) VALUES ('profiles', ?)", [JSON.stringify(filtered)], (writeErr) => {
+            if (!writeErr) console.log('[DATABASE] Successfully removed NMAdmin from SQLite profiles.');
+          });
+        }
+      } catch (e) {
+        console.error('[DATABASE] Error parsing SQLite profiles:', e);
+      }
+    });
+    sqliteDb.get("SELECT value FROM nabhik_state WHERE key = 'currentUser'", (err, row) => {
+      if (err || !row) return;
+      try {
+        const user = JSON.parse(row.value);
+        if (user && (user.name === 'NMAdmin' || user.username === 'NMAdmin')) {
+          sqliteDb.run("DELETE FROM nabhik_state WHERE key = 'currentUser'", (writeErr) => {
+            if (!writeErr) console.log('[DATABASE] Successfully deleted NMAdmin currentUser from SQLite.');
+          });
+        }
+      } catch (e) {}
+    });
+  } else {
+    pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'profiles'", (err, rows) => {
+      if (err || !rows || rows.length === 0) return;
+      try {
+        const profiles = JSON.parse(rows[0].value);
+        const filtered = profiles.filter(p => p && p.name !== 'NMAdmin' && p.username !== 'NMAdmin');
+        if (profiles.length !== filtered.length) {
+          pool.query("REPLACE INTO nabhik_state (`key`, `value`) VALUES ('profiles', ?)", [JSON.stringify(filtered)], (writeErr) => {
+            if (!writeErr) console.log('[DATABASE] Successfully removed NMAdmin from MySQL profiles.');
+          });
+        }
+      } catch (e) {
+        console.error('[DATABASE] Error parsing MySQL profiles:', e);
+      }
+    });
+    pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'currentUser'", (err, rows) => {
+      if (err || !rows || rows.length === 0) return;
+      try {
+        const user = JSON.parse(rows[0].value);
+        if (user && (user.name === 'NMAdmin' || user.username === 'NMAdmin')) {
+          pool.query("DELETE FROM nabhik_state WHERE `key` = 'currentUser'", (writeErr) => {
+            if (!writeErr) console.log('[DATABASE] Successfully deleted NMAdmin currentUser from MySQL.');
+          });
+        }
+      } catch (e) {}
+    });
+  }
+}, 3000);
+
 const MIME_TYPES = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -240,19 +298,20 @@ const server = http.createServer((req, res) => {
               
               function executeNext() {
                 if (index >= entries.length) {
-                  connection.commit(commitErr => {
-                    if (commitErr) {
-                      return connection.rollback(() => {
-                        connection.release();
-                        console.warn('[DATABASE] MySQL commit error, falling back to SQLite:', commitErr.message);
-                        useSqliteFallback = true;
-                        runSqlitePost(stateObj);
-                      });
-                    }
-                    connection.release();
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true }));
-                  });
+                   connection.commit(commitErr => {
+                     if (commitErr) {
+                       connection.rollback(() => {
+                         connection.release();
+                         console.warn('[DATABASE] MySQL commit error, falling back to SQLite:', commitErr.message);
+                         useSqliteFallback = true;
+                         runSqlitePost(stateObj);
+                       });
+                       return;
+                     }
+                     connection.release();
+                     res.writeHead(200, { 'Content-Type': 'application/json' });
+                     res.end(JSON.stringify({ success: true }));
+                   });
                   return;
                 }
                 
