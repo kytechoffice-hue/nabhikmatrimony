@@ -1415,8 +1415,10 @@ function generateAndDownloadBiodataImage(user) {
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Full Name:</span><span style="color: #333333;">${user.name}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Age:</span><span style="color: #333333;">${user.age || calculateAge(user.dob) || ''} Years</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Height:</span><span style="color: #333333;">${user.height || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Complexion:</span><span style="color: #333333;">${user.complexion || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Blood Group:</span><span style="color: #333333;">${user.bloodGroup || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Religion:</span><span style="color: #333333;">${user.religion || 'Hindu'}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Caste:</span><span style="color: #333333;">${user.caste || user.community || 'Nabhik'}</span></div>
         </div>
         
         <!-- Middle Column (Photo) -->
@@ -1429,11 +1431,12 @@ function generateAndDownloadBiodataImage(user) {
         
         <!-- Right Column -->
         <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}${user.timeOfBirth ? ' | ' + user.timeOfBirth : ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Birth Place:</span><span style="color: #333333;">${user.birthPlace || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Zodiac Sign:</span><span style="color: #333333;">${user.zodiac || ''}</span></div>
+          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Gana:</span><span style="color: #333333;">${user.gana || ''}</span></div>
           <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
-          <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
         </div>
       </div>
       
@@ -1753,8 +1756,10 @@ function generateBiodataDataUrl(user) {
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Full Name:</span><span style="color: #333333;">${user.name}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Age:</span><span style="color: #333333;">${user.age || calculateAge(user.dob) || ''} Years</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Height:</span><span style="color: #333333;">${user.height || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Complexion:</span><span style="color: #333333;">${user.complexion || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Blood Group:</span><span style="color: #333333;">${user.bloodGroup || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Religion:</span><span style="color: #333333;">${user.religion || 'Hindu'}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 100px;">Caste:</span><span style="color: #333333;">${user.caste || user.community || 'Nabhik'}</span></div>
             </div>
             
             <!-- Middle Column (Photo) -->
@@ -1768,10 +1773,11 @@ function generateBiodataDataUrl(user) {
             <!-- Right Column -->
             <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 10px;">
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Date of Birth:</span><span style="color: #333333;">${user.dob || ''} ${user.dayOfBirth || (user.dob ? '(' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()] + ')' : '')}${user.timeOfBirth ? ' | ' + user.timeOfBirth : ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Birth Place:</span><span style="color: #333333;">${user.birthPlace || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Marital Status:</span><span style="color: #333333;">${user.maritalStatus || 'Never Married'}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Zodiac Sign:</span><span style="color: #333333;">${user.zodiac || ''}</span></div>
+              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Gana:</span><span style="color: #333333;">${user.gana || ''}</span></div>
               <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Nickname:</span><span style="color: #333333;">${user.nickname || ''}</span></div>
-              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Mother Tongue:</span><span style="color: #333333;">${user.motherTongue || 'Marathi'}</span></div>
-              <div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 110px;">Caste / Sub-Caste:</span><span style="color: #333333; display: inline-block; max-width: calc(100% - 115px); vertical-align: top; word-wrap: break-word;">${user.caste || 'Nabhik'} ${user.subCaste ? '(' + user.subCaste + ')' : ''}</span></div>
             </div>
           </div>
           
@@ -3963,26 +3969,15 @@ function switchDashboardTab(tabName) {
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>Marital Status</label>
-                  <select id="edit-marital-status">
-                    <option value="Never Married" ${state.currentUser.maritalStatus === 'Never Married' ? 'selected' : ''}>Never Married</option>
-                    <option value="Divorced" ${state.currentUser.maritalStatus === 'Divorced' ? 'selected' : ''}>Divorced</option>
-                    <option value="Widowed" ${state.currentUser.maritalStatus === 'Widowed' ? 'selected' : ''}>Widowed</option>
-                    <option value="Awaiting Divorce" ${state.currentUser.maritalStatus === 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
                   <label>Nickname</label>
                   <input type="text" id="edit-nickname" value="${state.currentUser.nickname || ''}" placeholder="e.g. Sunny">
                 </div>
-                <div class="form-group">
-                  <label>Height</label>
-                  <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
-                </div>
               </div>
               <div class="form-row-2">
+                <div class="form-group">
+                  <label>Birth Place</label>
+                  <input type="text" id="edit-birth-place" value="${state.currentUser.birthPlace || ''}" placeholder="e.g. Pune, Maharashtra">
+                </div>
                 <div class="form-group">
                   <label>Blood Group</label>
                   <select id="edit-blood-group">
@@ -3997,9 +3992,25 @@ function switchDashboardTab(tabName) {
                     <option value="O-" ${state.currentUser.bloodGroup === 'O-' ? 'selected' : ''}>O-</option>
                   </select>
                 </div>
+              </div>
+              <div class="form-row-2">
                 <div class="form-group">
-                  <label>Nationality</label>
-                  <input type="text" id="edit-nationality" value="${state.currentUser.nationality || 'Indian'}">
+                  <label>Height</label>
+                  <input type="text" id="edit-height" value="${state.currentUser.height || ''}" placeholder="e.g. 5'8\\\"">
+                </div>
+                <div class="form-group">
+                  <label>Complexion</label>
+                  <input type="text" id="edit-complexion" value="${state.currentUser.complexion || ''}" placeholder="e.g. Fair">
+                </div>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Zodiac Sign (Rashi)</label>
+                  <input type="text" id="edit-zodiac" value="${state.currentUser.zodiac || ''}" placeholder="e.g. Leo">
+                </div>
+                <div class="form-group">
+                  <label>Gana</label>
+                  <input type="text" id="edit-gana" value="${state.currentUser.gana || ''}" placeholder="e.g. Manushya Gana">
                 </div>
               </div>
               <div class="form-row-2">
@@ -4010,16 +4021,6 @@ function switchDashboardTab(tabName) {
                 <div class="form-group">
                   <label>Caste</label>
                   <input type="text" id="edit-caste" value="${state.currentUser.caste || state.currentUser.community || 'Nabhik'}">
-                </div>
-              </div>
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Sub-Caste</label>
-                  <input type="text" id="edit-sub-caste" value="${state.currentUser.subCaste || ''}">
-                </div>
-                <div class="form-group">
-                  <label>Mother Tongue</label>
-                  <input type="text" id="edit-mother-tongue" value="${state.currentUser.motherTongue || 'Marathi'}">
                 </div>
               </div>
             </div>
@@ -6804,15 +6805,21 @@ function handleEditProfileSubmit(e) {
   const timeOfBirth = (hourVal && minVal) ? `${hourVal}:${minVal} ${ampmVal}` : '';
 
   const gender = document.getElementById('edit-gender').value;
-  const maritalStatus = document.getElementById('edit-marital-status').value;
+  const maritalStatus = state.currentUser.maritalStatus || 'Never Married';
   const height = document.getElementById('edit-height').value;
   const nickname = document.getElementById('edit-nickname').value;
   const bloodGroup = document.getElementById('edit-blood-group').value;
-  const nationality = document.getElementById('edit-nationality').value;
   const religion = document.getElementById('edit-religion').value;
   const caste = document.getElementById('edit-caste').value;
-  const subCaste = document.getElementById('edit-sub-caste').value;
-  const motherTongue = document.getElementById('edit-mother-tongue').value;
+  
+  const birthPlace = document.getElementById('edit-birth-place').value;
+  const complexion = document.getElementById('edit-complexion').value;
+  const zodiac = document.getElementById('edit-zodiac').value;
+  const gana = document.getElementById('edit-gana').value;
+
+  const nationality = state.currentUser.nationality || 'Indian';
+  const subCaste = state.currentUser.subCaste || '';
+  const motherTongue = state.currentUser.motherTongue || 'Marathi';
   
   const qualification = document.getElementById('edit-qualification').value;
   const specialization = document.getElementById('edit-specialization').value;
@@ -6866,6 +6873,11 @@ function handleEditProfileSubmit(e) {
     state.currentUser.community = caste; // Backwards compatibility with previous code
     state.currentUser.subCaste = subCaste;
     state.currentUser.motherTongue = motherTongue;
+    
+    state.currentUser.birthPlace = birthPlace;
+    state.currentUser.complexion = complexion;
+    state.currentUser.zodiac = zodiac;
+    state.currentUser.gana = gana;
     
     state.currentUser.qualification = qualification;
     state.currentUser.education = qualification; // Backwards compatibility
