@@ -311,11 +311,11 @@ const initialPlans = [
   {
     name: 'Silver',
     displayName: 'SILVER',
-    price: 999,
-    period: 'for 3 Months',
+    price: 399,
+    period: 'for 30 Days',
     badgeClass: 'silver-badge',
     badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"></path></svg>`,
-    tagline: 'for 3 Months',
+    tagline: 'for 30 Days',
     features: [
       { text: '50 Connection Requests', included: true },
       { text: 'Basic Chat Functionality', included: true },
@@ -4276,7 +4276,7 @@ function renderMembership(container) {
       } else if (isCurrent) {
         mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Silver', 999)" class="plan-action-btn">Upgrade Now</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Silver', 399)" class="plan-action-btn">Upgrade Now</button>`;
       }
       btnHtml = mainBtn;
     } else if (p.name === 'Gold') {
@@ -7494,7 +7494,7 @@ function renderSilverPlanDetails(container) {
   } else if (isCurrentPlanSilver) {
     priceCTA = `<button class="plan-btn plan-btn-active" style="display: block; width: 100%;" disabled>Active Plan</button>`;
   } else {
-    priceCTA = `<button onclick="handleSelectPlan('Silver', 999)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
+    priceCTA = `<button onclick="handleSelectPlan('Silver', 399)" class="btn btn-primary" style="display: block; width: 100%;">Upgrade Now</button>`;
   }
 
   container.innerHTML = `
@@ -7570,7 +7570,7 @@ function renderSilverPlanDetails(container) {
           <!-- Pricing Summary Card -->
           <div class="sidebar-info-card dark-theme" style="text-align: center;">
             <h3 style="border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; font-size: 1.5rem;">SILVER TIER</h3>
-            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹999<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 3 Months</span></div>
+            <div class="plan-price" style="font-size: 2.2rem; color: var(--color-gold); margin: 15px 0 5px 0; font-weight: 700;">₹399<span style="font-size: 1rem; color: #fff; font-weight: normal;"> / 30 Days</span></div>
             <p style="font-size: 0.85rem; color: var(--color-gold-light); font-style: italic; margin-bottom: 20px;">Economical Enhanced Experience</p>
             <ul style="text-align: left; margin: 15px 0 25px 0; display: flex; flex-direction: column; gap: 8px;">
               <li style="color: #fff;">50 Connection Requests</li>
