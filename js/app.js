@@ -487,9 +487,14 @@ function saveStateToServer(immediate = false) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(storage.cache)
       });
-      return await res.json();
+      const result = await res.json();
+      if (result && result.error) {
+        console.error("Server save database error:", result.error);
+        showToast(t("Database connection error. Unable to save changes.", "डेटाबेस कनेक्शन त्रुटी. बदल जतन करण्यात अक्षम."));
+      }
+      return result;
     } catch (e) {
-      console.error("Failed to save state to SQLite database:", e);
+      console.error("Failed to save state to database:", e);
       return { error: e.message };
     }
   }
@@ -514,6 +519,12 @@ async function loadStateFromServer() {
     
     // Set load state flag to true so saves are now allowed
     window.isStateLoaded = true;
+
+    if (serverState && serverState.error) {
+      console.error("Server database error:", serverState.error);
+      showToast(t("Database connection error. Please authorize your IP in Remote MySQL.", "डेटाबेस कनेक्शन त्रुटी. कृपया रिमोट MySQL मध्ये आपला IP अधिकृत करा."));
+      return;
+    }
 
     if (!serverState || Object.keys(serverState).length === 0) {
       // First time initialization: save seed state to server
