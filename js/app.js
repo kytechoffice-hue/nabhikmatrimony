@@ -4665,19 +4665,20 @@ function switchAdminTab(tabName) {
   
   switch (tabName) {
     case 'dashboard': {
-      const totalUsers = visibleProfiles.length;
-      const activeUsers = visibleProfiles.filter(p => p.verified && !p.suspended).length;
-      const male = visibleProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'male').length;
-      const female = visibleProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
-      const premium = visibleProfiles.filter(p => p.membership && p.membership !== 'Free').length;
-      const pending = visibleProfiles.filter(p => !p.verified).length;
+      const statsProfiles = state.profiles.filter(p => p && p.role !== 'master' && (p.name ? p.name.toLowerCase() !== 'master' : true));
+      const totalUsers = statsProfiles.length;
+      const activeUsers = statsProfiles.filter(p => p.verified && !p.suspended).length;
+      const male = statsProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'male').length;
+      const female = statsProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
+      const premium = statsProfiles.filter(p => p.membership && p.membership !== 'Free').length;
+      const pending = statsProfiles.filter(p => !p.verified).length;
       const storiesCount = state.stories.length;
       const totalRevenue = state.revenueReport.totalRevenue;
 
-      const recentUsers = visibleProfiles.slice(-3).reverse();
+      const recentUsers = statsProfiles.slice(-3).reverse();
       const recentPayments = (state.payments || []).slice(-3).reverse();
       const recentTickets = (state.tickets || []).slice(-3).reverse();
-      const pendingApprovals = visibleProfiles.filter(p => !p.verified).slice(0, 3);
+      const pendingApprovals = statsProfiles.filter(p => !p.verified).slice(0, 3);
 
       panel.innerHTML = `
         <h2>Dashboard Overview</h2>
