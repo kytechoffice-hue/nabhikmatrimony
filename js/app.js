@@ -899,7 +899,8 @@ const stateActions = {
       age: parseInt(userData.age) || 28,
       verified: userData.verified !== undefined ? userData.verified : true,
       membership: userData.membership || 'Free',
-      photo: userData.photo || '/images/member1.webp'
+      photo: userData.photo || '/images/member1.webp',
+      createdDate: new Date().toISOString().split('T')[0]
     };
     state.profiles.push(newProfile);
     this.saveAll();
@@ -931,6 +932,7 @@ const stateActions = {
       verified: false,
       featured: false,
       age: computedAge,
+      createdDate: new Date().toISOString().split('T')[0],
       ...userData
     };
     state.profiles.push(newProfile);
@@ -4672,6 +4674,8 @@ function switchAdminTab(tabName) {
       const female = statsProfiles.filter(p => p.gender && p.gender.toLowerCase() === 'female').length;
       const premium = statsProfiles.filter(p => p.membership && p.membership !== 'Free').length;
       const pending = statsProfiles.filter(p => !p.verified).length;
+      const todayStr = new Date().toISOString().split('T')[0];
+      const registrationsToday = statsProfiles.filter(p => p.createdDate === todayStr).length;
       const storiesCount = state.stories.length;
       const totalRevenue = state.revenueReport.totalRevenue;
 
@@ -4703,7 +4707,7 @@ function switchAdminTab(tabName) {
           </div>
           <div class="admin-stat-card">
             <h4>Registrations Today</h4>
-            <p>5</p>
+            <p>${registrationsToday}</p>
           </div>
           <div class="admin-stat-card">
             <h4>Pending Verifications</h4>
