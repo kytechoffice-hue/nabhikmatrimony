@@ -1465,6 +1465,7 @@ function generateAndDownloadBiodataImage(user) {
         ${user.altContact1 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 1:</span><span style="color: #333333;">${user.altContact1}</span></div>` : ''}
         ${user.altContact2 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 2:</span><span style="color: #333333;">${user.altContact2}</span></div>` : ''}
         <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Address:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.address || ''}</span></div>
+        <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Relatives:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.relatives || ''}</span></div>
       </div>
       
       <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
@@ -1808,6 +1809,7 @@ function generateBiodataDataUrl(user) {
             ${user.altContact1 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 1:</span><span style="color: #333333;">${user.altContact1}</span></div>` : ''}
             ${user.altContact2 ? `<div style="font-size: 0.95rem; line-height: 1.4;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px;">Alt. Contact 2:</span><span style="color: #333333;">${user.altContact2}</span></div>` : ''}
             <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Address:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.address || ''}</span></div>
+            <div style="font-size: 0.95rem; line-height: 1.4; grid-column: span 2; white-space: pre-line;"><span style="font-weight: bold; color: #5c0a13; display: inline-block; width: 140px; vertical-align: top;">Relatives:</span><span style="color: #333333; display: inline-block; width: calc(100% - 145px); vertical-align: top;">${user.relatives || ''}</span></div>
           </div>
           
           <div style="text-align: center; color: #d4af37; margin-top: 32px; font-size: 1.2rem;">✦ ⚜ ✦</div>
@@ -4122,6 +4124,10 @@ function switchDashboardTab(tabName) {
               <div class="form-group">
                 <label>Address</label>
                 <textarea id="edit-address" rows="3" required style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.address || state.currentUser.location || ''}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Relatives</label>
+                <textarea id="edit-relatives" rows="3" placeholder="e.g. Mama: Patil Family (Pune), Kaka: Jadhav Family (Satara), etc." style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: inherit; font-size: 0.9rem; resize: vertical;">${state.currentUser.relatives || ''}</textarea>
               </div>
             </div>
           </div>
@@ -6869,6 +6875,7 @@ function handleEditProfileSubmit(e) {
   const address = document.getElementById('edit-address').value;
   const altContact1 = document.getElementById('edit-alt-contact-1').value;
   const altContact2 = document.getElementById('edit-alt-contact-2').value;
+  const relatives = document.getElementById('edit-relatives').value;
   
   const photoInput = document.getElementById('edit-photo');
   
@@ -6934,6 +6941,7 @@ function handleEditProfileSubmit(e) {
     state.currentUser.location = address; // Backwards compatibility
     state.currentUser.altContact1 = altContact1;
     state.currentUser.altContact2 = altContact2;
+    state.currentUser.relatives = relatives;
     
     if (photoBase64) {
       state.currentUser.photo = photoBase64;
