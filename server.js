@@ -198,44 +198,68 @@ const server = http.createServer((req, res) => {
   if (cleanUrl === '/api/state') {
     // Helper to perform SQLite GET query
     function runSqliteGet() {
-      sqliteDb.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
-        if (err) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: err.message }));
-          return;
-        }
-        const stateObj = {};
-        rows.forEach(row => {
-          try {
-            stateObj[row.key] = JSON.parse(row.value);
-          } catch (e) {
-            stateObj[row.key] = row.value;
+      try {
+        sqliteDb.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
+          if (err) {
+            if (!res.headersSent) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: err.message }));
+            }
+            return;
+          }
+          const stateObj = {};
+          rows.forEach(row => {
+            try {
+              stateObj[row.key] = JSON.parse(row.value);
+            } catch (e) {
+              stateObj[row.key] = row.value;
+            }
+          });
+          if (!res.headersSent) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(stateObj));
           }
         });
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(stateObj));
-      });
+      } catch (err) {
+        console.error('[DATABASE] SQLite GET failed:', err);
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      }
     }
 
     // Helper to perform SQLite POST query
     function runSqlitePost(stateObj) {
-      sqliteDb.serialize(() => {
-        sqliteDb.run('BEGIN TRANSACTION');
-        const stmt = sqliteDb.prepare('INSERT OR REPLACE INTO nabhik_state (key, value) VALUES (?, ?)');
-        Object.entries(stateObj).forEach(([key, value]) => {
-          stmt.run(key, JSON.stringify(value));
+      try {
+        sqliteDb.serialize(() => {
+          sqliteDb.run('BEGIN TRANSACTION');
+          const stmt = sqliteDb.prepare('INSERT OR REPLACE INTO nabhik_state (key, value) VALUES (?, ?)');
+          Object.entries(stateObj).forEach(([key, value]) => {
+            stmt.run(key, JSON.stringify(value));
+          });
+          stmt.finalize();
+          sqliteDb.run('COMMIT', (err) => {
+            if (err) {
+              if (!res.headersSent) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: err.message }));
+              }
+              return;
+            }
+            if (!res.headersSent) {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: true }));
+            }
+          });
         });
-        stmt.finalize();
-        sqliteDb.run('COMMIT', (err) => {
-          if (err) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true }));
-        });
-      });
+      } catch (err) {
+        console.error('[DATABASE] SQLite POST transaction failed:', err);
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      }
     }
 
     if (req.method === 'GET') {
