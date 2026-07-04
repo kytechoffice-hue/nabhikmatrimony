@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2');
+const sqlite3 = require('sqlite3').verbose();
 const nodemailer = require('nodemailer');
 
 const PORT = 8082;
@@ -34,6 +35,21 @@ function getEmailConfig() {
   }
   return null;
 }
+
+// Initialize SQLite database (acting as persistent local backup/fallback)
+const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
+if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+}
+const sqliteDb = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
+sqliteDb.serialize(() => {
+  sqliteDb.run(`
+    CREATE TABLE IF NOT EXISTS nabhik_state (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+  `);
+});
 
 // Initialize MySQL configuration
 const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
@@ -76,6 +92,9 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// Global state flag to track database fallback
+let useSqliteFallback = false;
+
 // Initialize database table if not exists
 pool.query(`
   CREATE TABLE IF NOT EXISTS nabhik_state (
@@ -84,7 +103,8 @@ pool.query(`
   )
 `, (err) => {
   if (err) {
-    console.error('[DATABASE] Error initializing MySQL database table:', err);
+    console.warn('[DATABASE] MySQL connection/initialization failed. Falling back to local SQLite database. Error:', err.message);
+    useSqliteFallback = true;
   } else {
     console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
   }
@@ -114,14 +134,63 @@ const server = http.createServer((req, res) => {
 
   // Clean query strings and hashes
   const cleanUrl = req.url.split('?')[0].split('#')[0];
+  console.log(`[REQUEST] ${req.method} ${cleanUrl}`);
 
-  // MySQL API Endpoints
+  // Database API Endpoints (MySQL with SQLite fallback)
   if (cleanUrl === '/api/state') {
-    if (req.method === 'GET') {
-      pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
+    // Helper to perform SQLite GET query
+    function runSqliteGet() {
+      sqliteDb.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
         if (err) {
           res.writeHead(500, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: err.message }));
+          return;
+        }
+        const stateObj = {};
+        rows.forEach(row => {
+          try {
+            stateObj[row.key] = JSON.parse(row.value);
+          } catch (e) {
+            stateObj[row.key] = row.value;
+          }
+        });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(stateObj));
+      });
+    }
+
+    // Helper to perform SQLite POST query
+    function runSqlitePost(stateObj) {
+      sqliteDb.serialize(() => {
+        sqliteDb.run('BEGIN TRANSACTION');
+        const stmt = sqliteDb.prepare('INSERT OR REPLACE INTO nabhik_state (key, value) VALUES (?, ?)');
+        Object.entries(stateObj).forEach(([key, value]) => {
+          stmt.run(key, JSON.stringify(value));
+        });
+        stmt.finalize();
+        sqliteDb.run('COMMIT', (err) => {
+          if (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+        });
+      });
+    }
+
+    if (req.method === 'GET') {
+      if (useSqliteFallback) {
+        runSqliteGet();
+        return;
+      }
+
+      pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
+        if (err) {
+          console.warn('[DATABASE] MySQL GET error, falling back to SQLite:', err.message);
+          useSqliteFallback = true;
+          runSqliteGet();
           return;
         }
         const stateObj = {};
@@ -144,18 +213,25 @@ const server = http.createServer((req, res) => {
       req.on('end', () => {
         try {
           const stateObj = JSON.parse(body);
+          if (useSqliteFallback) {
+            runSqlitePost(stateObj);
+            return;
+          }
+
           pool.getConnection((connErr, connection) => {
             if (connErr) {
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: connErr.message }));
+              console.warn('[DATABASE] MySQL connection checkout error during POST, falling back to SQLite:', connErr.message);
+              useSqliteFallback = true;
+              runSqlitePost(stateObj);
               return;
             }
             
             connection.beginTransaction(beginTransactionErr => {
               if (beginTransactionErr) {
                 connection.release();
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: beginTransactionErr.message }));
+                console.warn('[DATABASE] MySQL transaction begin error, falling back to SQLite:', beginTransactionErr.message);
+                useSqliteFallback = true;
+                runSqlitePost(stateObj);
                 return;
               }
               
@@ -168,8 +244,9 @@ const server = http.createServer((req, res) => {
                     if (commitErr) {
                       return connection.rollback(() => {
                         connection.release();
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: commitErr.message }));
+                        console.warn('[DATABASE] MySQL commit error, falling back to SQLite:', commitErr.message);
+                        useSqliteFallback = true;
+                        runSqlitePost(stateObj);
                       });
                     }
                     connection.release();
@@ -186,8 +263,9 @@ const server = http.createServer((req, res) => {
                   if (queryErr) {
                     return connection.rollback(() => {
                       connection.release();
-                      res.writeHead(500, { 'Content-Type': 'application/json' });
-                      res.end(JSON.stringify({ error: queryErr.message }));
+                      console.warn('[DATABASE] MySQL write query error, falling back to SQLite:', queryErr.message);
+                      useSqliteFallback = true;
+                      runSqlitePost(stateObj);
                     });
                   }
                   index++;

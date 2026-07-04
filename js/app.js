@@ -458,17 +458,26 @@ function saveStateToServer(immediate = false) {
         const serverProfiles = serverState.profiles;
         const ourProfile = state.currentUser;
         if (ourProfile) {
-          const idx = serverProfiles.findIndex(p => p.id === ourProfile.id);
-          if (idx !== -1) {
-            // Update only the current user's profile in the list
-            serverProfiles[idx] = { ...serverProfiles[idx], ...ourProfile };
+          const isAdmin = ourProfile.isAdmin || ourProfile.role === 'admin' || ourProfile.role === 'master';
+          if (isAdmin) {
+            // Admin is editing the database directly, keep local state as source of truth
+            storage.cache.profiles = state.profiles;
           } else {
-            serverProfiles.push(ourProfile);
+            const idx = serverProfiles.findIndex(p => p.id === ourProfile.id);
+            if (idx !== -1) {
+              // Update only the current user's profile in the list
+              serverProfiles[idx] = { ...serverProfiles[idx], ...ourProfile };
+            } else {
+              serverProfiles.push(ourProfile);
+            }
+            // Update local state and storage cache profiles list with the merged version
+            state.profiles = serverProfiles;
+            storage.cache.profiles = serverProfiles;
           }
+        } else {
+          // If no logged in user (e.g. during seeding/initialization), keep local state
+          storage.cache.profiles = state.profiles;
         }
-        // Update local state and storage cache profiles list with the merged version
-        state.profiles = serverProfiles;
-        storage.cache.profiles = serverProfiles;
       }
     } catch (e) {
       console.warn("Failed to merge profiles prior to save, proceeding with local state:", e);
@@ -1394,6 +1403,28 @@ window.formatDateForInput = function(dobString) {
   return '';
 };
 
+// Global helper to format date strings to DD/MM/YYYY for display
+window.formatDobToDdMmYyyy = function(dobString) {
+  if (!dobString) return '';
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dobString)) {
+    return dobString;
+  }
+  const parts = dobString.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  try {
+    const d = new Date(dobString);
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+  } catch (e) {}
+  return dobString;
+};
+
 // Global helper to preview uploaded profile photo dynamically
 window.previewEditPhoto = function(input) {
   if (input.files && input.files[0]) {
@@ -1520,20 +1551,35 @@ function generateAndDownloadBiodataImage(user) {
         <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
 
-      <!-- Lord Ganesha Header -->
-      <svg viewBox="0 0 100 100" width="70" height="70" style="margin: 0 auto 10px auto; display: block;">
-        <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
-        <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
-        <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
-        <path d="M35,28 C30,22 25,32 32,38 C35,40 38,36 38,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
-        <path d="M65,28 C70,22 75,32 68,38 C65,40 62,36 62,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
-        <path d="M45,20 C48,22 52,22 55,20 C56,26 56,32 50,38 C44,32 44,26 45,20 Z" fill="#f5dfa8" stroke="#8b0c16" stroke-width="1.2" />
-        <path d="M49,21 L51,21 L50,28 Z" fill="#8b0c16" />
-        <circle cx="50" cy="30" r="1.2" fill="#d4af37" />
-        <path d="M50,38 C52,44 54,48 54,54 C54,60 48,64 45,64 C42,64 40,61 42,58 C44,55 49,56 49,52 C49,48 47,44 46,38" fill="none" stroke="#8b0c16" stroke-width="3" stroke-linecap="round" />
-        <circle cx="58" cy="52" r="3.5" fill="#d4af37" stroke="#8b0c16" stroke-width="0.8" />
-        <path d="M58,48.5 L58,55.5" stroke="#8b0c16" stroke-width="0.5" />
-      </svg>
+      <!-- Three-Image Header (Ganesha, Sant Sena Maharaj, Tuljabhavani) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 10px auto; width: 100%; max-width: 500px; padding: 0 20px; box-sizing: border-box;">
+        <!-- Left Side: Lord Ganesha (SVG Vector) -->
+        <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 100 100" width="70" height="70" style="display: block;">
+            <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
+            <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
+            <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
+            <path d="M35,28 C30,22 25,32 32,38 C35,40 38,36 38,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M65,28 C70,22 75,32 68,38 C65,40 62,36 62,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M45,20 C48,22 52,22 55,20 C56,26 56,32 50,38 C44,32 44,26 45,20 Z" fill="#f5dfa8" stroke="#8b0c16" stroke-width="1.2" />
+            <path d="M49,21 L51,21 L50,28 Z" fill="#8b0c16" />
+            <circle cx="50" cy="30" r="1.2" fill="#d4af37" />
+            <path d="M50,38 C52,44 54,48 54,54 C54,60 48,64 45,64 C42,64 40,61 42,58 C44,55 49,56 49,52 C49,48 47,44 46,38" fill="none" stroke="#8b0c16" stroke-width="3" stroke-linecap="round" />
+            <circle cx="58" cy="52" r="3.5" fill="#d4af37" stroke="#8b0c16" stroke-width="0.8" />
+            <path d="M58,48.5 L58,55.5" stroke="#8b0c16" stroke-width="0.5" />
+          </svg>
+        </div>
+        
+        <!-- Center: Sant Sena Maharaj -->
+        <div style="text-align: center; flex-shrink: 0;">
+          <img src="/images/sena_maharaj.jpg" style="width: 80px; height: 100px; object-fit: contain; display: block; border-radius: 4px;">
+        </div>
+        
+        <!-- Right Side: Tuljabhavani -->
+        <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <img src="/images/tuljabhavani.jpg" style="width: 70px; height: 90px; object-fit: contain; display: block; border-radius: 4px;">
+        </div>
+      </div>
       
       <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
         ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
@@ -1546,7 +1592,7 @@ function generateAndDownloadBiodataImage(user) {
       <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
         <div style="flex: 1; display: flex; flex-direction: column;">
           ${makeRow(nameLabel, user.name)}
-          ${makeRow(dobLabel, user.dob ? `${user.dob} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
+          ${makeRow(dobLabel, user.dob ? `${formatDobToDdMmYyyy(user.dob)} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
           ${makeRow(timeLabel, user.timeOfBirth)}
           ${makeRow(placeLabel, user.birthPlace)}
           ${makeRow(religionLabel, user.religion)}
@@ -1954,20 +2000,35 @@ function generateBiodataDataUrl(user) {
             <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
 
-          <!-- Lord Ganesha Header -->
-          <svg viewBox="0 0 100 100" width="70" height="70" style="margin: 0 auto 10px auto; display: block;">
-            <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
-            <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
-            <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
-            <path d="M35,28 C30,22 25,32 32,38 C35,40 38,36 38,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
-            <path d="M65,28 C70,22 75,32 68,38 C65,40 62,36 62,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
-            <path d="M45,20 C48,22 52,22 55,20 C56,26 56,32 50,38 C44,32 44,26 45,20 Z" fill="#f5dfa8" stroke="#8b0c16" stroke-width="1.2" />
-            <path d="M49,21 L51,21 L50,28 Z" fill="#8b0c16" />
-            <circle cx="50" cy="30" r="1.2" fill="#d4af37" />
-            <path d="M50,38 C52,44 54,48 54,54 C54,60 48,64 45,64 C42,64 40,61 42,58 C44,55 49,56 49,52 C49,48 47,44 46,38" fill="none" stroke="#8b0c16" stroke-width="3" stroke-linecap="round" />
-            <circle cx="58" cy="52" r="3.5" fill="#d4af37" stroke="#8b0c16" stroke-width="0.8" />
-            <path d="M58,48.5 L58,55.5" stroke="#8b0c16" stroke-width="0.5" />
-          </svg>
+          <!-- Three-Image Header (Ganesha, Sant Sena Maharaj, Tuljabhavani) -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 0 auto 10px auto; width: 100%; max-width: 500px; padding: 0 20px; box-sizing: border-box;">
+            <!-- Left Side: Lord Ganesha (SVG Vector) -->
+            <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg viewBox="0 0 100 100" width="70" height="70" style="display: block;">
+                <path d="M45,15 L50,5 L55,15 Z" fill="#d4af37" stroke="#8b0c16" stroke-width="1" />
+                <circle cx="50" cy="5" r="1.5" fill="#8b0c16" />
+                <path d="M42,15 C45,18 55,18 58,15 L55,13 L45,13 Z" fill="#8b0c16" />
+                <path d="M35,28 C30,22 25,32 32,38 C35,40 38,36 38,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M65,28 C70,22 75,32 68,38 C65,40 62,36 62,30" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M45,20 C48,22 52,22 55,20 C56,26 56,32 50,38 C44,32 44,26 45,20 Z" fill="#f5dfa8" stroke="#8b0c16" stroke-width="1.2" />
+                <path d="M49,21 L51,21 L50,28 Z" fill="#8b0c16" />
+                <circle cx="50" cy="30" r="1.2" fill="#d4af37" />
+                <path d="M50,38 C52,44 54,48 54,54 C54,60 48,64 45,64 C42,64 40,61 42,58 C44,55 49,56 49,52 C49,48 47,44 46,38" fill="none" stroke="#8b0c16" stroke-width="3" stroke-linecap="round" />
+                <circle cx="58" cy="52" r="3.5" fill="#d4af37" stroke="#8b0c16" stroke-width="0.8" />
+                <path d="M58,48.5 L58,55.5" stroke="#8b0c16" stroke-width="0.5" />
+              </svg>
+            </div>
+            
+            <!-- Center: Sant Sena Maharaj -->
+            <div style="text-align: center; flex-shrink: 0;">
+              <img src="/images/sena_maharaj.jpg" style="width: 80px; height: 100px; object-fit: contain; display: block; border-radius: 4px;">
+            </div>
+            
+            <!-- Right Side: Tuljabhavani -->
+            <div style="width: 70px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <img src="/images/tuljabhavani.jpg" style="width: 70px; height: 90px; object-fit: contain; display: block; border-radius: 4px;">
+            </div>
+          </div>
           
           <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
             ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
@@ -1980,7 +2041,7 @@ function generateBiodataDataUrl(user) {
           <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
             <div style="flex: 1; display: flex; flex-direction: column;">
               ${makeRow(nameLabel, user.name)}
-              ${makeRow(dobLabel, user.dob ? `${user.dob} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
+              ${makeRow(dobLabel, user.dob ? `${formatDobToDdMmYyyy(user.dob)} ${user.dayOfBirth || (user.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(user.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(user.dob).getDay()]) + ')' : '')}` : '')}
               ${makeRow(timeLabel, user.timeOfBirth)}
               ${makeRow(placeLabel, user.birthPlace)}
               ${makeRow(religionLabel, user.religion)}
