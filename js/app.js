@@ -1488,17 +1488,25 @@ function generateAndDownloadBiodataImage(user) {
     <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -12px; padding: 45px 35px; background-color: #ffffff; box-sizing: border-box; position: relative;">
       
       <!-- Golden Traditional Corner Ornaments -->
-      <svg style="position: absolute; top: 15px; left: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-        <path d="M0,0 L40,0 M0,0 L0,40 M8,8 L32,8 M8,8 L8,32 M4,4 C12,4 4,12 12,12" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+      <svg style="position: absolute; top: 15px; left: 15px; width: 50px; height: 50px;" viewBox="0 0 50 50">
+        <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; top: 15px; right: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-        <path d="M40,0 L0,0 M40,0 L40,40 M32,8 L8,8 M32,8 L32,32 M36,4 C28,4 36,12 28,12" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+      <svg style="position: absolute; top: 15px; right: 15px; width: 50px; height: 50px; transform: scaleX(-1);" viewBox="0 0 50 50">
+        <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; bottom: 15px; left: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-        <path d="M0,40 L40,40 M0,40 L0,0 M8,32 L32,32 M8,32 L8,8 M4,36 C12,36 4,28 12,28" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+      <svg style="position: absolute; bottom: 15px; left: 15px; width: 50px; height: 50px; transform: scaleY(-1);" viewBox="0 0 50 50">
+        <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
-      <svg style="position: absolute; bottom: 15px; right: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-        <path d="M40,40 L0,40 M40,40 L40,0 M32,32 L8,32 M32,32 L32,8 M36,36 C28,36 36,28 28,28" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+      <svg style="position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; transform: scale(-1);" viewBox="0 0 50 50">
+        <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+        <circle cx="15" cy="15" r="2" fill="#8b0c16" />
       </svg>
 
       <!-- Lord Ganesha Header -->
@@ -1517,7 +1525,7 @@ function generateAndDownloadBiodataImage(user) {
       </svg>
       
       <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
-        ${t('|| Shree Ganeshay Namah ||', '|| श्री गणेशाय नमः ||')}
+        ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
       </div>
       <h1 style="text-align: center; color: #8b0c16; margin: 0 0 20px 0; font-size: 1.8rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 10px;">
         ${t('BIODATA', 'बायोडाटा')}
@@ -1546,10 +1554,10 @@ function generateAndDownloadBiodataImage(user) {
         </div>
         
         ${avatar ? `
-        <div style="flex-shrink: 0; width: 145px; text-align: center; margin-top: 5px;">
+        <div style="flex-shrink: 0; width: 120px; height: 150px; border: 1px solid #b38f3b; padding: 4px; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; margin-top: 5px;">
           ${avatar.startsWith('<svg') ? 
-            `<div style="width: 135px; height: 160px; border: 3px double #b38f3b; padding: 4px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); display: inline-block;">${avatar}</div>` :
-            `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px double #b38f3b; padding: 4px; object-fit: cover; background-color: #fff; display: block; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">`
+            `<div style="width: 100%; height: 100%; background-color: #fff;">${avatar}</div>` :
+            `<img src="${avatar}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover; display: block;">`
           }
         </div>
         ` : ''}
@@ -1909,17 +1917,25 @@ function generateBiodataDataUrl(user) {
         <div style="border: 2px solid #b38f3b; outline: 6px double #b38f3b; outline-offset: -12px; padding: 45px 35px; background-color: #ffffff; box-sizing: border-box; position: relative;">
           
           <!-- Golden Traditional Corner Ornaments -->
-          <svg style="position: absolute; top: 15px; left: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-            <path d="M0,0 L40,0 M0,0 L0,40 M8,8 L32,8 M8,8 L8,32 M4,4 C12,4 4,12 12,12" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+          <svg style="position: absolute; top: 15px; left: 15px; width: 50px; height: 50px;" viewBox="0 0 50 50">
+            <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; top: 15px; right: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-            <path d="M40,0 L0,0 M40,0 L40,40 M32,8 L8,8 M32,8 L32,32 M36,4 C28,4 36,12 28,12" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+          <svg style="position: absolute; top: 15px; right: 15px; width: 50px; height: 50px; transform: scaleX(-1);" viewBox="0 0 50 50">
+            <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; bottom: 15px; left: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-            <path d="M0,40 L40,40 M0,40 L0,0 M8,32 L32,32 M8,32 L8,8 M4,36 C12,36 4,28 12,28" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+          <svg style="position: absolute; bottom: 15px; left: 15px; width: 50px; height: 50px; transform: scaleY(-1);" viewBox="0 0 50 50">
+            <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
-          <svg style="position: absolute; bottom: 15px; right: 15px; width: 40px; height: 40px;" viewBox="0 0 40 40">
-            <path d="M40,40 L0,40 M40,40 L40,0 M32,32 L8,32 M32,32 L32,8 M36,36 C28,36 36,28 28,28" fill="none" stroke="#b38f3b" stroke-width="1.5" />
+          <svg style="position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; transform: scale(-1);" viewBox="0 0 50 50">
+            <path d="M2,2 L48,2 M2,2 L2,48 M8,8 L40,8 M8,8 L8,40 M14,14 L32,14 M14,14 L14,32" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <path d="M2,2 C15,2 2,15 15,15 C20,15 15,20 15,25" fill="none" stroke="#b38f3b" stroke-width="1.2" />
+            <circle cx="15" cy="15" r="2" fill="#8b0c16" />
           </svg>
 
           <!-- Lord Ganesha Header -->
@@ -1938,7 +1954,7 @@ function generateBiodataDataUrl(user) {
           </svg>
           
           <div style="text-align: center; color: #8b0c16; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; font-family: 'Open Sans', 'Noto Sans Devanagari', sans-serif;">
-            ${t('|| Shree Ganeshay Namah ||', '|| श्री गणेशाय नमः ||')}
+            ${t('|| Shri Ganeshay Namha ||', '|| श्री गणेशाय नमः ||')}
           </div>
           <h1 style="text-align: center; color: #8b0c16; margin: 0 0 20px 0; font-size: 1.8rem; font-weight: 800; font-family: 'Georgia', 'Noto Sans Devanagari', serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1.5px dashed rgba(179, 143, 59, 0.4); padding-bottom: 10px;">
             ${t('BIODATA', 'बायोडाटा')}
@@ -1967,10 +1983,10 @@ function generateBiodataDataUrl(user) {
             </div>
             
             ${avatar ? `
-            <div style="flex-shrink: 0; width: 145px; text-align: center; margin-top: 5px;">
+            <div style="flex-shrink: 0; width: 120px; height: 150px; border: 1px solid #b38f3b; padding: 4px; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; margin-top: 5px;">
               ${avatar.startsWith('<svg') ? 
-                `<div style="width: 135px; height: 160px; border: 3px double #b38f3b; padding: 4px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); display: inline-block;">${avatar}</div>` :
-                `<img src="${avatar}" alt="Photo" style="width: 135px; height: 160px; border: 3px double #b38f3b; padding: 4px; object-fit: cover; background-color: #fff; display: block; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">`
+                `<div style="width: 100%; height: 100%; background-color: #fff;">${avatar}</div>` :
+                `<img src="${avatar}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover; display: block;">`
               }
             </div>
             ` : ''}
