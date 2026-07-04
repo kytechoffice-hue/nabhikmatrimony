@@ -900,7 +900,11 @@ const stateActions = {
       verified: userData.verified !== undefined ? userData.verified : true,
       membership: userData.membership || 'Free',
       photo: userData.photo || '/images/member1.webp',
-      createdDate: new Date().toISOString().split('T')[0]
+      createdDate: new Date().toISOString().split('T')[0],
+      dob: userData.dob || '',
+      username: userData.username || '',
+      zodiac: userData.zodiac || '',
+      nickname: userData.nickname || ''
     };
     state.profiles.push(newProfile);
     this.saveAll();
@@ -944,7 +948,10 @@ const stateActions = {
   
   loginUser(email, password) {
     const emailLower = (email || '').trim().toLowerCase();
-    const found = state.profiles.find(p => p && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === emailLower);
+    const found = state.profiles.find(p => p && (
+      (p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === emailLower) ||
+      (p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === emailLower)
+    ));
     if (found) {
       // Validate password if one is defined for this profile
       if (found.password) {
@@ -4900,6 +4907,38 @@ function switchAdminTab(tabName) {
                 <input type="number" id="adm-add-age" class="admin-input" min="18" max="70" required>
               </div>
               <div class="admin-form-group">
+                <label>Date of Birth (DOB)</label>
+                <input type="date" id="adm-add-dob" class="admin-input" required onchange="
+                  const dobVal = this.value;
+                  if (dobVal) {
+                    const birthDate = new Date(dobVal);
+                    const today = new Date();
+                    let computedAge = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                      computedAge--;
+                    }
+                    document.getElementById('adm-add-age').value = Math.max(18, computedAge);
+                  }
+                ">
+              </div>
+              <div class="admin-form-group">
+                <label>Username</label>
+                <input type="text" id="adm-add-username" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Password</label>
+                <input type="text" id="adm-add-password" class="admin-input" value="Password@123" required>
+              </div>
+              <div class="admin-form-group">
+                <label>Zodiac Sign</label>
+                <input type="text" id="adm-add-zodiac" class="admin-input" placeholder="e.g. Leo">
+              </div>
+              <div class="admin-form-group">
+                <label>Nickname</label>
+                <input type="text" id="adm-add-nickname" class="admin-input" placeholder="e.g. Sunny">
+              </div>
+              <div class="admin-form-group">
                 <label>Membership Plan</label>
                 <select id="adm-add-membership" class="admin-select">
                   <option value="Free">Free Plan</option>
@@ -4907,7 +4946,7 @@ function switchAdminTab(tabName) {
                   <option value="Gold">Gold Plan</option>
                 </select>
               </div>
-              <div class="admin-form-group">
+              <div class="admin-form-group" style="grid-column: span 2;">
                 <label>Verification Status</label>
                 <select id="adm-add-verified" class="admin-select">
                   <option value="true">Verified</option>
@@ -6998,7 +7037,13 @@ function handleAdminAddUserFormSubmit(e) {
   const membership = document.getElementById('adm-add-membership').value;
   const verified = document.getElementById('adm-add-verified').value === 'true';
 
-  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified });
+  const dob = document.getElementById('adm-add-dob').value;
+  const username = document.getElementById('adm-add-username').value;
+  const password = document.getElementById('adm-add-password').value;
+  const zodiac = document.getElementById('adm-add-zodiac').value;
+  const nickname = document.getElementById('adm-add-nickname').value;
+
+  stateActions.adminAddUser({ name, gender, emailId, mobile, location, age, membership, verified, dob, username, password, zodiac, nickname });
   showToast('Member successfully created!');
   switchAdminTab('users');
 }
@@ -7039,8 +7084,12 @@ function handleAdminEditUser(id) {
             <input type="text" id="edit-usr-name" class="admin-input" value="${profile.name || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
           </div>
           <div class="admin-form-group">
-            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Username / Email ID</label>
-            <input type="text" id="edit-usr-email" class="admin-input" value="${profile.emailId || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Email ID</label>
+            <input type="email" id="edit-usr-email" class="admin-input" value="${profile.emailId || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div class="admin-form-group">
+            <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Username</label>
+            <input type="text" id="edit-usr-username" class="admin-input" value="${profile.username || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
           </div>
           <div class="admin-form-group">
             <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Password</label>
@@ -7049,6 +7098,38 @@ function handleAdminEditUser(id) {
           <div class="admin-form-group">
             <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Location (City)</label>
             <input type="text" id="edit-usr-location" class="admin-input" value="${profile.location || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Date of Birth (DOB)</label>
+              <input type="date" id="edit-usr-dob" class="admin-input" value="${profile.dob || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;" onchange="
+                const dobVal = this.value;
+                if (dobVal) {
+                  const birthDate = new Date(dobVal);
+                  const today = new Date();
+                  let computedAge = today.getFullYear() - birthDate.getFullYear();
+                  const m = today.getMonth() - birthDate.getMonth();
+                  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    computedAge--;
+                  }
+                  document.getElementById('edit-usr-age').value = Math.max(18, computedAge);
+                }
+              ">
+            </div>
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Age</label>
+              <input type="number" id="edit-usr-age" class="admin-input" value="${profile.age || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Zodiac Sign</label>
+              <input type="text" id="edit-usr-zodiac" class="admin-input" value="${profile.zodiac || ''}" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            </div>
+            <div class="admin-form-group">
+              <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Nickname</label>
+              <input type="text" id="edit-usr-nickname" class="admin-input" value="${profile.nickname || ''}" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="admin-form-group">
@@ -7088,6 +7169,12 @@ function handleAdminUpdateUserSubmit(e, id) {
   const role = document.getElementById('edit-usr-role').value;
   const membership = document.getElementById('edit-usr-membership').value;
   
+  const dob = document.getElementById('edit-usr-dob').value;
+  const age = parseInt(document.getElementById('edit-usr-age').value);
+  const username = document.getElementById('edit-usr-username').value;
+  const zodiac = document.getElementById('edit-usr-zodiac').value;
+  const nickname = document.getElementById('edit-usr-nickname').value;
+  
   const isAdmin = role === 'admin' || role === 'master';
 
   stateActions.adminUpdateUser(id, {
@@ -7097,7 +7184,12 @@ function handleAdminUpdateUserSubmit(e, id) {
     location,
     role,
     membership,
-    isAdmin
+    isAdmin,
+    dob,
+    age,
+    username,
+    zodiac,
+    nickname
   });
 
   // Force update loaded currentUser if editing our own profile
@@ -7109,6 +7201,11 @@ function handleAdminUpdateUserSubmit(e, id) {
     state.currentUser.role = role;
     state.currentUser.membership = membership;
     state.currentUser.isAdmin = isAdmin;
+    state.currentUser.dob = dob;
+    state.currentUser.age = age;
+    state.currentUser.username = username;
+    state.currentUser.zodiac = zodiac;
+    state.currentUser.nickname = nickname;
   }
 
   showToast('User profile updated successfully!');
