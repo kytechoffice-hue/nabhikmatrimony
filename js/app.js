@@ -948,6 +948,7 @@ const stateActions = {
   
   loginUser(email, password) {
     const emailLower = (email || '').trim().toLowerCase();
+    if (!emailLower) return null;
     const found = state.profiles.find(p => p && (
       (p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === emailLower) ||
       (p.username && typeof p.username === 'string' && p.username.trim().toLowerCase() === emailLower)
@@ -4892,7 +4893,7 @@ function switchAdminTab(tabName) {
               </div>
               <div class="admin-form-group">
                 <label>Email ID</label>
-                <input type="email" id="adm-add-email" class="admin-input" required>
+                <input type="email" id="adm-add-email" class="admin-input">
               </div>
               <div class="admin-form-group">
                 <label>Mobile Number</label>
@@ -7085,7 +7086,7 @@ function handleAdminEditUser(id) {
           </div>
           <div class="admin-form-group">
             <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Email ID</label>
-            <input type="email" id="edit-usr-email" class="admin-input" value="${profile.emailId || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
+            <input type="email" id="edit-usr-email" class="admin-input" value="${profile.emailId || ''}" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;">
           </div>
           <div class="admin-form-group">
             <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Username</label>
