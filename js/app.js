@@ -309,6 +309,24 @@ const initialPlans = [
     active: true
   },
   {
+    name: 'Silver',
+    displayName: 'SILVER',
+    price: 299,
+    period: 'for 3 Months',
+    badgeClass: 'silver-badge',
+    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"></path></svg>`,
+    tagline: 'for 3 Months',
+    features: [
+      { text: 'Unlimited Connection Requests', included: true },
+      { text: 'Expanded Profile Access', included: true },
+      { text: 'Basic Chat Functionality', included: true },
+      { text: 'Prominent Profile Visibility', included: true },
+      { text: 'Sophisticated Match Suggestions', included: true }
+    ],
+    ctaText: 'Upgrade Now',
+    active: true
+  },
+  {
     name: 'Gold',
     displayName: 'GOLD',
     price: 999,
@@ -328,22 +346,40 @@ const initialPlans = [
     featured: true
   },
   {
-    name: 'Diamond',
-    displayName: 'DIAMOND',
-    price: 1999,
+    name: 'Platinum',
+    displayName: 'PLATINUM',
+    price: 1199,
     period: 'for 12 Months',
     badgeClass: 'platinum-badge',
     badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>`,
     tagline: 'for 12 Months',
     features: [
       { text: 'Everything in Gold', included: true },
-      { text: 'Unlimited Chat', included: true },
-      { text: 'Profile Highlight', included: true },
-      { text: 'Priority Listing', included: true },
-      { text: 'Dedicated Support', included: true },
-      { text: 'See Who Viewed You', included: true }
+      { text: 'Unlimited Chat Features', included: true },
+      { text: 'Featured Premium Profile', included: true },
+      { text: 'Platinum Verification Emblem', included: true },
+      { text: 'Priority Match Suggestions', included: true },
+      { text: 'WhatsApp Priority Support', included: true }
     ],
     ctaText: 'Become Premium',
+    active: true
+  },
+  {
+    name: 'Premium Assisted',
+    displayName: 'PREMIUM ASSISTED',
+    price: 4999,
+    period: 'for 12 Months',
+    badgeClass: 'assisted-badge',
+    badgeIcon: `<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>`,
+    tagline: 'for 12 Months',
+    features: [
+      { text: 'Dedicated Relationship Facilitator', included: true },
+      { text: 'Curated Match Suggestions', included: true },
+      { text: 'Unlimited Premier Access', included: true },
+      { text: 'Enhanced Profile Visibility', included: true },
+      { text: 'Family Support Facilitation', included: true }
+    ],
+    ctaText: 'Upgrade Now',
     active: true
   }
 ];
@@ -4262,8 +4298,10 @@ function renderMembership(container) {
     
     // Modern UI styling selector class
     let planClass = 'plan-free';
-    if (p.name === 'Gold') planClass = 'plan-gold';
-    else if (p.name === 'Diamond') planClass = 'plan-diamond';
+    if (p.name === 'Silver') planClass = 'plan-silver';
+    else if (p.name === 'Gold') planClass = 'plan-gold';
+    else if (p.name === 'Platinum') planClass = 'plan-platinum';
+    else if (p.name === 'Premium Assisted') planClass = 'plan-assisted';
     
     // Determine button text and action
     let btnHtml = '';
@@ -4273,6 +4311,16 @@ function renderMembership(container) {
       } else {
         btnHtml = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       }
+    } else if (p.name === 'Silver') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Silver', 299)" class="plan-action-btn">Upgrade Now</button>`;
+      }
+      btnHtml = mainBtn;
     } else if (p.name === 'Gold') {
       let mainBtn = '';
       if (!state.currentUser) {
@@ -4283,14 +4331,24 @@ function renderMembership(container) {
         mainBtn = `<button onclick="handleSelectPlan('Gold', 999)" class="plan-action-btn btn-gold-solid">Upgrade Now</button>`;
       }
       btnHtml = mainBtn;
-    } else if (p.name === 'Diamond') {
+    } else if (p.name === 'Platinum') {
       let mainBtn = '';
       if (!state.currentUser) {
         mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
       } else if (isCurrent) {
         mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
       } else {
-        mainBtn = `<button onclick="handleSelectPlan('Diamond', 1999)" class="plan-action-btn">Become Premium</button>`;
+        mainBtn = `<button onclick="handleSelectPlan('Platinum', 1199)" class="plan-action-btn">Become Premium</button>`;
+      }
+      btnHtml = mainBtn;
+    } else if (p.name === 'Premium Assisted') {
+      let mainBtn = '';
+      if (!state.currentUser) {
+        mainBtn = `<a href="/login" class="plan-action-btn">Sign In to Choose</a>`;
+      } else if (isCurrent) {
+        mainBtn = `<button class="plan-action-btn plan-btn-active" disabled>Active Plan</button>`;
+      } else {
+        mainBtn = `<button onclick="handleSelectPlan('Premium Assisted', 4999)" class="plan-action-btn">Upgrade Now</button>`;
       }
       btnHtml = mainBtn;
     } else {
