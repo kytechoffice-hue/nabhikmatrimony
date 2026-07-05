@@ -94,6 +94,7 @@ const pool = mysql.createPool({
 
 // Global state flag to track database fallback
 let useSqliteFallback = false;
+let mysqlConnectionError = null;
 
 // Initialize database table if not exists
 pool.query(`
@@ -103,6 +104,7 @@ pool.query(`
   )
 `, (err) => {
   if (err) {
+    mysqlConnectionError = err.message;
     console.warn('[DATABASE] MySQL connection/initialization failed. Falling back to local SQLite database. Error:', err.message);
     useSqliteFallback = true;
   } else {
@@ -193,6 +195,20 @@ const server = http.createServer((req, res) => {
   // Clean query strings and hashes
   const cleanUrl = req.url.split('?')[0].split('#')[0];
   console.log(`[REQUEST] ${req.method} ${cleanUrl}`);
+
+  // Diagnostic Endpoint to verify DB connection details on Hostinger
+  if (cleanUrl === '/api/db-status') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      database: useSqliteFallback ? 'SQLite (Fallback - WARNING: DATA WILL BE LOST ON RESTARTS)' : 'MySQL (Permanent)',
+      mysqlHost: mysqlConfig.host,
+      mysqlDatabase: mysqlConfig.database,
+      mysqlUser: mysqlConfig.user,
+      mysqlError: mysqlConnectionError,
+      sqlitePath: path.join(DB_DIR, 'matrimony.db')
+    }));
+    return;
+  }
 
   // Database API Endpoints (MySQL with SQLite fallback)
   if (cleanUrl === '/api/state') {
