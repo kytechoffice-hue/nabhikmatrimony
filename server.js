@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const sqlite3 = require('sqlite3').verbose();
 const nodemailer = require('nodemailer');
 
-const PORT = 8082;
+const PORT = process.env.PORT || 8082;
 const PUBLIC_DIR = __dirname;
 
 // Initialize email configuration file
