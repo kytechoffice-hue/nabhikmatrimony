@@ -53,6 +53,7 @@ sqliteDb.serialize(() => {
 
 // Initialize MySQL configuration
 const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
+const hasMysqlConfig = fs.existsSync(MYSQL_CONFIG_FILE);
 function getMysqlConfig() {
   let config = {
     host: process.env.MYSQL_HOST || 'localhost',
@@ -96,6 +97,13 @@ const pool = mysql.createPool({
 let useSqliteFallback = false;
 let mysqlConnectionError = null;
 
+function handleDatabaseError(res, errMessage) {
+  if (!res.headersSent) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: errMessage }));
+  }
+}
+
 // Initialize database table if not exists
 pool.query(`
   CREATE TABLE IF NOT EXISTS nabhik_state (
@@ -105,8 +113,13 @@ pool.query(`
 `, (err) => {
   if (err) {
     mysqlConnectionError = err.message;
-    console.warn('[DATABASE] MySQL connection/initialization failed. Falling back to local SQLite database. Error:', err.message);
-    useSqliteFallback = true;
+    console.warn('[DATABASE] MySQL connection failed. Error:', err.message);
+    if (!hasMysqlConfig) {
+      console.warn('[DATABASE] Falling back to local SQLite database.');
+      useSqliteFallback = true;
+    } else {
+      console.error('[DATABASE] MySQL CONFIG FILE DETECTED. SQLITE FALLBACK BLOCKED TO PREVENT SILENT DATA LOSS.');
+    }
   } else {
     console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
   }
@@ -280,15 +293,23 @@ const server = http.createServer((req, res) => {
 
     if (req.method === 'GET') {
       if (useSqliteFallback) {
+        if (hasMysqlConfig) {
+          handleDatabaseError(res, `MySQL Connection Failed: ${mysqlConnectionError || 'Unknown MySQL error'}`);
+          return;
+        }
         runSqliteGet();
         return;
       }
 
       pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
         if (err) {
-          console.warn('[DATABASE] MySQL GET error, falling back to SQLite:', err.message);
-          useSqliteFallback = true;
-          runSqliteGet();
+          console.warn('[DATABASE] MySQL GET error:', err.message);
+          if (!hasMysqlConfig) {
+            useSqliteFallback = true;
+            runSqliteGet();
+          } else {
+            handleDatabaseError(res, `MySQL Query Failed: ${err.message}`);
+          }
           return;
         }
         const stateObj = {};
@@ -312,24 +333,36 @@ const server = http.createServer((req, res) => {
         try {
           const stateObj = JSON.parse(body);
           if (useSqliteFallback) {
+            if (hasMysqlConfig) {
+              handleDatabaseError(res, `MySQL Connection Failed: ${mysqlConnectionError || 'Unknown MySQL error'}`);
+              return;
+            }
             runSqlitePost(stateObj);
             return;
           }
 
           pool.getConnection((connErr, connection) => {
             if (connErr) {
-              console.warn('[DATABASE] MySQL connection checkout error during POST, falling back to SQLite:', connErr.message);
-              useSqliteFallback = true;
-              runSqlitePost(stateObj);
+              console.warn('[DATABASE] MySQL connection checkout error during POST:', connErr.message);
+              if (!hasMysqlConfig) {
+                useSqliteFallback = true;
+                runSqlitePost(stateObj);
+              } else {
+                handleDatabaseError(res, `MySQL Connection Checkout Failed: ${connErr.message}`);
+              }
               return;
             }
             
             connection.beginTransaction(beginTransactionErr => {
               if (beginTransactionErr) {
                 connection.release();
-                console.warn('[DATABASE] MySQL transaction begin error, falling back to SQLite:', beginTransactionErr.message);
-                useSqliteFallback = true;
-                runSqlitePost(stateObj);
+                console.warn('[DATABASE] MySQL transaction begin error:', beginTransactionErr.message);
+                if (!hasMysqlConfig) {
+                  useSqliteFallback = true;
+                  runSqlitePost(stateObj);
+                } else {
+                  handleDatabaseError(res, `MySQL Transaction Begin Failed: ${beginTransactionErr.message}`);
+                }
                 return;
               }
               
@@ -342,9 +375,13 @@ const server = http.createServer((req, res) => {
                      if (commitErr) {
                        connection.rollback(() => {
                          connection.release();
-                         console.warn('[DATABASE] MySQL commit error, falling back to SQLite:', commitErr.message);
-                         useSqliteFallback = true;
-                         runSqlitePost(stateObj);
+                         console.warn('[DATABASE] MySQL commit error:', commitErr.message);
+                         if (!hasMysqlConfig) {
+                           useSqliteFallback = true;
+                           runSqlitePost(stateObj);
+                         } else {
+                           handleDatabaseError(res, `MySQL Transaction Commit Failed: ${commitErr.message}`);
+                         }
                        });
                        return;
                      }
@@ -362,9 +399,13 @@ const server = http.createServer((req, res) => {
                   if (queryErr) {
                     return connection.rollback(() => {
                       connection.release();
-                      console.warn('[DATABASE] MySQL write query error, falling back to SQLite:', queryErr.message);
-                      useSqliteFallback = true;
-                      runSqlitePost(stateObj);
+                      console.warn('[DATABASE] MySQL write query error:', queryErr.message);
+                      if (!hasMysqlConfig) {
+                        useSqliteFallback = true;
+                        runSqlitePost(stateObj);
+                      } else {
+                        handleDatabaseError(res, `MySQL Write Query Failed: ${queryErr.message}`);
+                      }
                     });
                   }
                   index++;
