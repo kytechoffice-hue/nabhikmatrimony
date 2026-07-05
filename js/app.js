@@ -2795,6 +2795,14 @@ function renderHome(container) {
   // Grab featured profiles for homepage slider (only verified, non-current-user profiles)
   const featured = state.profiles.filter(p => p.featured && p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master' && (!state.currentUser || p.id !== state.currentUser.id));
   const featuredHtml = featured.map(p => makeProfileCard(p)).join('');
+
+  // Grab all verified members for scrolling marquee banner
+  const verifiedMembers = state.profiles
+    .filter(p => p.verified && !p.isAdmin && p.role !== 'admin' && p.role !== 'master')
+    .sort((a,b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0) || b.id - a.id);
+  
+  const shouldScroll = verifiedMembers.length >= 10;
+  const marqueeItems = shouldScroll ? [...verifiedMembers, ...verifiedMembers, ...verifiedMembers] : verifiedMembers;
   
   // Grab success stories
   const stories = state.stories.slice(0, 8);
@@ -2823,6 +2831,46 @@ function renderHome(container) {
         </div>
       </div>
     </section>
+
+    <!-- Verified Members Scrolling Banner -->
+    ${verifiedMembers.length > 0 ? `
+    <section class="verified-members-marquee-section" style="background: #fffcf8; border-top: 1.5px solid var(--color-border); border-bottom: 1.5px solid var(--color-border); padding: 24px 0 20px 0; overflow: hidden; position: relative; box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);">
+      <style>
+        @keyframes scrollMarquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.3333%); }
+        }
+        .marquee-track-container {
+          display: flex;
+          gap: 24px;
+          ${shouldScroll ? 'animation: scrollMarquee 35s linear infinite;' : 'justify-content: center; margin: 0 auto;'}
+          width: max-content;
+          padding: 4px 0;
+        }
+        .marquee-track-container:hover {
+          animation-play-state: ${shouldScroll ? 'paused' : 'running'} !important;
+        }
+      </style>
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span style="font-family: var(--font-serif); font-size: 0.9rem; font-weight: 700; color: var(--color-maroon); letter-spacing: 1.5px; text-transform: uppercase;">✨ ${t('Verified Members Recently Joined', 'नुकतेच सामील झालेले सत्यापित सदस्य')} ✨</span>
+      </div>
+      <div class="marquee-wrapper" style="display: flex; overflow: hidden; width: 100%; ${shouldScroll ? 'mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);' : ''}">
+        <div class="marquee-track-container">
+          ${marqueeItems.map(p => {
+            const avatar = p.photo || getSvgAvatar(p.gender, p.id, p.name);
+            return `
+              <div onclick="navigateTo('/profile/${p.id}')" style="flex-shrink: 0; width: 140px; text-align: center; cursor: pointer; background: #fff; padding: 12px; border-radius: var(--border-radius-md); box-shadow: var(--shadow-sm); border: 1.5px solid var(--color-border); transition: all 0.25s; position: relative;" class="marquee-card">
+                <div style="width: 116px; height: 116px; border-radius: 50%; overflow: hidden; margin: 0 auto 8px; border: 2.5px solid var(--color-gold); position: relative;">
+                  <img src="${avatar}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                </div>
+                <div style="font-weight: 700; font-size: 0.85rem; color: var(--color-maroon); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-bottom: 2px;">${p.name.split(' ')[0]}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    </section>
+    ` : ''}
 
     <!-- Why Choose Us -->
     <section class="section-padding">
@@ -3646,10 +3694,6 @@ function renderProfileDetails(container, profileId) {
             💬 Chat Now
           </button>
           
-          <button onclick="handleCheckKundaliMatch(${profile.id})" class="btn btn-outline" style="width: 100%; border-color: #2e7d32; color: #2e7d32; margin-top: 8px; font-weight: 600;">
-            🕉 Check Kundali Match
-          </button>
-          
           <button onclick="handleReportProfile(${profile.id})" style="font-size: 0.8rem; color: #c62828; margin-top: 8px;">
             ⚠️ Report Profile
           </button>
@@ -3712,7 +3756,6 @@ function renderProfileDetails(container, profileId) {
                 </div>
                 <div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                   <button onclick="showToast('Downloading Biodata PDF...')" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.8rem; height: auto;">📥 Download Biodata PDF</button>
-                  <button onclick="handleCheckKundaliMatch(${profile.id})" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.8rem; border-color: #2e7d32; color: #2e7d32; height: auto;">🕉 Check Kundali Match</button>
                 </div>
               </div>
             `;

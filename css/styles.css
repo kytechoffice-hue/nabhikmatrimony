@@ -215,6 +215,19 @@ img {
   100% { transform: rotate(5deg); }
 }
 
+@keyframes scrollMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.marquee-track:hover {
+  animation-play-state: paused !important;
+}
+
 /* ==========================================================================
    3. HEADER & NAVIGATION
    ========================================================================== */
