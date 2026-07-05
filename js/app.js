@@ -1383,11 +1383,41 @@ function showToast(message) {
 }
 
 
+// Global helper to safely parse DOB string of format DD/MM/YYYY or YYYY-MM-DD
+window.parseDobString = function(dobString) {
+  if (!dobString) return null;
+  const str = String(dobString).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    const d = new Date(str);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  const parts = str.split(/[\/\-]/);
+  if (parts.length === 3) {
+    if (parts[2].length === 4) {
+      // DD/MM/YYYY
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      const d = new Date(year, month, day);
+      return isNaN(d.getTime()) ? null : d;
+    } else if (parts[0].length === 4) {
+      // YYYY/MM/DD
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const d = new Date(year, month, day);
+      return isNaN(d.getTime()) ? null : d;
+    }
+  }
+  const fallback = new Date(str);
+  return isNaN(fallback.getTime()) ? null : fallback;
+};
+
 // Global age calculator from Date of Birth
 window.calculateAge = function(dobString) {
   if (!dobString) return '';
-  const birthDate = new Date(dobString);
-  if (isNaN(birthDate.getTime())) return '';
+  const birthDate = parseDobString(dobString);
+  if (!birthDate) return '';
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const m = today.getMonth() - birthDate.getMonth();
@@ -1423,23 +1453,36 @@ window.formatDateForInput = function(dobString) {
 // Global helper to format date strings to DD/MM/YYYY for display
 window.formatDobToDdMmYyyy = function(dobString) {
   if (!dobString) return '';
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dobString)) {
-    return dobString;
+  const str = String(dobString).trim();
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+    return str;
   }
-  const parts = dobString.split('-');
-  if (parts.length === 3 && parts[0].length === 4) {
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  const parts = str.split(/[\-\/]/);
+  if (parts.length === 3) {
+    if (parts[0].length === 4) {
+      return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+    }
   }
   try {
-    const d = new Date(dobString);
-    if (!isNaN(d.getTime())) {
+    const d = parseDobString(str);
+    if (d && !isNaN(d.getTime())) {
       const dd = String(d.getDate()).padStart(2, '0');
       const mm = String(d.getMonth() + 1).padStart(2, '0');
       const yyyy = d.getFullYear();
       return `${dd}/${mm}/${yyyy}`;
     }
   } catch (e) {}
-  return dobString;
+  return str;
+};
+
+// Global helper to safely parse day of the week from DOB
+window.getDobDayName = function(dobString, lang = 'en') {
+  const d = parseDobString(dobString);
+  if (!d) return '';
+  const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const daysMr = ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+  const dayIndex = d.getDay();
+  return lang === 'mr' ? daysMr[dayIndex] : daysEn[dayIndex];
 };
 
 // Global helper to preview uploaded profile photo dynamically
@@ -1825,7 +1868,7 @@ async function generateAndDownloadBiodataImage(user) {
       <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
         <div style="flex: 1; display: flex; flex-direction: column;">
           ${makeRow(nameLabel, tUser.name)}
-          ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth || (tUser.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(tUser.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(tUser.dob).getDay()]) + ')' : '')}` : '')}
+          ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth ? '(' + t(tUser.dayOfBirth, getDobDayName(tUser.dob, 'mr')) + ')' : (getDobDayName(tUser.dob) ? '(' + t(getDobDayName(tUser.dob, 'en'), getDobDayName(tUser.dob, 'mr')) + ')' : '')}` : '')}
           ${makeRow(timeLabel, tUser.timeOfBirth)}
           ${makeRow(placeLabel, tUser.birthPlace)}
           ${makeRow(religionLabel, tUser.religion)}
@@ -2298,7 +2341,7 @@ async function generateBiodataDataUrl(user) {
           <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 15px;">
             <div style="flex: 1; display: flex; flex-direction: column;">
               ${makeRow(nameLabel, tUser.name)}
-              ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth || (tUser.dob ? '(' + t(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(tUser.dob).getDay()], ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'][new Date(tUser.dob).getDay()]) + ')' : '')}` : '')}
+              ${makeRow(dobLabel, tUser.dob ? `${formatDobToDdMmYyyy(tUser.dob)} ${tUser.dayOfBirth ? '(' + t(tUser.dayOfBirth, getDobDayName(tUser.dob, 'mr')) + ')' : (getDobDayName(tUser.dob) ? '(' + t(getDobDayName(tUser.dob, 'en'), getDobDayName(tUser.dob, 'mr')) + ')' : '')}` : '')}
               ${makeRow(timeLabel, tUser.timeOfBirth)}
               ${makeRow(placeLabel, tUser.birthPlace)}
               ${makeRow(religionLabel, tUser.religion)}
@@ -3816,7 +3859,7 @@ function renderRegister(container) {
           <div class="form-row-2">
             <div class="form-group">
               <label>${t('Date of Birth', 'जन्मतारीख')}</label>
-              <input type="date" id="reg-dob" required>
+              <input type="text" id="reg-dob" required placeholder="DD/MM/YYYY" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d\\d$" title="Enter date of birth in DD/MM/YYYY format (e.g. 25/08/1995)">
             </div>
             <div class="form-group">
               <label>${t('Mobile Number', 'मोबाईल नंबर')}</label>
@@ -4490,20 +4533,23 @@ function switchDashboardTab(tabName) {
               <div class="form-row-2">
                 <div class="form-group">
                   <label>Date of Birth</label>
-                  <input type="date" id="edit-dob" value="${formatDateForInput(state.currentUser.dob)}" onchange="
+                  <input type="text" id="edit-dob" value="${formatDobToDdMmYyyy(state.currentUser.dob)}" placeholder="DD/MM/YYYY" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d\\d$" required onchange="
                     const dobVal = this.value;
                     if (dobVal) {
-                      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                      const dayName = days[new Date(dobVal).getDay()];
-                      document.getElementById('edit-day-of-birth').value = dayName || '';
-                      const ageEl = document.getElementById('edit-age');
-                      if (ageEl) ageEl.value = calculateAge(dobVal);
+                      const birthDate = parseDobString(dobVal);
+                      if (birthDate) {
+                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const dayName = days[birthDate.getDay()];
+                        document.getElementById('edit-day-of-birth').value = dayName || '';
+                        const ageEl = document.getElementById('edit-age');
+                        if (ageEl) ageEl.value = calculateAge(dobVal);
+                      }
                     }
                   ">
                 </div>
                 <div class="form-group">
                   <label>Day of Birth</label>
-                  <input type="text" id="edit-day-of-birth" value="${state.currentUser.dayOfBirth || (state.currentUser.dob ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(state.currentUser.dob).getDay()] : '')}" readonly placeholder="Calculated from DOB">
+                  <input type="text" id="edit-day-of-birth" value="${state.currentUser.dayOfBirth || (state.currentUser.dob ? getDobDayName(state.currentUser.dob, 'en') : '')}" readonly placeholder="Calculated from DOB">
                 </div>
               </div>
               <div class="form-row-2">
@@ -5517,21 +5563,18 @@ function switchAdminTab(tabName) {
               </div>
               <div class="admin-form-group">
                 <label>Date of Birth (DOB)</label>
-                <input type="date" id="adm-add-dob" class="admin-input" required onchange="
+                <input type="text" id="adm-add-dob" class="admin-input" required placeholder="DD/MM/YYYY" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d\\d$" onchange="
                   const dobVal = this.value;
                   if (dobVal) {
-                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                    const dayName = days[new Date(dobVal).getDay()];
-                    document.getElementById('adm-add-day-of-birth').value = dayName || '';
-
-                    const birthDate = new Date(dobVal);
-                    const today = new Date();
-                    let computedAge = today.getFullYear() - birthDate.getFullYear();
-                    const m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                      computedAge--;
+                    const birthDate = parseDobString(dobVal);
+                    if (birthDate) {
+                      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                      const dayName = days[birthDate.getDay()];
+                      document.getElementById('adm-add-day-of-birth').value = dayName || '';
+                      
+                      const computedAge = calculateAge(dobVal);
+                      document.getElementById('adm-add-age').value = Math.max(18, computedAge);
                     }
-                    document.getElementById('adm-add-age').value = Math.max(18, computedAge);
                   }
                 ">
               </div>
@@ -7831,27 +7874,24 @@ function handleAdminEditUser(id) {
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="admin-form-group">
               <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Date of Birth (DOB)</label>
-              <input type="date" id="edit-usr-dob" class="admin-input" value="${profile.dob || ''}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;" onchange="
+              <input type="text" id="edit-usr-dob" class="admin-input" value="${formatDobToDdMmYyyy(profile.dob)}" required style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px;" placeholder="DD/MM/YYYY" pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d\\d$" onchange="
                 const dobVal = this.value;
                 if (dobVal) {
-                  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                  const dayName = days[new Date(dobVal).getDay()];
-                  document.getElementById('edit-usr-day-of-birth').value = dayName || '';
-
-                  const birthDate = new Date(dobVal);
-                  const today = new Date();
-                  let computedAge = today.getFullYear() - birthDate.getFullYear();
-                  const m = today.getMonth() - birthDate.getMonth();
-                  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                    computedAge--;
+                  const birthDate = parseDobString(dobVal);
+                  if (birthDate) {
+                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const dayName = days[birthDate.getDay()];
+                    document.getElementById('edit-usr-day-of-birth').value = dayName || '';
+                    
+                    const computedAge = calculateAge(dobVal);
+                    document.getElementById('edit-usr-age').value = Math.max(18, computedAge);
                   }
-                  document.getElementById('edit-usr-age').value = Math.max(18, computedAge);
                 }
               ">
             </div>
             <div class="admin-form-group">
               <label style="font-weight: 600; font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Day of Birth</label>
-              <input type="text" id="edit-usr-day-of-birth" class="admin-input" value="${profile.dayOfBirth || (profile.dob ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(profile.dob).getDay()] : '')}" readonly style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #f9f9f9;" placeholder="Calculated from DOB">
+              <input type="text" id="edit-usr-day-of-birth" class="admin-input" value="${profile.dayOfBirth || (profile.dob ? getDobDayName(profile.dob, 'en') : '')}" readonly style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: #f9f9f9;" placeholder="Calculated from DOB">
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
