@@ -2,7 +2,12 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2');
-const sqlite3 = require('sqlite3').verbose();
+let sqlite3;
+try {
+  sqlite3 = require('sqlite3').verbose();
+} catch (e) {
+  console.warn('[DATABASE] SQLite3 module could not be loaded. SQLite fallback will not be available.', e.message);
+}
 const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 8082;
@@ -37,19 +42,27 @@ function getEmailConfig() {
 }
 
 // Initialize SQLite database (acting as persistent local backup/fallback)
-const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
-if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
+let sqliteDb = null;
+if (sqlite3) {
+  try {
+    const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
+    if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
+      fs.mkdirSync(DB_DIR, { recursive: true });
+    }
+    sqliteDb = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
+    sqliteDb.serialize(() => {
+      sqliteDb.run(`
+        CREATE TABLE IF NOT EXISTS nabhik_state (
+          key TEXT PRIMARY KEY,
+          value TEXT
+        )
+      `);
+    });
+  } catch (err) {
+    console.error('[DATABASE] SQLite initialization failed:', err.message);
+    sqliteDb = null;
+  }
 }
-const sqliteDb = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
-sqliteDb.serialize(() => {
-  sqliteDb.run(`
-    CREATE TABLE IF NOT EXISTS nabhik_state (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )
-  `);
-});
 
 // Initialize MySQL configuration
 const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
@@ -114,11 +127,11 @@ pool.query(`
   if (err) {
     mysqlConnectionError = err.message;
     console.warn('[DATABASE] MySQL connection failed. Error:', err.message);
-    if (!hasMysqlConfig) {
+    if (!hasMysqlConfig && sqliteDb) {
       console.warn('[DATABASE] Falling back to local SQLite database.');
       useSqliteFallback = true;
     } else {
-      console.error('[DATABASE] MySQL CONFIG FILE DETECTED. SQLITE FALLBACK BLOCKED TO PREVENT SILENT DATA LOSS.');
+      console.error('[DATABASE] MySQL CONFIG FILE DETECTED OR SQLITE NOT INITIALIZED. SQLITE FALLBACK BLOCKED TO PREVENT SILENT DATA LOSS.');
     }
   } else {
     console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
@@ -128,7 +141,7 @@ pool.query(`
 // Automatically clean up NMAdmin on server startup after 3 seconds
 setTimeout(() => {
   console.log('[DATABASE] Running server startup database cleanup...');
-  if (useSqliteFallback) {
+  if (useSqliteFallback && sqliteDb) {
     sqliteDb.get("SELECT value FROM nabhik_state WHERE key = 'profiles'", (err, row) => {
       if (err || !row) return;
       try {
@@ -227,6 +240,10 @@ const server = http.createServer((req, res) => {
   if (cleanUrl === '/api/state') {
     // Helper to perform SQLite GET query
     function runSqliteGet() {
+      if (!sqliteDb) {
+        handleDatabaseError(res, 'SQLite database is not initialized/loaded on this server.');
+        return;
+      }
       try {
         sqliteDb.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
           if (err) {
@@ -260,6 +277,10 @@ const server = http.createServer((req, res) => {
 
     // Helper to perform SQLite POST query
     function runSqlitePost(stateObj) {
+      if (!sqliteDb) {
+        handleDatabaseError(res, 'SQLite database is not initialized/loaded on this server.');
+        return;
+      }
       try {
         sqliteDb.serialize(() => {
           sqliteDb.run('BEGIN TRANSACTION');
