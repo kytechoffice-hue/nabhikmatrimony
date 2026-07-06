@@ -692,6 +692,11 @@ async function loadStateFromServer() {
     }
   } catch (e) {
     console.error("Failed to load state from MySQL server, using local defaults:", e);
+    if (typeof showErrorDialog === 'function') {
+      showErrorDialog('Failed to Load Server State', e);
+    } else {
+      showToast('Failed to load backend state. Check console for details.');
+    }
   }
 }
 
@@ -1407,6 +1412,92 @@ function showToast(message) {
       toast.classList.remove('active');
     }, 3000);
   }
+}
+
+function showErrorDialog(title, error) {
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.55)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = '9999';
+
+  const box = document.createElement('div');
+  box.style.backgroundColor = '#fff';
+  box.style.borderRadius = '12px';
+  box.style.maxWidth = '780px';
+  box.style.width = '90%';
+  box.style.maxHeight = '88vh';
+  box.style.overflow = 'auto';
+  box.style.boxShadow = '0 20px 60px rgba(0,0,0,0.25)';
+  box.style.padding = '22px';
+  box.style.fontFamily = 'system-ui, sans-serif';
+  box.style.color = '#1a1a1a';
+
+  const heading = document.createElement('h2');
+  heading.innerText = title;
+  heading.style.marginTop = '0';
+  heading.style.marginBottom = '14px';
+  heading.style.fontSize = '1.4rem';
+  heading.style.color = '#b3003b';
+
+  const message = document.createElement('pre');
+  message.innerText = error && error.message ? error.message : String(error);
+  message.style.whiteSpace = 'pre-wrap';
+  message.style.wordBreak = 'break-word';
+  message.style.backgroundColor = '#f9f1f3';
+  message.style.border = '1px solid #e1c7ce';
+  message.style.padding = '14px';
+  message.style.borderRadius = '8px';
+  message.style.margin = '0 0 12px';
+  message.style.fontSize = '0.95rem';
+
+  const details = document.createElement('details');
+  details.style.marginBottom = '14px';
+  const summary = document.createElement('summary');
+  summary.innerText = 'Show stack trace';
+  summary.style.cursor = 'pointer';
+  summary.style.fontWeight = '600';
+  summary.style.marginBottom = '8px';
+  const stack = document.createElement('pre');
+  stack.innerText = error && error.stack ? error.stack : 'No stack trace available';
+  stack.style.whiteSpace = 'pre-wrap';
+  stack.style.wordBreak = 'break-word';
+  stack.style.backgroundColor = '#fff4f7';
+  stack.style.border = '1px solid #f0d4dc';
+  stack.style.padding = '14px';
+  stack.style.borderRadius = '8px';
+  stack.style.margin = '0';
+  stack.style.fontSize = '0.85rem';
+  details.appendChild(summary);
+  details.appendChild(stack);
+
+  const closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.innerText = 'Close';
+  closeButton.style.border = 'none';
+  closeButton.style.backgroundColor = '#b3003b';
+  closeButton.style.color = '#fff';
+  closeButton.style.padding = '10px 18px';
+  closeButton.style.borderRadius = '8px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.fontSize = '0.95rem';
+
+  closeButton.addEventListener('click', () => {
+    overlay.remove();
+  });
+
+  box.appendChild(heading);
+  box.appendChild(message);
+  box.appendChild(details);
+  box.appendChild(closeButton);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
 }
 
 
