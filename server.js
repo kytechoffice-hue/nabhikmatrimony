@@ -2,12 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2');
-let sqlite3;
-try {
-  sqlite3 = require('sqlite3').verbose();
-} catch (e) {
-  console.warn('[DATABASE] SQLite3 module could not be loaded. SQLite fallback will not be available.', e.message);
-}
 const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 8082;
@@ -41,32 +35,8 @@ function getEmailConfig() {
   return null;
 }
 
-// Initialize SQLite database (acting as persistent local backup/fallback)
-let sqliteDb = null;
-if (sqlite3) {
-  try {
-    const DB_DIR = process.env.DATA_DIR || PUBLIC_DIR;
-    if (process.env.DATA_DIR && !fs.existsSync(DB_DIR)) {
-      fs.mkdirSync(DB_DIR, { recursive: true });
-    }
-    sqliteDb = new sqlite3.Database(path.join(DB_DIR, 'matrimony.db'));
-    sqliteDb.serialize(() => {
-      sqliteDb.run(`
-        CREATE TABLE IF NOT EXISTS nabhik_state (
-          key TEXT PRIMARY KEY,
-          value TEXT
-        )
-      `);
-    });
-  } catch (err) {
-    console.error('[DATABASE] SQLite initialization failed:', err.message);
-    sqliteDb = null;
-  }
-}
-
 // Initialize MySQL configuration
 const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
-const hasMysqlConfig = fs.existsSync(MYSQL_CONFIG_FILE);
 function getMysqlConfig() {
   let config = {
     host: process.env.MYSQL_HOST || 'localhost',
@@ -106,8 +76,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Global state flag to track database fallback
-let useSqliteFallback = false;
 let mysqlConnectionError = null;
 
 function handleDatabaseError(res, errMessage) {
@@ -125,14 +93,8 @@ pool.query(`
   )
 `, (err) => {
   if (err) {
-    mysqlConnectionError = err.message;
-    console.warn('[DATABASE] MySQL connection failed. Error:', err.message);
-    if (!hasMysqlConfig && sqliteDb) {
-      console.warn('[DATABASE] Falling back to local SQLite database.');
-      useSqliteFallback = true;
-    } else {
-      console.error('[DATABASE] MySQL CONFIG FILE DETECTED OR SQLITE NOT INITIALIZED. SQLITE FALLBACK BLOCKED TO PREVENT SILENT DATA LOSS.');
-    }
+    mysqlConnectionError = err.message || 'Unknown MySQL error';
+    console.error('[DATABASE] MySQL connection failed. Error:', mysqlConnectionError);
   } else {
     console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
   }
@@ -141,59 +103,31 @@ pool.query(`
 // Automatically clean up NMAdmin on server startup after 3 seconds
 setTimeout(() => {
   console.log('[DATABASE] Running server startup database cleanup...');
-  if (useSqliteFallback && sqliteDb) {
-    sqliteDb.get("SELECT value FROM nabhik_state WHERE key = 'profiles'", (err, row) => {
-      if (err || !row) return;
-      try {
-        const profiles = JSON.parse(row.value);
-        const filtered = profiles.filter(p => p && p.name !== 'NMAdmin' && p.username !== 'NMAdmin');
-        if (profiles.length !== filtered.length) {
-          sqliteDb.run("REPLACE INTO nabhik_state (`key`, `value`) VALUES ('profiles', ?)", [JSON.stringify(filtered)], (writeErr) => {
-            if (!writeErr) console.log('[DATABASE] Successfully removed NMAdmin from SQLite profiles.');
-          });
-        }
-      } catch (e) {
-        console.error('[DATABASE] Error parsing SQLite profiles:', e);
+  pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'profiles'", (err, rows) => {
+    if (err || !rows || rows.length === 0) return;
+    try {
+      const profiles = JSON.parse(rows[0].value);
+      const filtered = profiles.filter(p => p && p.name !== 'NMAdmin' && p.username !== 'NMAdmin');
+      if (profiles.length !== filtered.length) {
+        pool.query("REPLACE INTO nabhik_state (`key`, `value`) VALUES ('profiles', ?)", [JSON.stringify(filtered)], (writeErr) => {
+          if (!writeErr) console.log('[DATABASE] Successfully removed NMAdmin from MySQL profiles.');
+        });
       }
-    });
-    sqliteDb.get("SELECT value FROM nabhik_state WHERE key = 'currentUser'", (err, row) => {
-      if (err || !row) return;
-      try {
-        const user = JSON.parse(row.value);
-        if (user && (user.name === 'NMAdmin' || user.username === 'NMAdmin')) {
-          sqliteDb.run("DELETE FROM nabhik_state WHERE key = 'currentUser'", (writeErr) => {
-            if (!writeErr) console.log('[DATABASE] Successfully deleted NMAdmin currentUser from SQLite.');
-          });
-        }
-      } catch (e) {}
-    });
-  } else {
-    pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'profiles'", (err, rows) => {
-      if (err || !rows || rows.length === 0) return;
-      try {
-        const profiles = JSON.parse(rows[0].value);
-        const filtered = profiles.filter(p => p && p.name !== 'NMAdmin' && p.username !== 'NMAdmin');
-        if (profiles.length !== filtered.length) {
-          pool.query("REPLACE INTO nabhik_state (`key`, `value`) VALUES ('profiles', ?)", [JSON.stringify(filtered)], (writeErr) => {
-            if (!writeErr) console.log('[DATABASE] Successfully removed NMAdmin from MySQL profiles.');
-          });
-        }
-      } catch (e) {
-        console.error('[DATABASE] Error parsing MySQL profiles:', e);
+    } catch (e) {
+      console.error('[DATABASE] Error parsing MySQL profiles:', e);
+    }
+  });
+  pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'currentUser'", (err, rows) => {
+    if (err || !rows || rows.length === 0) return;
+    try {
+      const user = JSON.parse(rows[0].value);
+      if (user && (user.name === 'NMAdmin' || user.username === 'NMAdmin')) {
+        pool.query("DELETE FROM nabhik_state WHERE `key` = 'currentUser'", (writeErr) => {
+          if (!writeErr) console.log('[DATABASE] Successfully deleted NMAdmin currentUser from MySQL.');
+        });
       }
-    });
-    pool.query("SELECT `value` FROM nabhik_state WHERE `key` = 'currentUser'", (err, rows) => {
-      if (err || !rows || rows.length === 0) return;
-      try {
-        const user = JSON.parse(rows[0].value);
-        if (user && (user.name === 'NMAdmin' || user.username === 'NMAdmin')) {
-          pool.query("DELETE FROM nabhik_state WHERE `key` = 'currentUser'", (writeErr) => {
-            if (!writeErr) console.log('[DATABASE] Successfully deleted NMAdmin currentUser from MySQL.');
-          });
-        }
-      } catch (e) {}
-    });
-  }
+    } catch (e) {}
+  });
 }, 3000);
 
 const MIME_TYPES = {
@@ -226,111 +160,22 @@ const server = http.createServer((req, res) => {
   if (cleanUrl === '/api/db-status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
-      database: useSqliteFallback ? 'SQLite (Fallback - WARNING: DATA WILL BE LOST ON RESTARTS)' : 'MySQL (Permanent)',
+      database: 'MySQL (Permanent)',
       mysqlHost: mysqlConfig.host,
       mysqlDatabase: mysqlConfig.database,
       mysqlUser: mysqlConfig.user,
-      mysqlError: mysqlConnectionError,
-      sqlitePath: path.join(DB_DIR, 'matrimony.db')
+      mysqlError: mysqlConnectionError
     }));
     return;
   }
 
-  // Database API Endpoints (MySQL with SQLite fallback)
+  // Database API Endpoints (MySQL only)
   if (cleanUrl === '/api/state') {
-    // Helper to perform SQLite GET query
-    function runSqliteGet() {
-      if (!sqliteDb) {
-        handleDatabaseError(res, 'SQLite database is not initialized/loaded on this server.');
-        return;
-      }
-      try {
-        sqliteDb.all('SELECT key, value FROM nabhik_state', [], (err, rows) => {
-          if (err) {
-            if (!res.headersSent) {
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ error: err.message }));
-            }
-            return;
-          }
-          const stateObj = {};
-          rows.forEach(row => {
-            try {
-              stateObj[row.key] = JSON.parse(row.value);
-            } catch (e) {
-              stateObj[row.key] = row.value;
-            }
-          });
-          if (!res.headersSent) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(stateObj));
-          }
-        });
-      } catch (err) {
-        console.error('[DATABASE] SQLite GET failed:', err);
-        if (!res.headersSent) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: err.message }));
-        }
-      }
-    }
-
-    // Helper to perform SQLite POST query
-    function runSqlitePost(stateObj) {
-      if (!sqliteDb) {
-        handleDatabaseError(res, 'SQLite database is not initialized/loaded on this server.');
-        return;
-      }
-      try {
-        sqliteDb.serialize(() => {
-          sqliteDb.run('BEGIN TRANSACTION');
-          const stmt = sqliteDb.prepare('INSERT OR REPLACE INTO nabhik_state (key, value) VALUES (?, ?)');
-          Object.entries(stateObj).forEach(([key, value]) => {
-            stmt.run(key, JSON.stringify(value));
-          });
-          stmt.finalize();
-          sqliteDb.run('COMMIT', (err) => {
-            if (err) {
-              if (!res.headersSent) {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message }));
-              }
-              return;
-            }
-            if (!res.headersSent) {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ success: true }));
-            }
-          });
-        });
-      } catch (err) {
-        console.error('[DATABASE] SQLite POST transaction failed:', err);
-        if (!res.headersSent) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: err.message }));
-        }
-      }
-    }
-
     if (req.method === 'GET') {
-      if (useSqliteFallback) {
-        if (hasMysqlConfig) {
-          handleDatabaseError(res, `MySQL Connection Failed: ${mysqlConnectionError || 'Unknown MySQL error'}`);
-          return;
-        }
-        runSqliteGet();
-        return;
-      }
-
       pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
         if (err) {
           console.warn('[DATABASE] MySQL GET error:', err.message);
-          if (!hasMysqlConfig) {
-            useSqliteFallback = true;
-            runSqliteGet();
-          } else {
-            handleDatabaseError(res, `MySQL Query Failed: ${err.message}`);
-          }
+          handleDatabaseError(res, `MySQL Query Failed: ${err.message}`);
           return;
         }
         const stateObj = {};
@@ -353,87 +198,58 @@ const server = http.createServer((req, res) => {
       req.on('end', () => {
         try {
           const stateObj = JSON.parse(body);
-          if (useSqliteFallback) {
-            if (hasMysqlConfig) {
-              handleDatabaseError(res, `MySQL Connection Failed: ${mysqlConnectionError || 'Unknown MySQL error'}`);
-              return;
-            }
-            runSqlitePost(stateObj);
-            return;
-          }
-
           pool.getConnection((connErr, connection) => {
             if (connErr) {
               console.warn('[DATABASE] MySQL connection checkout error during POST:', connErr.message);
-              if (!hasMysqlConfig) {
-                useSqliteFallback = true;
-                runSqlitePost(stateObj);
-              } else {
-                handleDatabaseError(res, `MySQL Connection Checkout Failed: ${connErr.message}`);
-              }
+              handleDatabaseError(res, `MySQL Connection Checkout Failed: ${connErr.message}`);
               return;
             }
-            
+
             connection.beginTransaction(beginTransactionErr => {
               if (beginTransactionErr) {
                 connection.release();
                 console.warn('[DATABASE] MySQL transaction begin error:', beginTransactionErr.message);
-                if (!hasMysqlConfig) {
-                  useSqliteFallback = true;
-                  runSqlitePost(stateObj);
-                } else {
-                  handleDatabaseError(res, `MySQL Transaction Begin Failed: ${beginTransactionErr.message}`);
-                }
+                handleDatabaseError(res, `MySQL Transaction Begin Failed: ${beginTransactionErr.message}`);
                 return;
               }
-              
+
               const entries = Object.entries(stateObj);
               let index = 0;
-              
+
               function executeNext() {
                 if (index >= entries.length) {
-                   connection.commit(commitErr => {
-                     if (commitErr) {
-                       connection.rollback(() => {
-                         connection.release();
-                         console.warn('[DATABASE] MySQL commit error:', commitErr.message);
-                         if (!hasMysqlConfig) {
-                           useSqliteFallback = true;
-                           runSqlitePost(stateObj);
-                         } else {
-                           handleDatabaseError(res, `MySQL Transaction Commit Failed: ${commitErr.message}`);
-                         }
-                       });
-                       return;
-                     }
-                     connection.release();
-                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                     res.end(JSON.stringify({ success: true }));
-                   });
+                  connection.commit(commitErr => {
+                    if (commitErr) {
+                      connection.rollback(() => {
+                        connection.release();
+                        console.warn('[DATABASE] MySQL commit error:', commitErr.message);
+                        handleDatabaseError(res, `MySQL Transaction Commit Failed: ${commitErr.message}`);
+                      });
+                      return;
+                    }
+                    connection.release();
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                  });
                   return;
                 }
-                
+
                 const [key, value] = entries[index];
                 const valStr = JSON.stringify(value);
-                
+
                 connection.query('REPLACE INTO nabhik_state (`key`, `value`) VALUES (?, ?)', [key, valStr], (queryErr) => {
                   if (queryErr) {
                     return connection.rollback(() => {
                       connection.release();
                       console.warn('[DATABASE] MySQL write query error:', queryErr.message);
-                      if (!hasMysqlConfig) {
-                        useSqliteFallback = true;
-                        runSqlitePost(stateObj);
-                      } else {
-                        handleDatabaseError(res, `MySQL Write Query Failed: ${queryErr.message}`);
-                      }
+                      handleDatabaseError(res, `MySQL Write Query Failed: ${queryErr.message}`);
                     });
                   }
                   index++;
                   executeNext();
                 });
               }
-              
+
               executeNext();
             });
           });
@@ -442,6 +258,7 @@ const server = http.createServer((req, res) => {
           res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
         }
       });
+      return;
     }
   }
 
