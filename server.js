@@ -93,8 +93,8 @@ pool.query(`
   )
 `, (err) => {
   if (err) {
-    mysqlConnectionError = err.message || 'Unknown MySQL error';
-    console.error('[DATABASE] MySQL connection failed. Error:', mysqlConnectionError);
+    mysqlConnectionError = (err && (err.message || err.code)) || JSON.stringify(err) || 'Unknown MySQL error';
+    console.error('[DATABASE] MySQL connection failed. Error object:', err);
   } else {
     console.log('[DATABASE] MySQL database table "nabhik_state" verified/initialized.');
   }
@@ -174,8 +174,8 @@ const server = http.createServer((req, res) => {
     if (req.method === 'GET') {
       pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
         if (err) {
-          console.warn('[DATABASE] MySQL GET error:', err.message);
-          handleDatabaseError(res, `MySQL Query Failed: ${err.message}`);
+          console.error('[DATABASE] MySQL GET error object:', err);
+          handleDatabaseError(res, `MySQL Query Failed: ${(err && (err.message || err.code)) || JSON.stringify(err)}`);
           return;
         }
         const stateObj = {};
@@ -200,8 +200,8 @@ const server = http.createServer((req, res) => {
           const stateObj = JSON.parse(body);
           pool.getConnection((connErr, connection) => {
             if (connErr) {
-              console.warn('[DATABASE] MySQL connection checkout error during POST:', connErr.message);
-              handleDatabaseError(res, `MySQL Connection Checkout Failed: ${connErr.message}`);
+              console.error('[DATABASE] MySQL connection checkout error during POST:', connErr);
+              handleDatabaseError(res, `MySQL Connection Checkout Failed: ${(connErr && (connErr.message || connErr.code)) || JSON.stringify(connErr)}`);
               return;
             }
 
