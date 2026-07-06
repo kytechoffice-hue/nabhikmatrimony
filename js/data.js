@@ -253,27 +253,45 @@ function saveStateToServer() {
 
 async function loadStateFromServer() {
   try {
-    const res = await fetch('/api/state');
+    const res = await fetch('/api/state', {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+    });
+
+    const contentType = res.headers.get('content-type') || '';
+
+    if (!res.ok) {
+      throw new Error(`Server returned ${res.status}`);
+    }
+
+    if (!contentType.includes('application/json')) {
+      const text = await res.text();
+      throw new Error(`Expected JSON, got: ${text.slice(0, 120)}`);
+    }
+
     const serverState = await res.json();
+
     if (!serverState || Object.keys(serverState).length === 0) {
-      // First time initialization: save seed state to server
       await saveStateToServer();
-    } else {
-      // Load state from server
-      Object.entries(serverState).forEach(([key, val]) => {
-        storage.cache[key] = val;
+      return;
+    }
+
+    Object.entries(serverState).forEach(([key, val]) => {
+      storage.cache[key] = val;
+    });
+
+    if (typeof state !== 'undefined') {
+      Object.keys(state).forEach((key) => {
+        if (storage.cache[key] !== undefined) state[key] = storage.cache[key];
       });
-      // Copy loaded values into state object
-      if (typeof state !== 'undefined') {
-        Object.keys(state).forEach(key => {
-          if (storage.cache[key] !== undefined) {
-            state[key] = storage.cache[key];
-          }
-        });
-      }
     }
   } catch (e) {
-    console.error("Failed to load state from MySQL server, using local defaults:", e);
+    console.error('Failed to load state from server, using local defaults:', e);
+    if (typeof showErrorDialog === 'function') {
+      showErrorDialog('Failed to Load Server State', e);
+    } else if (typeof showToast === 'function') {
+      showToast('Failed to load server state');
+    }
   }
 }
 
