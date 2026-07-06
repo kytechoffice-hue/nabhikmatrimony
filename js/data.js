@@ -273,7 +273,7 @@ async function loadStateFromServer() {
       }
     }
   } catch (e) {
-    console.error("Failed to load state from SQLite server, using local defaults:", e);
+    console.error("Failed to load state from MySQL server, using local defaults:", e);
   }
 }
 
