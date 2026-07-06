@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const mysql = require('mysql2');
+const { db: pool, config: mysqlConfig } = require('./database');
 const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 8082;
@@ -35,46 +35,6 @@ function getEmailConfig() {
   return null;
 }
 
-// Initialize MySQL configuration
-const MYSQL_CONFIG_FILE = path.join(PUBLIC_DIR, 'mysql_config.json');
-function getMysqlConfig() {
-  let config = {
-    host: process.env.MYSQL_HOST || 'localhost',
-    port: parseInt(process.env.MYSQL_PORT) || 3306,
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
-    database: process.env.MYSQL_DATABASE || 'nabhik_matrimony'
-  };
-
-  try {
-    if (fs.existsSync(MYSQL_CONFIG_FILE)) {
-      const raw = fs.readFileSync(MYSQL_CONFIG_FILE, 'utf8');
-      const parsed = JSON.parse(raw);
-      if (parsed) {
-        if (parsed.host && !process.env.MYSQL_HOST) config.host = parsed.host;
-        if (parsed.port && !process.env.MYSQL_PORT) config.port = parseInt(parsed.port);
-        if (parsed.user && !process.env.MYSQL_USER) config.user = parsed.user;
-        if (parsed.password && !process.env.MYSQL_PASSWORD) config.password = parsed.password;
-        if (parsed.database && !process.env.MYSQL_DATABASE) config.database = parsed.database;
-      }
-    }
-  } catch (e) {
-    console.error('[CONFIG] Error reading mysql_config.json:', e);
-  }
-  return config;
-}
-
-const mysqlConfig = getMysqlConfig();
-const pool = mysql.createPool({
-  host: mysqlConfig.host,
-  port: mysqlConfig.port,
-  user: mysqlConfig.user,
-  password: mysqlConfig.password,
-  database: mysqlConfig.database,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
 let mysqlConnectionError = null;
 

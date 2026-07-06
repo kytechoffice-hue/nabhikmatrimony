@@ -226,9 +226,25 @@ function saveStateToServer() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(storage.cache)
         });
-        resolve(await res.json());
+        if (!res.ok) {
+          console.warn('[SAVE STATE] /api/state POST failed with status', res.status, res.statusText);
+          resolve({ error: 'Server returned non-OK status' });
+          return;
+        }
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          console.warn('[SAVE STATE] /api/state POST returned non-JSON:', contentType);
+          resolve({ error: 'Invalid server response type' });
+          return;
+        }
+        try {
+          resolve(await res.json());
+        } catch (e) {
+          console.warn('[SAVE STATE] /api/state POST returned invalid JSON', e);
+          resolve({ error: 'Invalid JSON response from server' });
+        }
       } catch (e) {
-        console.error("Failed to save state to SQLite database:", e);
+        console.error("Failed to save state to database:", e);
         resolve({ error: e.message });
       }
     }, 100);

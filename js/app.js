@@ -452,7 +452,21 @@ function saveStateToServer(immediate = false) {
     try {
       // Fetch latest state from server to get other users' up-to-date info
       const getRes = await fetch('/api/state');
-      const serverState = await getRes.json();
+      let serverState = null;
+      if (!getRes.ok) {
+        console.warn('[STATE] /api/state GET failed with status', getRes.status, getRes.statusText);
+      } else {
+        const contentType = getRes.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            serverState = await getRes.json();
+          } catch (e) {
+            console.warn('[STATE] /api/state GET returned invalid JSON', e);
+          }
+        } else {
+          console.warn('[STATE] /api/state GET did not return JSON:', contentType);
+        }
+      }
       
       if (serverState && serverState.profiles) {
         const serverProfiles = serverState.profiles;
@@ -509,12 +523,25 @@ function saveStateToServer(immediate = false) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(storage.cache)
       });
-      const result = await res.json();
+      let result = null;
+      if (!res.ok) {
+        console.warn('[STATE] /api/state POST failed with status', res.status, res.statusText);
+      }
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        try {
+          result = await res.json();
+        } catch (e) {
+          console.warn('[STATE] /api/state POST returned invalid JSON', e);
+        }
+      } else {
+        console.warn('[STATE] /api/state POST did not return JSON:', contentType);
+      }
       if (result && result.error) {
         console.error("Server save database error:", result.error);
         showToast(t("Database connection error. Unable to save changes.", "डेटाबेस कनेक्शन त्रुटी. बदल जतन करण्यात अक्षम."));
       }
-      return result;
+      return result || { error: 'Invalid /api/state response' };
     } catch (e) {
       console.error("Failed to save state to database:", e);
       return { error: e.message };

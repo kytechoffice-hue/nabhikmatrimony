@@ -1,31 +1,26 @@
-node:events:487
-      throw er; // Unhandled 'error' event
-  [DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL connection checkout error during POST: 
-[DATABASE] MySQL connection checkout error during POST: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-[DATABASE] MySQL GET error: 
-1577:32)
-    at Module._load (node:internal/modules/cjs/loader:1379:12)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
-Emitted 'error' event on Server instance at:
-    at emitErrorNT (node:net:2044:8)
-    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
-  code: 'EADDRINUSE',
-  errno: -4091,
-  syscall: 'listen',
-  address: '::',
-  port: 8082
+[DATABASE] MySQL connection failed. Error object: AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1193:18)
+    at afterConnectMultiple (node:net:1783:7) {
+  code: 'ECONNREFUSED',
+  fatal: true,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:3306
+        at createConnectionError (node:net:1746:14)
+        at afterConnectMultiple (node:net:1776:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3306
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:3306
+        at createConnectionError (node:net:1746:14)
+        at afterConnectMultiple (node:net:1776:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3306
+    }
+  ]
 }
-
-Node.js v24.16.0
