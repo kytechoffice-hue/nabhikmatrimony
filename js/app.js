@@ -1128,16 +1128,11 @@ const stateActions = {
       const enteredPassword = password || '';
       const isMasterAccount = isMasterProfile(found);
       const expectedPassword = found.password || (isMasterAccount ? 'KY@Prasad1989' : '1234567890');
-      const acceptablePasswords = [expectedPassword];
-      if (isMasterAccount) {
-        acceptablePasswords.push('1234567890', 'KY@Prasad1989');
-      }
-      if (!acceptablePasswords.includes(enteredPassword)) {
+      
+      if (enteredPassword !== expectedPassword) {
         return null;
       }
-      if (isMasterAccount && found.password !== 'KY@Prasad1989') {
-        found.password = 'KY@Prasad1989';
-      }
+      
       state.currentUser = found;
       state.interestsSent = found.interestsSent || [];
       state.interestsReceived = found.interestsReceived || [];

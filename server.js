@@ -114,6 +114,7 @@ const server = http.createServer((req, res) => {
 
   // Clean query strings and hashes
   const cleanUrl = req.url.split('?')[0].split('#')[0];
+  console.log("URL:", cleanUrl);
   console.log(`[REQUEST] ${req.method} ${cleanUrl}`);
 
   // Diagnostic Endpoint to verify DB connection details on Hostinger
@@ -131,7 +132,9 @@ const server = http.createServer((req, res) => {
 
   // Database API Endpoints (MySQL only)
   if (cleanUrl === '/api/state') {
+    console.log(">>> ENTERED /api/state");
     if (req.method === 'GET') {
+      console.log(">>> GET /api/state");
       pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
         if (err) {
           console.error('[DATABASE] MySQL GET error object:', err);
