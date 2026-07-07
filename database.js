@@ -13,7 +13,7 @@ try {
 }
 
 const config = {
-  host: process.env.DB_HOST || fileConfig.host || '127.0.0.1',
+  host: process.env.DB_HOST || fileConfig.host || 'localhost',
   port: Number(process.env.DB_PORT || fileConfig.port) || 3306,
   user: process.env.DB_USER || fileConfig.user || 'u589795535_NMMmaster',
   password: process.env.DB_PASSWORD || fileConfig.password || 'u589795535_KY_NMuser_2026',
