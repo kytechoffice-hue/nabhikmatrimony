@@ -472,7 +472,7 @@ function saveStateToServer(immediate = false) {
         const serverProfiles = serverState.profiles;
         const ourProfile = state.currentUser;
         if (ourProfile) {
-          const isAdmin = ourProfile.isAdmin || ourProfile.role === 'admin' || ourProfile.role === 'master';
+          const isAdmin = ourProfile.isAdmin || ourProfile.role === 'admin' || isMasterProfile(ourProfile);
           if (isAdmin) {
             // Admin is editing the database directly, keep local state as source of truth
             storage.cache.profiles = state.profiles;
@@ -561,6 +561,22 @@ function saveStateToServer(immediate = false) {
   });
 }
 
+function isMasterProfile(profile) {
+  if (!profile || typeof profile !== 'object') return false;
+
+  const username = String(profile.username || '').trim().toLowerCase();
+  const emailId = String(profile.emailId || profile.email || '').trim().toLowerCase();
+  const name = String(profile.name || '').trim().toLowerCase();
+  const role = String(profile.role || '').trim().toLowerCase();
+
+  return username === 'master' || emailId === 'master' || name === 'master' || role === 'master';
+}
+
+function findMasterProfile(profiles) {
+  if (!Array.isArray(profiles)) return null;
+  return profiles.find(p => isMasterProfile(p)) || null;
+}
+
 async function loadStateFromServer() {
   try {
     const res = await fetch('/api/state');
@@ -597,10 +613,17 @@ async function loadStateFromServer() {
         
         // Sanitize/ensure correct roles and normalize arrays for all profiles
         if (state.profiles && Array.isArray(state.profiles)) {
-          // Self-healing master profile seeder/repair
-          let master = state.profiles.find(p => p && (p.username === 'master' || p.emailId === 'master' || (p.name && p.name.toLowerCase() === 'master')));
+          // Prefer the database-backed profile list when resolving the master account.
+          const databaseProfiles = Array.isArray(serverState && serverState.profiles) ? serverState.profiles : [];
+          let master = findMasterProfile(databaseProfiles);
+
           if (!master) {
-            master = {
+            master = findMasterProfile(state.profiles);
+          }
+
+          if (!master) {
+            const seededMaster = Array.isArray(initialProfiles) ? initialProfiles.find(p => p && (p.username === 'master' || p.emailId === 'master' || (p.name && p.name.toLowerCase() === 'master'))) : null;
+            master = seededMaster ? { ...seededMaster } : {
               id: 5,
               name: 'master',
               emailId: 'master',
@@ -1103,9 +1126,7 @@ const stateActions = {
     ));
     if (found) {
       const enteredPassword = password || '';
-      const isMasterAccount = (found.username && found.username.toLowerCase() === 'master') ||
-        (found.name && found.name.toLowerCase() === 'master') ||
-        (found.role && found.role.toLowerCase() === 'master');
+      const isMasterAccount = isMasterProfile(found);
       const expectedPassword = found.password || (isMasterAccount ? 'KY@Prasad1989' : '1234567890');
       const acceptablePasswords = [expectedPassword];
       if (isMasterAccount) {
@@ -5439,14 +5460,11 @@ function switchAdminTab(tabName) {
   const panel = document.getElementById('admin-content-panel');
   if (!panel) return;
   
-  const isCurrentUserMaster = state.currentUser && (
-    state.currentUser.role === 'master' || 
-    (state.currentUser.name && state.currentUser.name.toLowerCase() === 'master')
-  );
+  const isCurrentUserMaster = !!(state.currentUser && isMasterProfile(state.currentUser));
   
   const visibleProfiles = isCurrentUserMaster ? 
     state.profiles : 
-    state.profiles.filter(p => p && p.role !== 'master' && (p.name ? p.name.toLowerCase() !== 'master' : true));
+    state.profiles.filter(p => p && !isMasterProfile(p));
   
   document.querySelectorAll('.admin-menu a').forEach(a => {
     if (a.id === `ad-tab-${tabName}`) {
@@ -5473,7 +5491,7 @@ function switchAdminTab(tabName) {
       // Extract real sent match requests (excluding master)
       const realInterests = [];
       state.profiles.forEach(sender => {
-        if (!sender || sender.role === 'master' || (sender.name && sender.name.toLowerCase() === 'master')) return;
+        if (!sender || isMasterProfile(sender)) return;
         const sentIds = sender.interestsSent || [];
         sentIds.forEach(rid => {
           const recipient = state.profiles.find(p => p && p.id === Number(rid));
@@ -6430,7 +6448,7 @@ function runProfileSearch() {
   
   // Filter core
   let results = state.profiles.filter(p => {
-    if (p.role === 'admin' || p.role === 'master' || p.isAdmin) return false;
+    if (p.role === 'admin' || isMasterProfile(p) || p.isAdmin) return false;
     if (p.gender !== gender) return false;
     if (p.age < ageFrom || p.age > ageTo) return false;
     if (city && !p.location.includes(city)) return false;
@@ -7786,14 +7804,11 @@ function filterAdminUsers() {
   const status = document.getElementById('adm-filt-status') ? document.getElementById('adm-filt-status').value : 'All';
   const usernameSearch = document.getElementById('adm-filt-username') ? document.getElementById('adm-filt-username').value.trim().toLowerCase() : '';
 
-  const isCurrentUserMaster = state.currentUser && (
-    state.currentUser.role === 'master' || 
-    (state.currentUser.name && state.currentUser.name.toLowerCase() === 'master')
-  );
+  const isCurrentUserMaster = !!(state.currentUser && isMasterProfile(state.currentUser));
   
   let filtered = isCurrentUserMaster ? 
     state.profiles : 
-    state.profiles.filter(p => p && p.role !== 'master' && (p.name ? p.name.toLowerCase() !== 'master' : true));
+    state.profiles.filter(p => p && !isMasterProfile(p));
 
   if (city !== 'All') {
     filtered = filtered.filter(p => p.location && p.location.includes(city));
@@ -7862,7 +7877,7 @@ function filterAdminUsers() {
                 `}
               </td>
               <td>
-                ${(p.role === 'master' || (p.name && p.name.toLowerCase() === 'master')) ? `
+                ${(isMasterProfile(p)) ? `
                   <span class="badge-status" style="background:#fbe9e7; color:#d84315; font-weight: bold;">MASTER</span>
                 ` : (p.role === 'admin' || p.isAdmin || (p.name && (p.name.toLowerCase() === 'admin' || p.name.toLowerCase() === 'nmadmin'))) ? `
                   <span class="badge-status" style="background:#e8eaf6; color:#3f51b5; font-weight: bold;">ADMIN</span>
@@ -8105,7 +8120,7 @@ function handleAdminUpdateUserSubmit(e, id) {
   const zodiac = document.getElementById('edit-usr-zodiac').value;
   const nickname = document.getElementById('edit-usr-nickname').value;
   
-  const isAdmin = role === 'admin' || role === 'master';
+  const isAdmin = role === 'admin' || isMasterProfile({ role });
 
   stateActions.adminUpdateUser(id, {
     name,
