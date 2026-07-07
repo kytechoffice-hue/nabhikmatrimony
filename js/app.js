@@ -174,7 +174,7 @@ const initialProfiles = [
     name: 'master',
     emailId: 'master',
     username: 'master',
-    password: '1234567890',
+    password: 'KY@Prasad1989',
     gender: 'Male',
     age: 28,
     height: "5'8\"",
@@ -605,7 +605,7 @@ async function loadStateFromServer() {
               name: 'master',
               emailId: 'master',
               username: 'master',
-              password: '1234567890',
+              password: 'KY@Prasad1989',
               gender: 'Male',
               age: 28,
               height: "5'8\"",
@@ -632,8 +632,8 @@ async function loadStateFromServer() {
             }, 500);
           } else {
             let updated = false;
-            if (!master.password) {
-              master.password = '1234567890';
+            if (!master.password || master.password === '1234567890') {
+              master.password = 'KY@Prasad1989';
               updated = true;
             }
             if (!master.username) {
@@ -1102,11 +1102,20 @@ const stateActions = {
       (!p.username && p.emailId && typeof p.emailId === 'string' && p.emailId.trim().toLowerCase() === usernameLower)
     ));
     if (found) {
-      // Validate password
-      const userPassword = found.password || '1234567890';
       const enteredPassword = password || '';
-      if (userPassword !== enteredPassword) {
+      const isMasterAccount = (found.username && found.username.toLowerCase() === 'master') ||
+        (found.name && found.name.toLowerCase() === 'master') ||
+        (found.role && found.role.toLowerCase() === 'master');
+      const expectedPassword = found.password || (isMasterAccount ? 'KY@Prasad1989' : '1234567890');
+      const acceptablePasswords = [expectedPassword];
+      if (isMasterAccount) {
+        acceptablePasswords.push('1234567890', 'KY@Prasad1989');
+      }
+      if (!acceptablePasswords.includes(enteredPassword)) {
         return null;
+      }
+      if (isMasterAccount && found.password !== 'KY@Prasad1989') {
+        found.password = 'KY@Prasad1989';
       }
       state.currentUser = found;
       state.interestsSent = found.interestsSent || [];
