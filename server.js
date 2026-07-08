@@ -117,9 +117,7 @@ const server = http.createServer((req, res) => {
   const cleanUrl = req.url.split('?')[0].split('#')[0];
   console.log("URL:", cleanUrl);
   console.log(`[REQUEST] ${req.method} ${cleanUrl}`);
-  if (cleanUrl === '/api/state') {
-      console.log('>>> MATCHED /api/state route check');
-  }
+ 
   console.log('>>> Entering static file handler for:', cleanUrl);
   // Diagnostic Endpoint to verify DB connection details on Hostinger
   if (cleanUrl === '/api/db-status') {
@@ -135,6 +133,20 @@ const server = http.createServer((req, res) => {
   }
 
   // Database API Endpoints (MySQL only)
+  if (cleanUrl === '/api/state') {
+    console.log("******** /api/state HIT ********");
+
+    res.writeHead(200, {
+        'Content-Type': 'application/json'
+    });
+
+    res.end(JSON.stringify({
+        test: "THIS IS THE API",
+        time: new Date().toISOString()
+    }));
+
+    return;
+}
   if (cleanUrl === '/api/state') {
     console.log(">>> ENTERED /api/state");
     if (req.method === 'GET') {
