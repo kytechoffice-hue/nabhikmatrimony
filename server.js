@@ -140,30 +140,31 @@ const server = http.createServer((req, res) => {
         'Content-Type': 'application/json'
     });
 
-    pool.query(
-    'SELECT `key`, `value` FROM nabhik_state',
-    (err, rows) => {
+    console.log("Executing query on nabhik_state...");
 
-        if (err) {
-            console.error(err);
+    pool.query(
+        'SELECT `key`, `value` FROM nabhik_state',
+        (err, rows) => {
+
+            if (err) {
+                console.error(err);
+
+                return res.end(JSON.stringify({
+                    error: err.message
+                }));
+            }
+
+            console.log("Rows returned:", rows.length);
 
             return res.end(JSON.stringify({
-                error: err.message
+                rows: rows.length,
+                first: rows[0]
             }));
         }
-
-        console.log("Rows:", rows.length);
-
-        return res.end(JSON.stringify({
-            rows: rows.length,
-            first: rows[0]
-        }));
-    }
-);
+    );
 
     return;
 }
-  
   // Google Translate Proxy Endpoint (Bypasses CORS restrictions on the client side)
   if (cleanUrl === '/api/translate') {
     if (req.method === 'POST') {
