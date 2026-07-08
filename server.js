@@ -76,6 +76,15 @@ function readJsonBody(req, res, callback) {
   });
 }
 
+function decodeStateValue(value) {
+  if (!value || typeof value !== 'object' || typeof value.__encodedJson !== 'string') {
+    return value;
+  }
+
+  const decoded = Buffer.from(value.__encodedJson, 'base64').toString('utf8');
+  return JSON.parse(decoded);
+}
+
 // Initialize database table if not exists
 pool.query(`
   CREATE TABLE IF NOT EXISTS nabhik_state (
@@ -259,9 +268,11 @@ const server = http.createServer((req, res) => {
       let failed = false;
 
       entries.forEach(([key, value]) => {
+        let decodedValue;
         let jsonValue;
         try {
-          jsonValue = JSON.stringify(value);
+          decodedValue = decodeStateValue(value);
+          jsonValue = JSON.stringify(decodedValue);
         } catch (e) {
           if (!failed) {
             failed = true;

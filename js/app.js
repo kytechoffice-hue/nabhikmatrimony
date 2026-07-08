@@ -441,6 +441,33 @@ const storage = {
 
 window.isStateLoaded = false;
 
+const SERVER_STATE_KEYS = [
+  'profiles',
+  'stories',
+  'events',
+  'blogs',
+  'currentUser',
+  'interestsSent',
+  'interestsReceived',
+  'shortlisted',
+  'shortlistedBy',
+  'activeChats',
+  'revenueReport',
+  'plans',
+  'tickets',
+  'payments',
+  'gateways',
+  'emailTemplates',
+  'ads',
+  'activityLog'
+];
+
+function encodeStateValue(value) {
+  return {
+    __encodedJson: btoa(unescape(encodeURIComponent(JSON.stringify(value))))
+  };
+}
+
 let saveTimeout = null;
 function saveStateToServer(immediate = false) {
   if (!window.isStateLoaded) {
@@ -518,6 +545,44 @@ function saveStateToServer(immediate = false) {
     }
 
     try {
+      let savedKeys = 0;
+      for (const key of SERVER_STATE_KEYS) {
+        if (storage.cache[key] === undefined) continue;
+
+        const keyRes = await fetch('/api/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [key]: encodeStateValue(storage.cache[key]) })
+        });
+
+        let keyResult = null;
+        if (!keyRes.ok) {
+          console.warn(`[STATE] /api/state POST failed for "${key}" with status`, keyRes.status, keyRes.statusText);
+        }
+
+        const keyContentType = keyRes.headers.get('content-type') || '';
+        if (keyContentType.includes('application/json')) {
+          try {
+            keyResult = await keyRes.json();
+          } catch (e) {
+            console.warn(`[STATE] /api/state POST for "${key}" returned invalid JSON`, e);
+          }
+        } else {
+          console.warn(`[STATE] /api/state POST for "${key}" did not return JSON:`, keyContentType);
+        }
+
+        if (!keyRes.ok || !keyResult || keyResult.error) {
+          const errText = keyResult && keyResult.error ? keyResult.error : `Save failed for "${key}"`;
+          console.error("Server save database error:", errText);
+          showToast(t("Database connection error. Unable to save changes.", "डेटाबेस कनेक्शन त्रुटी. बदल जतन करण्यात अक्षम."));
+          return { error: errText, key };
+        }
+
+        savedKeys += keyResult.savedKeys || 0;
+      }
+
+      return { success: true, savedKeys };
+
       const res = await fetch('/api/state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
