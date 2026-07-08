@@ -1,3 +1,4 @@
+console.log("RUNNING SERVER VERSION: 2026-07-08 12:45");
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
