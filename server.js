@@ -117,7 +117,10 @@ const server = http.createServer((req, res) => {
   const cleanUrl = req.url.split('?')[0].split('#')[0];
   console.log("URL:", cleanUrl);
   console.log(`[REQUEST] ${req.method} ${cleanUrl}`);
-
+  if (cleanUrl === '/api/state') {
+      console.log('>>> MATCHED /api/state route check');
+  }
+  console.log('>>> Entering static file handler for:', cleanUrl);
   // Diagnostic Endpoint to verify DB connection details on Hostinger
   if (cleanUrl === '/api/db-status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
