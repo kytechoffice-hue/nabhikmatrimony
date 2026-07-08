@@ -134,36 +134,81 @@ const server = http.createServer((req, res) => {
 
   // Database API Endpoints (MySQL only)
   if (cleanUrl === '/api/state') {
-    console.log("******** /api/state HIT ********");
+  console.log(">>> ENTERED /api/state");
 
-    res.writeHead(200, {
-        'Content-Type': 'application/json'
+  if (req.method === 'GET') {
+    console.log(">>> GET /api/state");
+
+    pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
+
+      if (err) {
+        console.error('[DATABASE] MySQL GET error object:', err);
+        handleDatabaseError(
+          res,
+          `MySQL Query Failed: ${(err && (err.message || err.code)) || JSON.stringify(err)}`
+        );
+        return;
+      }
+
+      console.log(`[DATABASE] Rows returned: ${rows.length}`);
+
+      const stateObj = {};
+
+      for (const row of rows) {
+        try {
+          stateObj[row.key] = JSON.parse(row.value);
+        } catch (e) {
+          console.error("==================================");
+          console.error("[JSON PARSE ERROR]");
+          console.error("Key   :", row.key);
+          console.error("Value :", row.value);
+          console.error("Error :", e.message);
+          console.error("==================================");
+
+          // Keep original value so one bad row doesn't break everything
+          stateObj[row.key] = row.value;
+        }
+      }
+
+      try {
+        const json = JSON.stringify(stateObj);
+
+        console.log(`[DATABASE] Successfully built JSON`);
+        console.log(`[DATABASE] Keys: ${Object.keys(stateObj).length}`);
+        console.log(`[DATABASE] JSON Size: ${json.length} bytes`);
+
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        });
+
+        res.end(json);
+
+      } catch (e) {
+
+        console.error("==================================");
+        console.error("[JSON STRINGIFY ERROR]");
+        console.error(e);
+        console.error("==================================");
+
+        res.writeHead(500, {
+          'Content-Type': 'application/json'
+        });
+
+        res.end(JSON.stringify({
+          error: 'JSON stringify failed',
+          details: e.message
+        }));
+      }
+
     });
 
-    console.log("Executing query on nabhik_state...");
-
-    pool.query(
-        'SELECT `key`, `value` FROM nabhik_state',
-        (err, rows) => {
-
-            if (err) {
-                console.error(err);
-
-                return res.end(JSON.stringify({
-                    error: err.message
-                }));
-            }
-
-            console.log("Rows returned:", rows.length);
-
-            return res.end(JSON.stringify({
-                rows: rows.length,
-                first: rows[0]
-            }));
-        }
-    );
-
     return;
+  }
+
+  // POST code remains exactly the same...
 }
   // Google Translate Proxy Endpoint (Bypasses CORS restrictions on the client side)
   if (cleanUrl === '/api/translate') {
