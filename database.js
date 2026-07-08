@@ -7,7 +7,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 // Production database credentials and host configuration
 const config = {
-  host: process.env.DB_HOST || 'nabhikmatrimony.com',
+  host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'u589795535_NMMmaster',
   password: process.env.DB_PASSWORD || 'u589795535_KY_NMuser_2026',
