@@ -140,107 +140,30 @@ const server = http.createServer((req, res) => {
         'Content-Type': 'application/json'
     });
 
-    res.end(JSON.stringify({
-        test: "THIS IS THE API",
-        time: new Date().toISOString()
-    }));
+    pool.query(
+    'SELECT `key`, `value` FROM nabhik_state',
+    (err, rows) => {
+
+        if (err) {
+            console.error(err);
+
+            return res.end(JSON.stringify({
+                error: err.message
+            }));
+        }
+
+        console.log("Rows:", rows.length);
+
+        return res.end(JSON.stringify({
+            rows: rows.length,
+            first: rows[0]
+        }));
+    }
+);
 
     return;
 }
-  if (cleanUrl === '/api/state') {
-    console.log(">>> ENTERED /api/state");
-    if (req.method === 'GET') {
-      console.log(">>> GET /api/state");
-      pool.query('SELECT `key`, `value` FROM nabhik_state', (err, rows) => {
-        if (err) {
-          console.error('[DATABASE] MySQL GET error object:', err);
-          handleDatabaseError(res, `MySQL Query Failed: ${(err && (err.message || err.code)) || JSON.stringify(err)}`);
-          return;
-        }
-        const stateObj = {};
-        rows.forEach(row => {
-          try {
-            stateObj[row.key] = JSON.parse(row.value);
-          } catch (e) {
-            stateObj[row.key] = row.value;
-          }
-        });
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(stateObj));
-      });
-      return;
-    } else if (req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => {
-        body += chunk.toString();
-      });
-      req.on('end', () => {
-        try {
-          const stateObj = JSON.parse(body);
-          pool.getConnection((connErr, connection) => {
-            if (connErr) {
-              console.error('[DATABASE] MySQL connection checkout error during POST:', connErr);
-              handleDatabaseError(res, `MySQL Connection Checkout Failed: ${(connErr && (connErr.message || connErr.code)) || JSON.stringify(connErr)}`);
-              return;
-            }
-
-            connection.beginTransaction(beginTransactionErr => {
-              if (beginTransactionErr) {
-                connection.release();
-                console.warn('[DATABASE] MySQL transaction begin error:', beginTransactionErr.message);
-                handleDatabaseError(res, `MySQL Transaction Begin Failed: ${beginTransactionErr.message}`);
-                return;
-              }
-
-              const entries = Object.entries(stateObj);
-              let index = 0;
-
-              function executeNext() {
-                if (index >= entries.length) {
-                  connection.commit(commitErr => {
-                    if (commitErr) {
-                      connection.rollback(() => {
-                        connection.release();
-                        console.warn('[DATABASE] MySQL commit error:', commitErr.message);
-                        handleDatabaseError(res, `MySQL Transaction Commit Failed: ${commitErr.message}`);
-                      });
-                      return;
-                    }
-                    connection.release();
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true }));
-                  });
-                  return;
-                }
-
-                const [key, value] = entries[index];
-                const valStr = JSON.stringify(value);
-
-                connection.query('REPLACE INTO nabhik_state (`key`, `value`) VALUES (?, ?)', [key, valStr], (queryErr) => {
-                  if (queryErr) {
-                    return connection.rollback(() => {
-                      connection.release();
-                      console.warn('[DATABASE] MySQL write query error:', queryErr.message);
-                      handleDatabaseError(res, `MySQL Write Query Failed: ${queryErr.message}`);
-                    });
-                  }
-                  index++;
-                  executeNext();
-                });
-              }
-
-              executeNext();
-            });
-          });
-        } catch (e) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
-        }
-      });
-      return;
-    }
-  }
-
+  
   // Google Translate Proxy Endpoint (Bypasses CORS restrictions on the client side)
   if (cleanUrl === '/api/translate') {
     if (req.method === 'POST') {
