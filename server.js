@@ -366,7 +366,8 @@ const server = http.createServer((req, res) => {
       return;
     }
   }
-
+  console.log(">>> STATIC HANDLER:", cleanUrl);
+  
   let filePath = path.join(PUBLIC_DIR, cleanUrl === '/' ? 'index.html' : cleanUrl);
 
   // Prevent directory traversal
