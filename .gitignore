@@ -5,6 +5,8 @@ git/
 *.log
 .DS_Store
 Thumbs.db
+.env
+.env.local
 
 # Dependency directory
 node_modules/
@@ -14,4 +16,3 @@ node_modules/
 
 # Local SMTP Configuration
 email_config.json
-

@@ -46,6 +46,36 @@ function handleDatabaseError(res, errMessage) {
   }
 }
 
+function maskValue(value) {
+  if (!value) return null;
+  const text = String(value);
+  if (text.length <= 4) return '****';
+  return `${text.slice(0, 2)}***${text.slice(-2)}`;
+}
+
+function readJsonBody(req, res, callback) {
+  let body = '';
+  const maxBytes = 25 * 1024 * 1024;
+
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+    if (Buffer.byteLength(body) > maxBytes) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Request body too large' }));
+      req.destroy();
+    }
+  });
+
+  req.on('end', () => {
+    try {
+      callback(JSON.parse(body || '{}'));
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
+    }
+  });
+}
+
 // Initialize database table if not exists
 pool.query(`
   CREATE TABLE IF NOT EXISTS nabhik_state (
@@ -126,7 +156,7 @@ const server = http.createServer((req, res) => {
       database: 'MySQL (Permanent)',
       mysqlHost: mysqlConfig.host,
       mysqlDatabase: mysqlConfig.database,
-      mysqlUser: mysqlConfig.user,
+      mysqlUser: maskValue(mysqlConfig.user),
       mysqlError: mysqlConnectionError
     }));
     return;
@@ -208,7 +238,74 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // POST code remains exactly the same...
+  if (req.method === 'POST') {
+    console.log(">>> POST /api/state");
+
+    readJsonBody(req, res, (payload) => {
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'State payload must be an object' }));
+        return;
+      }
+
+      const entries = Object.entries(payload);
+      if (!entries.length) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, savedKeys: 0 }));
+        return;
+      }
+
+      let completed = 0;
+      let failed = false;
+
+      entries.forEach(([key, value]) => {
+        let jsonValue;
+        try {
+          jsonValue = JSON.stringify(value);
+        } catch (e) {
+          if (!failed) {
+            failed = true;
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: `Could not serialize state key "${key}"` }));
+          }
+          return;
+        }
+
+        pool.query(
+          'REPLACE INTO nabhik_state (`key`, `value`) VALUES (?, ?)',
+          [key, jsonValue],
+          (err) => {
+            if (failed) return;
+            if (err) {
+              failed = true;
+              console.error('[DATABASE] MySQL POST error object:', err);
+              handleDatabaseError(
+                res,
+                `MySQL Save Failed: ${(err && (err.message || err.code)) || JSON.stringify(err)}`
+              );
+              return;
+            }
+
+            completed += 1;
+            if (completed === entries.length) {
+              res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store, no-cache, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+              });
+              res.end(JSON.stringify({ success: true, savedKeys: completed }));
+            }
+          }
+        );
+      });
+    });
+    return;
+  }
+
+  res.writeHead(405, { 'Content-Type': 'application/json', 'Allow': 'GET, POST' });
+  res.end(JSON.stringify({ error: 'Method not allowed' }));
+  return;
 }
   // Google Translate Proxy Endpoint (Bypasses CORS restrictions on the client side)
   if (cleanUrl === '/api/translate') {
